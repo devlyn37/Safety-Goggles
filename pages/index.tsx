@@ -7,36 +7,9 @@ import {
 import "react-vertical-timeline-component/style.min.css";
 import { AiOutlineEllipsis, AiFillCaretDown } from "react-icons/ai";
 import { ethers } from "ethers";
+import { convertUNIXTimestamp } from "../utils/time";
 
 const etherScanAPIKey = "K14P3TW12QCI2VDR3YIDY7XA9Y5XP2D232";
-
-function timeConverter(UNIX_timestamp) {
-  UNIX_timestamp = Number.parseInt(UNIX_timestamp);
-  var a = new Date(UNIX_timestamp * 1000);
-  var months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-  var year = a.getFullYear();
-  var month = months[a.getMonth()];
-  var date = a.getDate();
-  var hour = a.getHours();
-  var min = a.getMinutes();
-  var sec = a.getSeconds();
-  var time =
-    date + " " + month + " " + year + " " + hour + ":" + min + ":" + sec;
-  return time;
-}
 
 export default function Home() {
   const [data, setData] = useState<Array<[any, any]>>([]);
@@ -50,21 +23,19 @@ export default function Home() {
   const [address, setAddress] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  const getData = async (page, address) => {
-    // const allAssetURL = "https://api.opensea.io/api/v1/assets?owner=0xE898BBd704CCE799e9593a9ADe2c1cA0351Ab660&offset=0&limit=20";
+  const getData = async (page, address, offset) => {
     const url = `https://api.etherscan.io/api
 		?module=account
 		&action=tokennfttx
 		&address=${address}
 		&page=${page}
-		&offset=10
+		&offset=${offset}
 		&sort=desc
 		&apikey=${etherScanAPIKey}`;
 
     try {
       const results = await axios.get(url);
       const transactions = results.data.result;
-      console.log(transactions);
       const tokenIdContractAddressPairs: Array<[string, string]> =
         transactions.map((t) => [t.tokenID, t.contractAddress]);
 
@@ -106,9 +77,6 @@ export default function Home() {
     input: string
   ): Promise<[string, string]> => {
     const provider = new ethers.providers.EtherscanProvider(1, etherScanAPIKey);
-    console.log("Input = " + input);
-    console.log(input.length);
-
     let address;
     let ens;
 
@@ -117,7 +85,6 @@ export default function Home() {
     if (input.length === 42) {
       address = input;
       ens = await provider.lookupAddress(address);
-      console.log("resultant ens address " + ens);
     } else {
       ens = input;
       if (ens.slice(-4) !== ".eth") {
@@ -125,7 +92,6 @@ export default function Home() {
       }
 
       address = await provider.resolveName(ens);
-      console.log("resultant eth address " + address);
     }
 
     if (address === null) {
@@ -144,7 +110,8 @@ export default function Home() {
         setAddress(address);
         setEns(ens);
 
-        const newData = await getData(page, address);
+        const newData = await getData(page, address, 10);
+        console.log(newData);
 
         if (page === 1) {
           setData(newData);
@@ -243,7 +210,7 @@ export default function Home() {
                   }}
                   contentArrowStyle={{ borderRight: "9px solid  black" }}
                   className="vertical-timeline-element--work"
-                  date={timeConverter(transaction.timeStamp)}
+                  date={convertUNIXTimestamp(transaction.timeStamp)}
                   iconStyle={{
                     background: "rgb(33, 150, 243)",
                     color: "#fff",
@@ -251,14 +218,37 @@ export default function Home() {
                     boxShadow: "none",
                   }}
                 >
-                  <h3 className="vertical-timeline-element-title">
+                  <h3
+                    className="vertical-timeline-element-title"
+                    style={{ marginBottom: "5px" }}
+                  >
                     {transaction.to.toUpperCase() === address.toUpperCase()
                       ? "Minted or Bought"
                       : "Sold or Transfered"}{" "}
-                    {nft.name}
+                    <a
+                      href={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.token_id}`}
+                      style={{
+                        color: "rgb(33, 150, 243)",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      {nft.name}
+                    </a>
                   </h3>
                   <h4 className="vertical-timeline-element-subtitle">
-                    from {nft.collection.name}{" "}
+                    from{" "}
+                    <a
+                      href={
+                        nft.collection.external_url ??
+                        `https://opensea.io/collection/${nft.collection.name}`
+                      }
+                      style={{
+                        color: "rgb(33, 150, 243)",
+                        textDecoration: "underline",
+                      }}
+                    >
+                      {nft.collection.name}{" "}
+                    </a>
                   </h4>
                   <NftDisplay
                     description={nft.description}
@@ -293,8 +283,8 @@ const NftDisplay: FC<{ description: string; imgUrl: string }> = ({
       display: "flex",
       flexDirection: "column",
       alignItems: "stretch",
-      width: "300px",
       margin: "20px 0px",
+      wordBreak: "break-all",
     }}
   >
     <img src={imgUrl}></img>
