@@ -1,4 +1,3 @@
-import axios from "axios";
 import { FC, useState, useEffect } from "react";
 import {
   VerticalTimeline,
@@ -8,11 +7,11 @@ import "react-vertical-timeline-component/style.min.css";
 import { AiOutlineEllipsis, AiFillCaretDown } from "react-icons/ai";
 import { ethers } from "ethers";
 import { convertUNIXTimestamp } from "../utils/time";
-
+import { getData, groupData } from "../utils/data";
 const etherScanAPIKey = "K14P3TW12QCI2VDR3YIDY7XA9Y5XP2D232";
 
 export default function Home() {
-  const [data, setData] = useState<Array<[any, any]>>([]);
+  const [data, setData] = useState<Array<Array<[any, any]>>>([]);
   const [page, setPage] = useState<number>(1);
   const [lastSearched, SetLastSearched] = useState<string>(
     "0x3B3525F60eeea4a1eF554df5425912c2a532875D"
@@ -22,41 +21,6 @@ export default function Home() {
   const [ens, setEns] = useState<string>("");
   const [address, setAddress] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
-
-  const getData = async (page, address, offset) => {
-    const url = `https://api.etherscan.io/api
-		?module=account
-		&action=tokennfttx
-		&address=${address}
-		&page=${page}
-		&offset=${offset}
-		&sort=desc
-		&apikey=${etherScanAPIKey}`;
-
-    try {
-      const results = await axios.get(url);
-      const transactions = results.data.result;
-      const tokenIdContractAddressPairs: Array<[string, string]> =
-        transactions.map((t) => [t.tokenID, t.contractAddress]);
-
-      let tokenIds = "";
-      let contractAddresses = "";
-      tokenIdContractAddressPairs.forEach((pair) => {
-        tokenIds += `token_ids=${pair[0]}&`;
-        contractAddresses += `asset_contract_addresses=${pair[1]}&`;
-      });
-
-      const openSeaURL = `https://api.opensea.io/api/v1/assets?${tokenIds}${contractAddresses}order_direction=desc&offset=0`;
-
-      const nftResults = await axios.get(openSeaURL);
-      const nfts = nftResults.data.assets;
-
-      const combined = transactions.map((t, i) => [t, nfts[i]]);
-      return combined;
-    } catch (e) {
-      console.log("oi" + e.message);
-    }
-  };
 
   const loadMore = () => {
     setPage(page + 1);
@@ -110,13 +74,13 @@ export default function Home() {
         setAddress(address);
         setEns(ens);
 
-        const newData = await getData(page, address, 10);
-        console.log(newData);
+        const newData = await getData(page, address, 30); // 30 cap on opean sea api call rn
+        const groupedData = groupData(newData, address);
 
         if (page === 1) {
-          setData(newData);
+          setData(groupedData);
         } else {
-          setData([...data, ...newData]);
+          setData([...data, ...groupedData]);
         }
 
         setErrorMsg("");
@@ -201,62 +165,118 @@ export default function Home() {
             Activity of {ens ?? address}
           </div>
           <VerticalTimeline className="vertical-timeline-custom-line">
-            {data.map(([transaction, nft]) =>
-              nft ? (
-                <VerticalTimelineElement
-                  contentStyle={{
-                    border: "3px solid black",
-                    boxShadow: "none",
-                  }}
-                  contentArrowStyle={{ borderRight: "9px solid  black" }}
-                  className="vertical-timeline-element--work"
-                  date={convertUNIXTimestamp(transaction.timeStamp)}
-                  iconStyle={{
-                    background: "rgb(33, 150, 243)",
-                    color: "#fff",
-                    border: "4px solid black",
-                    boxShadow: "none",
-                  }}
-                >
-                  <h3
-                    className="vertical-timeline-element-title"
-                    style={{ marginBottom: "5px" }}
+            {data.map((grouping) => {
+              if (grouping.length === 1) {
+                return grouping.map(([transaction, nft]) => {
+                  return nft ? (
+                    <VerticalTimelineElement
+                      contentStyle={{
+                        border: "3px solid black",
+                        boxShadow: "none",
+                      }}
+                      contentArrowStyle={{ borderRight: "9px solid  black" }}
+                      className="vertical-timeline-element--work"
+                      date={convertUNIXTimestamp(transaction.timeStamp)}
+                      iconStyle={{
+                        background: "rgb(33, 150, 243)",
+                        color: "#fff",
+                        border: "4px solid black",
+                        boxShadow: "none",
+                      }}
+                    >
+                      <h3
+                        className="vertical-timeline-element-title"
+                        style={{ marginBottom: "5px" }}
+                      >
+                        {transaction.to.toUpperCase() === address.toUpperCase()
+                          ? "Minted or Bought"
+                          : "Sold or Transfered"}{" "}
+                        <a
+                          href={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.token_id}`}
+                          style={{
+                            color: "rgb(33, 150, 243)",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          {nft.name}
+                        </a>
+                      </h3>
+                      <h4 className="vertical-timeline-element-subtitle">
+                        from{" "}
+                        <a
+                          href={
+                            nft.collection.external_url ??
+                            `https://opensea.io/collection/${nft.collection.name}`
+                          }
+                          style={{
+                            color: "rgb(33, 150, 243)",
+                            textDecoration: "underline",
+                          }}
+                        >
+                          {nft.collection.name}{" "}
+                        </a>
+                      </h4>
+                      <NftDisplay
+                        description={nft.description}
+                        imgUrl={nft.image_url}
+                      />
+                    </VerticalTimelineElement>
+                  ) : null;
+                });
+              } else {
+                const [transaction, nft] = grouping[0];
+                const [endTransaction, endNft] = grouping[grouping.length - 1];
+                return nft ? (
+                  <VerticalTimelineElement
+                    contentStyle={{
+                      border: "3px solid black",
+                      boxShadow: "none",
+                    }}
+                    contentArrowStyle={{ borderRight: "9px solid  black" }}
+                    className="vertical-timeline-element--work"
+                    date={`${convertUNIXTimestamp(
+                      endTransaction.timeStamp
+                    )} - ${convertUNIXTimestamp(transaction.timeStamp)}`}
+                    iconStyle={{
+                      background: "rgb(33, 150, 243)",
+                      color: "#fff",
+                      border: "4px solid black",
+                      boxShadow: "none",
+                    }}
                   >
-                    {transaction.to.toUpperCase() === address.toUpperCase()
-                      ? "Minted or Bought"
-                      : "Sold or Transfered"}{" "}
-                    <a
-                      href={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.token_id}`}
-                      style={{
-                        color: "rgb(33, 150, 243)",
-                        textDecoration: "underline",
-                      }}
+                    <h3
+                      className="vertical-timeline-element-title"
+                      style={{ marginBottom: "5px" }}
                     >
-                      {nft.name}
-                    </a>
-                  </h3>
-                  <h4 className="vertical-timeline-element-subtitle">
-                    from{" "}
-                    <a
-                      href={
-                        nft.collection.external_url ??
-                        `https://opensea.io/collection/${nft.collection.name}`
-                      }
-                      style={{
-                        color: "rgb(33, 150, 243)",
-                        textDecoration: "underline",
-                      }}
-                    >
-                      {nft.collection.name}{" "}
-                    </a>
-                  </h4>
-                  <NftDisplay
-                    description={nft.description}
-                    imgUrl={nft.image_url}
-                  />
-                </VerticalTimelineElement>
-              ) : null
-            )}
+                      {transaction.to.toUpperCase() === address.toUpperCase()
+                        ? "Minted or Bought"
+                        : "Sold or Transfered"}{" "}
+                      {`${" " + grouping.length + " NFTs"}`}
+                    </h3>
+                    <h4 className="vertical-timeline-element-subtitle">
+                      from{" "}
+                      <a
+                        href={
+                          nft.collection.external_url ??
+                          `https://opensea.io/collection/${nft.collection.name}`
+                        }
+                        style={{
+                          color: "rgb(33, 150, 243)",
+                          textDecoration: "underline",
+                        }}
+                      >
+                        {nft.collection.name}{" "}
+                      </a>
+                    </h4>
+                    <NftDisplay
+                      description={nft.collection.description}
+                      imgUrl={nft.collection.featured_image_url}
+                    />
+                  </VerticalTimelineElement>
+                ) : null;
+              }
+            })}
+
             <VerticalTimelineElement
               iconOnClick={loadMore}
               iconStyle={{
