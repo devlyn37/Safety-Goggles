@@ -1,75 +1,62 @@
 import axios from "axios";
-const etherScanAPIKey = "K14P3TW12QCI2VDR3YIDY7XA9Y5XP2D232";
 
-export const getData = async (
-  page,
-  address,
-  offset
-): Promise<Array<[any, any]>> => {
-  const url = `https://api.etherscan.io/api
-		?module=account
-		&action=tokennfttx
-		&address=${address}
-		&page=${page}
-		&offset=${offset}
-		&sort=desc
-		&apikey=${etherScanAPIKey}`;
-
-  try {
-    const results = await axios.get(url);
-    const transactions = results.data.result;
-    const tokenIdContractAddressPairs: Array<[string, string]> =
-      transactions.map((t) => [t.tokenID, t.contractAddress]);
-
-    let tokenIds = "";
-    let contractAddresses = "";
-    tokenIdContractAddressPairs.forEach((pair) => {
-      tokenIds += `token_ids=${pair[0]}&`;
-      contractAddresses += `asset_contract_addresses=${pair[1]}&`;
-    });
-
-    const openSeaURL = `https://api.opensea.io/api/v1/assets?${tokenIds}${contractAddresses}order_direction=desc&offset=0`;
-
-    const nftResults = await axios.get(openSeaURL);
-    const nfts = nftResults.data.assets;
-
-    const combined = transactions.map((t, i) => [t, nfts[i]]);
-    console.log(combined);
-    return combined;
-  } catch (e) {
-    console.log("oi" + e.message);
-  }
+export const getEvents = async (
+  address: string,
+  limit: number,
+  offset: number
+) => {
+  const url = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}&event_type=transfer`;
+  console.log(url);
+  const results = await axios.get(url);
+  const events = results.data.asset_events;
+  return events;
 };
 
-export const groupData = (
-  data: Array<[any, any]>,
-  address: string
-): Array<Array<[any, any]>> => {
-  const buckets: Array<Array<[any, any]>> = [];
-
-  // Group together similar actions
+export const groupEvents = (events: any[], address: string) => {
   let currCollection: string;
   let currBought: boolean;
-  let currBucket: Array<[any, any]>;
+  let currBucket: any[];
+  const groups: any[][] = [];
 
-  for (const [transaction, nft] of data) {
-    if (!nft) {
-      continue;
-    }
-
-    const collection = nft.collection.name;
-    const bought = transaction.to.toUpperCase() === address.toUpperCase();
+  for (const event of events) {
+    const collection = event.collection_slug;
+    const bought =
+      event.to_account.address.toUpperCase() === address.toUpperCase();
+    console.log(event.to_account.address);
+    console.log(address);
 
     if (currCollection !== collection || currBought !== bought) {
-      currBucket = [[transaction, nft]];
-      buckets.push(currBucket);
+      currBucket = [event];
+      groups.push(currBucket);
     } else {
-      currBucket.push([transaction, nft]);
+      currBucket.push(event);
     }
 
     currCollection = collection;
     currBought = bought;
   }
 
-  return buckets;
+  return groups;
+};
+
+export const mergeEventGroupings = (
+  existing: any[][],
+  newG: any[][]
+): any[][] => {
+  const lastExisting = existing[existing.length - 1][0];
+  const firstNew = newG[0][0];
+
+  if (
+    lastExisting.asset.collection.name === firstNew.asset.collection.name &&
+    lastExisting.to_account.address === firstNew.to_account.address &&
+    lastExisting.from_account.address === firstNew.from_account.address
+  ) {
+    return [
+      ...lastExisting.slice(0, -1),
+      [...lastExisting, ...firstNew],
+      ...firstNew.slice(1),
+    ];
+  }
+
+  return [...existing, ...newG];
 };
