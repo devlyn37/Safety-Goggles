@@ -9,6 +9,7 @@ export const getEvents = async (
   console.log(url);
   const results = await axios.get(url);
   const events = results.data.asset_events;
+  console.log(events);
   return events;
 };
 
@@ -22,8 +23,6 @@ export const groupEvents = (events: any[], address: string) => {
     const collection = event.collection_slug;
     const bought =
       event.to_account.address.toUpperCase() === address.toUpperCase();
-    console.log(event.to_account.address);
-    console.log(address);
 
     if (currCollection !== collection || currBought !== bought) {
       currBucket = [event];
@@ -52,9 +51,9 @@ export const mergeEventGroupings = (
     lastExisting.from_account.address === firstNew.from_account.address
   ) {
     return [
-      ...lastExisting.slice(0, -1),
-      [...lastExisting, ...firstNew],
-      ...firstNew.slice(1),
+      ...existing.slice(0, -1),
+      [...existing[existing.length - 1], ...newG[0]],
+      ...newG.slice(1),
     ];
   }
 
