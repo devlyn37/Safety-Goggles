@@ -161,32 +161,29 @@ export default function Home() {
           ></input>
         </form>
       </nav>
+      <div
+        style={{
+          width: "100%",
+          padding: "0px 30px 30px 30px",
+          fontSize: "30px",
+          fontWeight: "bold",
+          display: "flex",
+          justifyContent: "flex-start",
+        }}
+      >
+        Activity of {loadingEns ? "..." : ens ?? address}
+      </div>
       {errorMsg ? (
         <div>{errorMsg}</div>
       ) : loading && page === 1 ? (
         <Audio width="100" />
       ) : (
-        <>
-          <div
-            style={{
-              width: "100%",
-              padding: "0px 30px 30px 30px",
-              fontSize: "30px",
-              fontWeight: "bold",
-              display: "flex",
-              justifyContent: "flex-start",
-            }}
-          >
-            Activity of {ens ?? address}
-          </div>
-
-          <Timeline
-            data={data}
-            address={address}
-            loadMore={loadMore}
-            loading={loading}
-          />
-        </>
+        <Timeline
+          data={data}
+          address={address}
+          loadMore={loadMore}
+          loading={loading}
+        />
       )}
     </div>
   );
