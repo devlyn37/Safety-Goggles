@@ -1,9 +1,9 @@
-import React, { FC, useState, useEffect } from "react";
-import "react-vertical-timeline-component/style.min.css";
+import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { getEvents, groupEvents, mergeEventGroupings } from "../utils/data";
 import { Audio } from "@agney/react-loading";
 import Timeline from "../components/timeline";
+import { FaSearch } from "react-icons/fa";
 
 const etherScanAPIKey = "K14P3TW12QCI2VDR3YIDY7XA9Y5XP2D232";
 
@@ -117,50 +117,54 @@ export default function Home() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-start",
-        alignItems: "center",
+        alignItems: "stretch",
+        minHeight: "100vh",
       }}
     >
-      <nav
+      <form
         style={{
-          padding: "30px 30px",
-          width: "100%",
+          padding: "20px 20px 0px 20px",
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
-          marginBottom: "50px",
+          marginBottom: "20px",
         }}
+        onSubmit={handleSearchSubmit}
       >
-        <div style={{ fontSize: "50px" }}>Watson</div>
-        <form onSubmit={handleSearchSubmit}>
-          <input
-            value={searchInput}
-            onChange={handleSearchInputchange}
-            type="text"
-            placeholder="Address/ENS"
-            style={{
-              height: "55px",
-              padding: "0px 15px",
-              marginRight: "20px",
-              border: "3px solid black",
-              borderRadius: "10px",
-              fontSize: "20px",
-            }}
-          ></input>
-          <input
-            type="submit"
-            value="Search"
-            style={{
-              height: "55px",
-              padding: "0px 15px",
-              backgroundColor: "black",
-              color: "white",
-              border: "none",
-              borderRadius: "20px",
-              fontSize: "20px",
-            }}
-          ></input>
-        </form>
-      </nav>
+        <input
+          value={searchInput}
+          onChange={handleSearchInputchange}
+          type="text"
+          placeholder="Address/ENS"
+          style={{
+            flex: "1",
+            minWidth: "30px", //To account for default input sizing smh
+            height: "55px",
+            padding: "0px 15px",
+            marginRight: "20px",
+            border: "3px solid black",
+            borderRadius: "10px",
+            fontSize: "20px",
+          }}
+        ></input>
+        <button
+          onClick={handleSearchSubmit}
+          style={{
+            height: "55px",
+            padding: "0px 15px",
+            backgroundColor: "black",
+            color: "white",
+            border: "none",
+            borderRadius: "50%",
+            fontSize: "25px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <FaSearch />
+        </button>
+      </form>
       <div
         style={{
           width: "100%",
@@ -173,18 +177,31 @@ export default function Home() {
       >
         Activity of {loadingEns ? "..." : ens ?? address}
       </div>
-      {errorMsg ? (
-        <div>{errorMsg}</div>
-      ) : loading && page === 1 ? (
-        <Audio width="100" />
-      ) : (
-        <Timeline
-          data={data}
-          address={address}
-          loadMore={loadMore}
-          loading={loading}
-        />
-      )}
+      {/* //overflowY is important here for some reason with the timeline styling, take a close look later */}
+      <div
+        style={{
+          width: "100%",
+          flex: 1,
+          overflowY: "scroll",
+          minHeight: "1vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {errorMsg ? (
+          <div>{errorMsg}</div>
+        ) : loading && page === 1 ? (
+          <Audio width="100" />
+        ) : (
+          <Timeline
+            data={data}
+            address={address}
+            loadMore={loadMore}
+            loading={loading}
+          />
+        )}
+      </div>
     </div>
   );
 }

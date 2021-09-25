@@ -222,7 +222,7 @@ const NftDisplay: FC<{ description: string; imgUrl: string }> = ({
       wordBreak: "break-all",
     }}
   >
-    <img style={{ borderRadius: "10px" }} src={imgUrl}></img>
+    <img style={{ borderRadius: "10px", maxHeight: "50vh" }} src={imgUrl}></img>
     <p>{description}</p>
   </div>
 );
