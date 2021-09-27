@@ -12,7 +12,7 @@ export interface NFTEvent {
   date: string;
   from: string;
   to: string;
-  action: "Minted" | "Bought" | "Sold" | "transfer" | "successful"; // transfer and successful represent an incomplete event
+  action: "Minted" | "Bought" | "Sold";
   key: string;
   price?: number;
 }
@@ -26,9 +26,8 @@ export const getEvents = async (
   console.log(url);
   const results = await axios.get(url);
   const data = results.data.asset_events;
-  console.log("hi");
   console.log(data);
-  console.log(data.length);
+  console.log(openseaDataToEvents(data, address));
 
   return openseaDataToEvents(data, address);
 };
@@ -36,7 +35,7 @@ export const getEvents = async (
 const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
   /* Data Mapping
 		*	Related events are linked by transaction hashes, a standard sale of an NFT
-		* will have a "successful" event and a "tranfer" event each with the same
+		* will have a "successful" event and a "transfer" event each with the same
 		* transaction hash.
 
 		* To determine if something was purchased/sold rather than minted look at
@@ -45,155 +44,68 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
 		* user name
 	*/
 
-  const events: NFTEvent[] = [];
-  const transfers = data.filter((d) => d.event_type === "transfer");
-  const successfuls = data.filter((d) => d.event_type === "successful");
+  const events: NFTEvent[] = data
+    .filter((d) => {
+      const transfer = d.event_type === "transfer";
+      const sale = d.event_type === "successful";
 
-  transfers.forEach((transfer, i) => {
-    const successIndex = successfuls.findIndex((s) => {
-      return (
-        s.transaction.transaction_hash === transfer.transaction.transaction_hash
-      );
-    });
-
-    // Bought or Sold
-    if (successIndex) {
-      const successEvent = successfuls[successIndex];
-      const bought =
-        successEvent.winner_account.address.toUpperCase() ===
-        address.toUpperCase();
-
-      events.push({
-        assetName: transfer.asset.name,
-        assetDescription: transfer.asset.description,
-        assetImgUrl: transfer.asset.image_url,
-        assetUrl: `https://opensea.io/assets/${transfer.asset.asset_contract.address}/${transfer.token_id}`,
-        collectionName: transfer.asset.collection.name,
-        collectionUrl:
-          transfer.asset.collection.external_url ??
-          `https://opensea.io/collection/${transfer.asset.collection.name}}`,
-        collectionDescription: transfer.asset.collection.description,
-        collectionImgUrl: transfer.asset.collection.featured_image_url,
-        date: transfer.transaction.timestamp,
-        from: transfer.from_account.address.toUpperCase(),
-        to: transfer.to_account.address.toUpperCase(),
-        action: bought ? "Bought" : "Sold",
-        price: Number.parseInt(successEvent.total_price),
-        key: transfer.transaction.transaction_hash,
-      });
-
-      transfers.splice(i, 1);
-      successfuls.splice(successIndex, 1);
-      return;
-    }
-
-    // Minted
-    if (
-      !transfer.transaction.user ||
-      transfer.transaction.to_account.user.username !== "OpenSea-Orders"
-    ) {
-      events.push({
-        assetName: transfer.asset.name,
-        assetDescription: transfer.asset.description,
-        assetImgUrl: transfer.asset.image_url,
-        assetUrl: `https://opensea.io/assets/${transfer.asset.asset_contract.address}/${transfer.token_id}`,
-        collectionName: transfer.asset.collection.name,
-        collectionUrl:
-          transfer.asset.collection.external_url ??
-          `https://opensea.io/collection/${transfer.asset.collection.name}}`,
-        collectionDescription: transfer.asset.collection.description,
-        collectionImgUrl: transfer.asset.collection.featured_image_url,
-        date: transfer.transaction.timestamp,
-        from: transfer.from_account.address.toUpperCase(),
-        to: transfer.to_account.address.toUpperCase(),
-        action: "Minted",
-        key: transfer.transaction.transaction_hash,
-      });
-
-      transfers.splice(i, 1);
-      return;
-    }
-  });
-
-  // Any event data remaining in the transfer or successful arrays is incomplete
-  // and will likely be completed when more data is loaded
-  successfuls.forEach((event) => {
-    events.push({
-      assetName: event.asset.name,
-      assetDescription: event.asset.description,
-      assetImgUrl: event.asset.image_url,
-      assetUrl: `https://opensea.io/assets/${event.asset.asset_contract.address}/${event.token_id}`,
-      collectionName: event.asset.collection.name,
-      collectionUrl:
-        event.asset.collection.external_url ??
-        `https://opensea.io/collection/${event.asset.collection.name}}`,
-      collectionDescription: event.asset.collection.description,
-      collectionImgUrl: event.asset.collection.featured_image_url,
-      date: event.transaction.timestamp,
-      from: event.seller.address,
-      to: event.winner_account.address,
-      action: event.event_type,
-      key: event.transaction.transaction_hash,
-      price: Number.parseInt(event.total_price),
-    });
-  });
-
-  transfers.forEach((event) => {
-    events.push({
-      assetName: event.asset.name,
-      assetDescription: event.asset.description,
-      assetImgUrl: event.asset.image_url,
-      assetUrl: `https://opensea.io/assets/${event.asset.asset_contract.address}/${event.token_id}`,
-      collectionName: event.asset.collection.name,
-      collectionUrl:
-        event.asset.collection.external_url ??
-        `https://opensea.io/collection/${event.asset.collection.name}}`,
-      collectionDescription: event.asset.collection.description,
-      collectionImgUrl: event.asset.collection.featured_image_url,
-      date: event.transaction.timestamp,
-      from: event.from_account.address,
-      to: event.to_account.address,
-      action: event.event_type,
-      key: event.transaction.transaction_hash,
-    });
-  });
-
-  return events;
-};
-
-export const mergeData = (
-  existing: NFTEvent[],
-  newG: NFTEvent[],
-  address: string
-): NFTEvent[] => {
-  const filledExisting = existing.map((event) => {
-    const transfer = event.action === "transfer";
-    const successful = event.action === "successful";
-
-    if (transfer || successful) {
-      const missingInfoIndex = newG.findIndex(
-        (newEvent) => newEvent.key === event.key
-      );
-
-      newG.splice(missingInfoIndex, 1);
-
-      if (!missingInfoIndex) {
-        return event;
+      if (sale) {
+        return true;
       }
 
-      const missingInfo = newG[missingInfoIndex];
-      const transferEvent = transfer ? event : missingInfo;
-      const successEvent = successful ? event : missingInfo;
+      if (transfer) {
+        const minted =
+          !d.transaction.to_account ||
+          !d.transaction.to_account.user ||
+          d.transaction.to_account.user.username !== "OpenSea-Orders";
 
-      const bought = successEvent.to.toUpperCase() === address.toUpperCase();
-      return {
-        ...successEvent,
-        action: bought ? "Bought" : "Sold",
-      } as NFTEvent;
-    }
+        return minted;
+      }
+    })
+    .map((d) => {
+      console.log(d.event_type);
+      if (d.event_type === "successful") {
+        const bought =
+          d.winner_account.address.toUpperCase() === address.toUpperCase();
 
-    return event;
-  });
+        return {
+          assetName: d.asset.name,
+          assetDescription: d.asset.description,
+          assetImgUrl: d.asset.image_url,
+          assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.token_id}`,
+          collectionName: d.asset.collection.name,
+          collectionUrl:
+            d.asset.collection.external_url ??
+            `https://opensea.io/collection/${d.asset.collection.name}}`,
+          collectionDescription: d.asset.collection.description,
+          collectionImgUrl: d.asset.collection.featured_image_url,
+          date: d.transaction.timestamp,
+          from: d.seller.address,
+          to: d.winner_account.address,
+          action: bought ? "Bought" : "Sold",
+          key: d.transaction.transaction_hash,
+          price: Number.parseInt(d.total_price),
+        };
+      } else if (d.event_type === "transfer") {
+        return {
+          assetName: d.asset.name,
+          assetDescription: d.asset.description,
+          assetImgUrl: d.asset.image_url,
+          assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.token_id}`,
+          collectionName: d.asset.collection.name,
+          collectionUrl:
+            d.asset.collection.external_url ??
+            `https://opensea.io/collection/${d.asset.collection.name}}`,
+          collectionDescription: d.asset.collection.description,
+          collectionImgUrl: d.asset.collection.featured_image_url,
+          date: d.transaction.timestamp,
+          from: d.from_account.address.toUpperCase(),
+          to: d.to_account.address.toUpperCase(),
+          action: "Minted",
+          key: d.transaction.transaction_hash,
+        };
+      }
+    });
 
-  return [...filledExisting, ...newG];
+  return events;
 };
