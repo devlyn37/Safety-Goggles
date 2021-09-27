@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, ReactNode, useState } from "react";
 import {
   VerticalTimeline,
   VerticalTimelineElement,
@@ -9,41 +9,25 @@ import {
   AiFillCaretDown,
   AiFillCaretUp,
 } from "react-icons/ai";
+import { NFTEvent } from "../utils/data";
+
+const weiToEth = (wei: number): number => {
+  return wei / Math.pow(10, 18);
+};
 
 const Timeline: FC<{
-  data: any[][];
+  data: NFTEvent[][];
   loading: boolean;
   address: string;
   loadMore: () => void;
-}> = ({ data, loading, address, loadMore }) => {
+}> = ({ data, loading, loadMore }) => {
   return (
     <VerticalTimeline className="vertical-timeline-custom-line">
       {data.map((grouping) => {
-        const event = grouping[0];
-        const nft = event.asset;
-        const bought =
-          event.to_account.address.toUpperCase() === address.toUpperCase();
-
-        if (grouping.length === 1) {
-          return grouping.map((event) => (
-            <TimeLineEntry
-              key={event.transaction.transaction_hash}
-              time={event.transaction.timestamp}
-              title={bought ? "Minted or Bought" : "Sold or Transfered"}
-              subTitle="from"
-              imgUrl={nft.image_url}
-              text={nft.description}
-              titleLinkText={nft.name}
-              titleLink={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.token_id}`}
-              subTitleLinkText={nft.collection.name}
-              subTitleLink={
-                nft.collection.external_url ??
-                `https://opensea.io/collection/${nft.collection.name}}`
-              }
-            />
-          ));
+        if (grouping.length > 3) {
+          return <TimeLineGrouping grouping={grouping} />;
         } else {
-          return <TimeLineGrouping grouping={grouping} address={address} />;
+          return <TimeLineEvents grouping={grouping} />;
         }
       })}
 
@@ -61,15 +45,13 @@ const Timeline: FC<{
   );
 };
 
-const TimeLineGrouping: FC<{ grouping: any[]; address: string }> = ({
-  grouping,
-  address,
-}) => {
+const TimeLineGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
   const [expanded, setExpanded] = useState(false);
   const event = grouping[0];
-  const nft = event.asset;
-  const bought =
-    event.to_account.address.toUpperCase() === address.toUpperCase();
+  const sum =
+    event.action !== "Minted"
+      ? grouping.map((e) => e.price).reduce((prev, curr) => prev + curr)
+      : undefined;
 
   const handleClick = () => {
     setExpanded(!expanded);
@@ -78,49 +60,30 @@ const TimeLineGrouping: FC<{ grouping: any[]; address: string }> = ({
   return (
     <>
       <TimeLineEntry
-        key={event.transaction.transaction_hash}
-        time={event.transaction.timestamp}
-        title={
-          (bought ? "Minted or Bought" : "Sold or Transfered") +
-          " " +
-          grouping.length +
-          " NFTs"
+        key={event.key}
+        time={event.date}
+        title={`${event.action} ${grouping.length} NFTs${
+          sum ? " for a total of " + weiToEth(sum) + " eth" : ""
+        }`}
+        subTitle={
+          <>
+            from{" "}
+            <a
+              href={event.collectionUrl}
+              style={{
+                color: "rgb(33, 150, 243)",
+                textDecoration: "underline",
+              }}
+            >
+              {event.collectionName}{" "}
+            </a>
+          </>
         }
-        subTitle="from"
-        imgUrl={nft.collection.featured_image_url}
-        text={nft.collection.description}
-        subTitleLinkText={nft.collection.name}
-        subTitleLink={
-          nft.collection.external_url ??
-          `https://opensea.io/collection/${nft.collection.name}}`
-        }
+        imgUrl={event.collectionImgUrl}
+        text={event.collectionDescription}
       />
       {expanded ? (
-        <>
-          {grouping.map((event) => {
-            const nft = event.asset;
-            const bought =
-              event.to_account.address.toUpperCase() === address.toUpperCase();
-
-            return (
-              <TimeLineEntry
-                key={event.transaction.transaction_hash}
-                time={event.transaction.timestamp}
-                title={bought ? "Minted or Bought" : "Sold or Transfered"}
-                subTitle="from"
-                imgUrl={nft.image_url}
-                text={nft.description}
-                titleLinkText={nft.name}
-                titleLink={`https://opensea.io/assets/${nft.asset_contract.address}/${nft.token_id}`}
-                subTitleLinkText={nft.collection.name}
-                subTitleLink={
-                  nft.collection.external_url ??
-                  `https://opensea.io/collection/${nft.collection.name}}`
-                }
-              />
-            );
-          })}
-        </>
+        <TimeLineEvents grouping={grouping} />
       ) : (
         <VerticalTimelineElement
           iconOnClick={handleClick}
@@ -138,27 +101,55 @@ const TimeLineGrouping: FC<{ grouping: any[]; address: string }> = ({
   );
 };
 
+const TimeLineEvents: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
+  <>
+    {grouping.map((event) => (
+      <TimeLineEntry
+        key={event.key}
+        time={event.date}
+        title={
+          <>
+            {event.action + " "}
+            <a
+              href={event.assetUrl}
+              style={{
+                color: "rgb(33, 150, 243)",
+                textDecoration: "underline",
+              }}
+            >
+              {event.assetName}
+            </a>
+            {event.price ? " for " + weiToEth(event.price) + " eth" : null}
+          </>
+        }
+        subTitle={
+          <>
+            from{" "}
+            <a
+              href={event.collectionUrl}
+              style={{
+                color: "rgb(33, 150, 243)",
+                textDecoration: "underline",
+              }}
+            >
+              {event.collectionName}{" "}
+            </a>
+          </>
+        }
+        imgUrl={event.assetImgUrl}
+        text={event.assetDescription}
+      />
+    ))}
+  </>
+);
+
 const TimeLineEntry: FC<{
   time: string;
-  title: string;
-  subTitle: string;
+  title: ReactNode;
+  subTitle: ReactNode;
   imgUrl: string;
   text: string;
-  titleLinkText?: string;
-  titleLink?: string;
-  subTitleLinkText?: string;
-  subTitleLink?: string;
-}> = ({
-  time,
-  title,
-  subTitle,
-  imgUrl,
-  text,
-  titleLinkText,
-  titleLink,
-  subTitleLinkText,
-  subTitleLink,
-}) => (
+}> = ({ time, title, subTitle, imgUrl, text }) => (
   <VerticalTimelineElement
     contentStyle={{
       border: "3px solid black",
@@ -178,33 +169,9 @@ const TimeLineEntry: FC<{
       className="vertical-timeline-element-title"
       style={{ marginBottom: "5px" }}
     >
-      {title}{" "}
-      {titleLink ? (
-        <a
-          href={titleLink}
-          style={{
-            color: "rgb(33, 150, 243)",
-            textDecoration: "underline",
-          }}
-        >
-          {titleLinkText}
-        </a>
-      ) : null}
+      {title}
     </h3>
-    <h4 className="vertical-timeline-element-subtitle">
-      {subTitle}{" "}
-      {subTitleLink ? (
-        <a
-          href={subTitleLink}
-          style={{
-            color: "rgb(33, 150, 243)",
-            textDecoration: "underline",
-          }}
-        >
-          {subTitleLinkText}{" "}
-        </a>
-      ) : null}
-    </h4>
+    <h4 className="vertical-timeline-element-subtitle">{subTitle}</h4>
     <NftDisplay description={text} imgUrl={imgUrl} />
   </VerticalTimelineElement>
 );
