@@ -12,7 +12,7 @@ export interface NFTEvent {
   date: string;
   from: string;
   to: string;
-  action: "Minted" | "Bought" | "Sold";
+  action: "Minted" | "Bought" | "Sold" | "transfer" | "successful"; // transfer and successful represent an incomplete event
   key: string;
   price?: number;
 }
@@ -45,23 +45,20 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
 		* user name
 	*/
 
-  let events: NFTEvent[] = [];
+  const events: NFTEvent[] = [];
+  const transfers = data.filter((d) => d.event_type === "transfer");
+  const successfuls = data.filter((d) => d.event_type === "successful");
 
-  data.forEach((transfer) => {
-    if (transfer.event_type !== "transfer") {
-      return;
-    }
-
-    // Was it minted or bought/sold
-    const successEvent = data.find((related) => {
+  transfers.forEach((transfer, i) => {
+    const successIndex = successfuls.findIndex((s) => {
       return (
-        related.event_type === "successful" &&
-        related.transaction.transaction_hash ===
-          transfer.transaction.transaction_hash
+        s.transaction.transaction_hash === transfer.transaction.transaction_hash
       );
     });
 
-    if (successEvent) {
+    // Bought or Sold
+    if (successIndex) {
+      const successEvent = successfuls[successIndex];
       const bought =
         successEvent.winner_account.address.toUpperCase() ===
         address.toUpperCase();
@@ -84,16 +81,17 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
         price: Number.parseInt(successEvent.total_price),
         key: transfer.transaction.transaction_hash,
       });
-    } else {
-      // This means that the corresponding success event probably exists but wasn't loaded
-      // because of pagination, this will show up when more are loaded
-      if (
-        transfer.transaction.user &&
-        transfer.transaction.to_account.user.username === "OpenSea-Orders"
-      ) {
-        return;
-      }
 
+      transfers.splice(i, 1);
+      successfuls.splice(successIndex, 1);
+      return;
+    }
+
+    // Minted
+    if (
+      !transfer.transaction.user ||
+      transfer.transaction.to_account.user.username !== "OpenSea-Orders"
+    ) {
       events.push({
         assetName: transfer.asset.name,
         assetDescription: transfer.asset.description,
@@ -111,55 +109,91 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
         action: "Minted",
         key: transfer.transaction.transaction_hash,
       });
+
+      transfers.splice(i, 1);
+      return;
     }
+  });
+
+  // Any event data remaining in the transfer or successful arrays is incomplete
+  // and will likely be completed when more data is loaded
+  successfuls.forEach((event) => {
+    events.push({
+      assetName: event.asset.name,
+      assetDescription: event.asset.description,
+      assetImgUrl: event.asset.image_url,
+      assetUrl: `https://opensea.io/assets/${event.asset.asset_contract.address}/${event.token_id}`,
+      collectionName: event.asset.collection.name,
+      collectionUrl:
+        event.asset.collection.external_url ??
+        `https://opensea.io/collection/${event.asset.collection.name}}`,
+      collectionDescription: event.asset.collection.description,
+      collectionImgUrl: event.asset.collection.featured_image_url,
+      date: event.transaction.timestamp,
+      from: event.seller.address,
+      to: event.winner_account.address,
+      action: event.event_type,
+      key: event.transaction.transaction_hash,
+      price: Number.parseInt(event.total_price),
+    });
+  });
+
+  transfers.forEach((event) => {
+    events.push({
+      assetName: event.asset.name,
+      assetDescription: event.asset.description,
+      assetImgUrl: event.asset.image_url,
+      assetUrl: `https://opensea.io/assets/${event.asset.asset_contract.address}/${event.token_id}`,
+      collectionName: event.asset.collection.name,
+      collectionUrl:
+        event.asset.collection.external_url ??
+        `https://opensea.io/collection/${event.asset.collection.name}}`,
+      collectionDescription: event.asset.collection.description,
+      collectionImgUrl: event.asset.collection.featured_image_url,
+      date: event.transaction.timestamp,
+      from: event.from_account.address,
+      to: event.to_account.address,
+      action: event.event_type,
+      key: event.transaction.transaction_hash,
+    });
   });
 
   return events;
 };
 
-export const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
-  let prevCollection: string;
-  let prevAction: string;
-  let prevBucket: NFTEvent[];
-  const groups: NFTEvent[][] = [];
+export const mergeData = (
+  existing: NFTEvent[],
+  newG: NFTEvent[],
+  address: string
+): NFTEvent[] => {
+  const filledExisting = existing.map((event) => {
+    const transfer = event.action === "transfer";
+    const successful = event.action === "successful";
 
-  for (const event of events) {
-    const collection = event.collectionName;
-    const action = event.action;
+    if (transfer || successful) {
+      const missingInfoIndex = newG.findIndex(
+        (newEvent) => newEvent.key === event.key
+      );
 
-    if (prevCollection !== collection || prevAction !== action) {
-      prevBucket = [event];
-      groups.push(prevBucket);
-    } else {
-      prevBucket.push(event);
+      newG.splice(missingInfoIndex, 1);
+
+      if (!missingInfoIndex) {
+        return event;
+      }
+
+      const missingInfo = newG[missingInfoIndex];
+      const transferEvent = transfer ? event : missingInfo;
+      const successEvent = successful ? event : missingInfo;
+
+      const bought = successEvent.to.toUpperCase() === address.toUpperCase();
+      return {
+        ...successEvent,
+        action: bought ? "Bought" : "Sold",
+      } as NFTEvent;
     }
 
-    prevCollection = collection;
-    prevAction = action;
-  }
+    return event;
+  });
 
-  return groups;
-};
-
-export const mergeEventGroupings = (
-  existing: NFTEvent[][],
-  newG: NFTEvent[][]
-): NFTEvent[][] => {
-  const lastExisting = existing[existing.length - 1][0];
-  const firstNew = newG[0][0];
-
-  if (
-    lastExisting.collectionName === firstNew.collectionName &&
-    lastExisting.action === firstNew.action &&
-    lastExisting.to === firstNew.to &&
-    lastExisting.from === firstNew.from
-  ) {
-    return [
-      ...existing.slice(0, -1),
-      [...existing[existing.length - 1], ...newG[0]],
-      ...newG.slice(1),
-    ];
-  }
-
-  return [...existing, ...newG];
+  return [...filledExisting, ...newG];
 };

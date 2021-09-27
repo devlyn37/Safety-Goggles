@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import {
-  getEvents,
-  groupEvents,
-  mergeEventGroupings,
-  NFTEvent,
-} from "../utils/data";
+import { getEvents, NFTEvent } from "../utils/data";
 import { Audio } from "@agney/react-loading";
 import Timeline from "../components/timeline";
 import { FaSearch } from "react-icons/fa";
@@ -21,7 +16,7 @@ export default function Home() {
   const [loadingEns, setLoadingEns] = useState<boolean>(true);
   const [address, setAddress] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
-  const [data, setData] = useState<NFTEvent[][]>([]);
+  const [data, setData] = useState<NFTEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [page, setPage] = useState<number>(1);
 
@@ -95,12 +90,10 @@ export default function Home() {
         const events = await getEvents(address, 2, 2 * (page - 1));
 
         if (events.length) {
-          const grouped = groupEvents(events);
-
           if (page > 1) {
-            setData(mergeEventGroupings(data, grouped));
+            setData([...data, ...events]);
           } else {
-            setData(grouped);
+            setData(events);
           }
         }
       } catch (e) {

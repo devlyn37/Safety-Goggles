@@ -15,15 +15,41 @@ const weiToEth = (wei: number): number => {
   return wei / Math.pow(10, 18);
 };
 
+const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
+  let prevCollection: string;
+  let prevAction: string;
+  let prevBucket: NFTEvent[];
+  const groups: NFTEvent[][] = [];
+
+  for (const event of events) {
+    const collection = event.collectionName;
+    const action = event.action;
+
+    if (prevCollection !== collection || prevAction !== action) {
+      prevBucket = [event];
+      groups.push(prevBucket);
+    } else {
+      prevBucket.push(event);
+    }
+
+    prevCollection = collection;
+    prevAction = action;
+  }
+
+  return groups;
+};
+
 const Timeline: FC<{
-  data: NFTEvent[][];
+  data: NFTEvent[];
   loading: boolean;
   address: string;
   loadMore: () => void;
 }> = ({ data, loading, loadMore }) => {
+  const groupings = groupEvents(data);
+
   return (
     <VerticalTimeline className="vertical-timeline-custom-line">
-      {data.map((grouping) => {
+      {groupings.map((grouping) => {
         if (grouping.length > 3) {
           return <TimeLineGrouping grouping={grouping} />;
         } else {
