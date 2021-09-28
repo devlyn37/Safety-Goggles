@@ -6,12 +6,12 @@ import { Search, SearchCriteria } from "../components/search";
 
 export default function Home() {
   const [search, setSearch] = useState<SearchCriteria>({
-    address: "0x3B3525F60eeea4a1eF554df5425912c2a532875D",
+    address: "",
     startDate: "",
     endDate: "",
   });
   const [data, setData] = useState<NFTEvent[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [errorMsg, setErrorMsg] = useState<string>("");
 
@@ -77,14 +77,14 @@ export default function Home() {
           <div>{errorMsg}</div>
         ) : loading && page === 1 ? (
           <Audio width="100" />
-        ) : (
+        ) : search.address ? (
           <Timeline
             data={data}
             address={search.address}
             loadMore={loadMore}
             loading={loading}
           />
-        )}
+        ) : null}
       </div>
     </div>
   );

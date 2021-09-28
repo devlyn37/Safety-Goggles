@@ -56,6 +56,7 @@ export const Search: FC<{ updateSearch: (search: SearchCriteria) => void }> = ({
         startDate: startDate,
         endDate: endDate,
       });
+      setErrorMsg("");
     } catch (e) {
       setErrorMsg(e.message);
     }
@@ -157,16 +158,18 @@ export const Search: FC<{ updateSearch: (search: SearchCriteria) => void }> = ({
           marginBottom: "20px",
         }}
       >
-        <div
-          style={{
-            fontSize: "25px",
-            fontWeight: "bold",
-            display: "flex",
-            justifyContent: "flex-start",
-          }}
-        >
-          Activity of ${loadingEns ? "..." : ens ?? address}
-        </div>
+        {address || ens ? (
+          <div
+            style={{
+              fontSize: "25px",
+              fontWeight: "bold",
+              display: "flex",
+              justifyContent: "flex-start",
+            }}
+          >
+            Activity of ${loadingEns ? "..." : ens ?? address}
+          </div>
+        ) : null}
         <label>
           from:
           <br />
@@ -190,6 +193,17 @@ export const Search: FC<{ updateSearch: (search: SearchCriteria) => void }> = ({
           />
         </label>
       </div>
+      {errorMsg ? ( // To-do style
+        <div
+          style={{
+            margin: "0px 20px 0px 20px",
+            padding: "10px 20px 10px 20px",
+            backgroundColor: "lightpink",
+          }}
+        >
+          {errorMsg}
+        </div>
+      ) : null}
     </form>
   );
 };
