@@ -45,15 +45,19 @@ const Timeline: FC<{
   address: string;
   loadMore: () => void;
 }> = ({ data, loading, loadMore }) => {
+  if (!data.length) {
+    return <div>No Results</div>; // To-do expand this
+  }
+
   const groupings = groupEvents(data);
 
   return (
     <VerticalTimeline className="vertical-timeline-custom-line">
-      {groupings.map((grouping) => {
+      {groupings.map((grouping, i) => {
         if (grouping.length > 3) {
-          return <TimeLineGrouping grouping={grouping} />;
+          return <TimeLineGrouping key={grouping[0].key} grouping={grouping} />;
         } else {
-          return <TimeLineEvents grouping={grouping} />;
+          return <TimeLineEvents key={grouping[0].key} grouping={grouping} />;
         }
       })}
 

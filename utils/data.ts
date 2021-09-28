@@ -20,9 +20,20 @@ export interface NFTEvent {
 export const getEvents = async (
   address: string,
   limit: number,
-  offset: number
+  offset: number,
+  startDate?: string,
+  endDate?: string
 ): Promise<NFTEvent[]> => {
-  const url = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
+  let url = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
+
+  if (startDate) {
+    url += "&occurred_after=" + startDate + "T00:00:00";
+  }
+
+  if (endDate) {
+    url += "&occurred_before=" + endDate + "T00:00:00";
+  }
+
   console.log(url);
   const results = await axios.get(url);
   const data = results.data.asset_events;
