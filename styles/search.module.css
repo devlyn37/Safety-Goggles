@@ -1,0 +1,62 @@
+.container {
+  padding: 20px 0px 0px 0px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  margin-bottom: 20px;
+}
+
+.searchBarContainer {
+  padding: 20px 20px 0px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* min width to account for default size */
+.searchBarInput {
+  flex: 1;
+  min-width: 30px;
+  height: 55px;
+  padding: 0px 15px;
+  margin-right: 20px;
+  border: 3px solid black;
+  border-radius: 10px;
+  font-size: 20px;
+}
+
+.searchBarButton {
+  height: 55px;
+  padding: 0px 15px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.controlsContainer {
+  padding: 0px 20px 0px 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.addresses {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.errorMessage {
+  margin: 0px 20px 0px 20px;
+  padding: 10px 20px 10px 20px;
+  background-color: lightpink;
+}

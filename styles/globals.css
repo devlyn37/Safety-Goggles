@@ -8,6 +8,10 @@ body {
   min-height: 100%;
 }
 
+img {
+  max-width: 100%;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -15,8 +19,4 @@ a {
 
 * {
   box-sizing: border-box;
-}
-
-.vertical-timeline.vertical-timeline-custom-line::before {
-  background: black;
 }

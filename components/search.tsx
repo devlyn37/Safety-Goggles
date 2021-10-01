@@ -1,6 +1,7 @@
 import { FC, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { ethers } from "ethers";
+import styles from "../styles/search.module.css";
 const etherScanAPIKey = "K14P3TW12QCI2VDR3YIDY7XA9Y5XP2D232";
 
 export interface SearchCriteria {
@@ -93,80 +94,22 @@ export const Search: FC<{ updateSearch: (search: SearchCriteria) => void }> = ({
   };
 
   return (
-    <form
-      onSubmit={handleSearchSubmit}
-      style={{
-        padding: "20px 0px 0px 0px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "stretch",
-        marginBottom: "20px",
-      }}
-    >
-      <div
-        style={{
-          padding: "20px 20px 0px 20px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
+    <form onSubmit={handleSearchSubmit} className={styles.container}>
+      <div className={styles.searchBarContainer}>
         <input
           value={searchInput}
           onChange={handleSearchInputchange}
           type="text"
           placeholder="Address/ENS"
-          style={{
-            flex: "1",
-            minWidth: "30px", //To account for default input sizing smh
-            height: "55px",
-            padding: "0px 15px",
-            marginRight: "20px",
-            border: "3px solid black",
-            borderRadius: "10px",
-            fontSize: "20px",
-          }}
+          className={styles.searchBarInput}
         ></input>
-        <button
-          onClick={handleSearchSubmit}
-          style={{
-            height: "55px",
-            padding: "0px 15px",
-            backgroundColor: "black",
-            color: "white",
-            border: "none",
-            borderRadius: "50%",
-            fontSize: "25px",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <button onClick={handleSearchSubmit} className={styles.searchBarButton}>
           <FaSearch />
         </button>
       </div>
-      <div
-        style={{
-          padding: "0px 20px 0px 20px",
-          display: "flex",
-          justifyContent: "flex-start",
-          flexWrap: "wrap",
-          gap: "20px",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
+      <div className={styles.controlsContainer}>
         {address || ens ? (
-          <div
-            style={{
-              fontSize: "25px",
-              fontWeight: "bold",
-              display: "flex",
-              justifyContent: "flex-start",
-            }}
-          >
+          <div className={styles.addresses}>
             Activity of ${loadingEns ? "..." : ens ?? address}
           </div>
         ) : null}
@@ -194,15 +137,7 @@ export const Search: FC<{ updateSearch: (search: SearchCriteria) => void }> = ({
         </label>
       </div>
       {errorMsg ? ( // To-do style
-        <div
-          style={{
-            margin: "0px 20px 0px 20px",
-            padding: "10px 20px 10px 20px",
-            backgroundColor: "lightpink",
-          }}
-        >
-          {errorMsg}
-        </div>
+        <div className={styles.errorMessage}>{errorMsg}</div>
       ) : null}
     </form>
   );

@@ -26,8 +26,8 @@ export default function Home() {
       try {
         const events = await getEvents(
           search.address,
-          30,
-          30 * (page - 1),
+          60,
+          60 * (page - 1),
           search.startDate,
           search.endDate
         );
@@ -66,9 +66,9 @@ export default function Home() {
         style={{
           width: "100%",
           flex: 1,
-          overflowY: "scroll",
           minHeight: "1vh",
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
         }}
