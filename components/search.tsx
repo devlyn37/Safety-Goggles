@@ -110,7 +110,7 @@ export const Search: FC<{ updateSearch: (search: SearchCriteria) => void }> = ({
       <div className={styles.controlsContainer}>
         {address || ens ? (
           <div className={styles.addresses}>
-            Activity of ${loadingEns ? "..." : ens ?? address}
+            Activity of {loadingEns ? "..." : ens ?? address}
           </div>
         ) : null}
         <label>

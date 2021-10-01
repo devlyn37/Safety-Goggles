@@ -61,7 +61,6 @@ export default function Home() {
       }}
     >
       <Search updateSearch={setSearch} />
-      {/* //overflowY is important here for some reason with the timeline styling, take a close look later */}
       <div
         style={{
           width: "100%",

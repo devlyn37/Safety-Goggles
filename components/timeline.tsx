@@ -74,12 +74,21 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
             }}
           >
             <div
-              className={styles.details}
+              className={styles.detail}
               style={{
                 marginBottom: "5px",
               }}
             >
-              {sum ? "Total: " + weiToEth(sum) + " ETH" : "View on Etherscan"}
+              {sum ? (
+                "Total: " + weiToEth(sum) + " ETH"
+              ) : (
+                <a
+                  className={styles.link}
+                  href={"https://etherscan.io/tx/" + event.key}
+                >
+                  View on Etherscan
+                </a>
+              )}
             </div>
             <div className={styles.subDetail}>{event.date}</div>
           </div>
@@ -97,7 +106,10 @@ const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
         main={
           <>
             <h3 className={styles.title}>
-              {event.action} <a href={event.assetUrl}>{event.assetName}</a>
+              {event.action}{" "}
+              <a className={styles.link} href={event.assetUrl}>
+                {event.assetName}
+              </a>
             </h3>
             <h4 className={styles.subTitle}>
               <a href={event.collectionUrl}>{event.collectionName} </a>
@@ -116,9 +128,16 @@ const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
               }}
               className={styles.detail}
             >
-              {event.action === "Bought" || event.action === "Sold"
-                ? weiToEth(event.price) + " ETH"
-                : "View on Etherscan"}
+              {event.action === "Bought" || event.action === "Sold" ? (
+                weiToEth(event.price) + " ETH"
+              ) : (
+                <a
+                  className={styles.link}
+                  href={"https://etherscan.io/tx/" + event.key}
+                >
+                  View on Etherscan
+                </a>
+              )}
             </div>
             <div className={styles.subDetail}>{event.date}</div>
           </div>
