@@ -84,6 +84,7 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
               ) : (
                 <a
                   className={styles.link}
+                  target="_blank"
                   href={"https://etherscan.io/tx/" + event.key}
                 >
                   View on Etherscan
@@ -107,7 +108,7 @@ const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
           <>
             <h3 className={styles.title}>
               {event.action}{" "}
-              <a className={styles.link} href={event.assetUrl}>
+              <a className={styles.link} target="_blank" href={event.assetUrl}>
                 {event.assetName}
               </a>
             </h3>
@@ -133,6 +134,7 @@ const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
               ) : (
                 <a
                   className={styles.link}
+                  target="_blank"
                   href={"https://etherscan.io/tx/" + event.key}
                 >
                   View on Etherscan

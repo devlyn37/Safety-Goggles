@@ -1,5 +1,7 @@
 import axios from "axios";
 
+export type Action = "Minted" | "Bought" | "Sold" | "Sent" | "Received";
+
 export interface NFTEvent {
   assetName: string;
   assetDescription: string;
@@ -12,7 +14,7 @@ export interface NFTEvent {
   date: string;
   from: string;
   to: string;
-  action: "Minted" | "Bought" | "Sold";
+  action: Action;
   key: string;
   price?: number;
 }
@@ -43,6 +45,42 @@ export const getEvents = async (
   return openseaDataToEvents(data, address);
 };
 
+const determineAction = (openseaData: any, address: string): Action => {
+  if (
+    openseaData.event_type !== "successful" &&
+    openseaData.event_type !== "transfer"
+  ) {
+    throw new Error(
+      "Opensea events that aren't of the type transfer or successful should be filtered out before determining type"
+    );
+  }
+
+  if (openseaData.event_type === "successful") {
+    return openseaData.winner_account.address.toUpperCase() ===
+      address.toUpperCase()
+      ? "Bought"
+      : "Sold";
+  }
+
+  const transactionStarter = openseaData.transaction.from_account;
+  const transactionParticipant = openseaData.transaction.to_account;
+  const reciever = openseaData.to_account;
+  const sender = openseaData.from_account;
+
+  if (
+    !transactionParticipant ||
+    (transactionParticipant.address ===
+      openseaData.asset.asset_contract.address &&
+      transactionStarter.address === reciever.address)
+  ) {
+    return "Minted";
+  } else if (sender.address.toUpperCase() === address.toUpperCase()) {
+    return "Sent";
+  } else {
+    return "Received";
+  }
+};
+
 const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
   /* Data Mapping
 		*	Related events are linked by transaction hashes, a standard sale of an NFT
@@ -56,6 +94,7 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
 	*/
 
   const events: NFTEvent[] = data
+    // Filter out tranfer events corresponing to sales
     .filter((d) => {
       const transfer = d.event_type === "transfer";
       const sale = d.event_type === "successful";
@@ -74,11 +113,9 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
       }
     })
     .map((d) => {
-      console.log(d.event_type);
-      if (d.event_type === "successful") {
-        const bought =
-          d.winner_account.address.toUpperCase() === address.toUpperCase();
+      const action: Action = determineAction(d, address);
 
+      if (action === "Bought" || action === "Sold") {
         return {
           assetName: d.asset.name,
           assetDescription: d.asset.description,
@@ -90,10 +127,10 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
             `https://opensea.io/collection/${d.asset.collection.slug}}`,
           collectionDescription: d.asset.collection.description,
           collectionImgUrl: d.asset.collection.featured_image_url,
-          date: d.transaction.timestamp,
+          date: new Date(d.transaction.timestamp).toUTCString(),
           from: d.seller.address,
           to: d.winner_account.address,
-          action: bought ? "Bought" : "Sold",
+          action: action,
           key: d.transaction.transaction_hash,
           price: Number.parseInt(d.total_price),
         };
@@ -109,10 +146,10 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
             `https://opensea.io/collection/${d.asset.collection.slug}}`,
           collectionDescription: d.asset.collection.description,
           collectionImgUrl: d.asset.collection.featured_image_url,
-          date: d.transaction.timestamp,
+          date: new Date(d.transaction.timestamp).toUTCString(),
           from: d.from_account.address.toUpperCase(),
           to: d.to_account.address.toUpperCase(),
-          action: "Minted",
+          action: action,
           key: d.transaction.transaction_hash,
         };
       }
