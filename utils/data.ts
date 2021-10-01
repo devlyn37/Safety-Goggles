@@ -83,11 +83,11 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
           assetName: d.asset.name,
           assetDescription: d.asset.description,
           assetImgUrl: d.asset.image_url,
-          assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.token_id}`,
+          assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.asset.token_id}`,
           collectionName: d.asset.collection.name,
           collectionUrl:
             d.asset.collection.external_url ??
-            `https://opensea.io/collection/${d.asset.collection.name}}`,
+            `https://opensea.io/collection/${d.asset.collection.slug}}`,
           collectionDescription: d.asset.collection.description,
           collectionImgUrl: d.asset.collection.featured_image_url,
           date: d.transaction.timestamp,
@@ -102,11 +102,11 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
           assetName: d.asset.name,
           assetDescription: d.asset.description,
           assetImgUrl: d.asset.image_url,
-          assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.token_id}`,
+          assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.asset.token_id}`,
           collectionName: d.asset.collection.name,
           collectionUrl:
             d.asset.collection.external_url ??
-            `https://opensea.io/collection/${d.asset.collection.name}}`,
+            `https://opensea.io/collection/${d.asset.collection.slug}}`,
           collectionDescription: d.asset.collection.description,
           collectionImgUrl: d.asset.collection.featured_image_url,
           date: d.transaction.timestamp,
@@ -119,4 +119,28 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
     });
 
   return events;
+};
+
+export const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
+  let prevCollection: string;
+  let prevAction: string;
+  let prevBucket: NFTEvent[];
+  const groups: NFTEvent[][] = [];
+
+  for (const event of events) {
+    const collection = event.collectionName;
+    const action = event.action;
+
+    if (prevCollection !== collection || prevAction !== action) {
+      prevBucket = [event];
+      groups.push(prevBucket);
+    } else {
+      prevBucket.push(event);
+    }
+
+    prevCollection = collection;
+    prevAction = action;
+  }
+
+  return groups;
 };

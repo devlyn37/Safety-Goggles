@@ -1,42 +1,10 @@
 import React, { FC, ReactNode, useState } from "react";
-import {
-  VerticalTimeline,
-  VerticalTimelineElement,
-} from "react-vertical-timeline-component";
-import "react-vertical-timeline-component/style.min.css";
-import {
-  AiOutlineEllipsis,
-  AiFillCaretDown,
-  AiFillCaretUp,
-} from "react-icons/ai";
 import { NFTEvent } from "../utils/data";
+import { groupEvents } from "../utils/data";
+import styles from "../styles/timeline.module.css";
 
 const weiToEth = (wei: number): number => {
   return wei / Math.pow(10, 18);
-};
-
-const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
-  let prevCollection: string;
-  let prevAction: string;
-  let prevBucket: NFTEvent[];
-  const groups: NFTEvent[][] = [];
-
-  for (const event of events) {
-    const collection = event.collectionName;
-    const action = event.action;
-
-    if (prevCollection !== collection || prevAction !== action) {
-      prevBucket = [event];
-      groups.push(prevBucket);
-    } else {
-      prevBucket.push(event);
-    }
-
-    prevCollection = collection;
-    prevAction = action;
-  }
-
-  return groups;
 };
 
 const Timeline: FC<{
@@ -52,30 +20,27 @@ const Timeline: FC<{
   const groupings = groupEvents(data);
 
   return (
-    <VerticalTimeline className="vertical-timeline-custom-line">
-      {groupings.map((grouping, i) => {
-        if (grouping.length > 3) {
-          return <TimeLineGrouping key={grouping[0].key} grouping={grouping} />;
-        } else {
-          return <TimeLineEvents key={grouping[0].key} grouping={grouping} />;
-        }
-      })}
-
-      <VerticalTimelineElement
-        iconOnClick={loadMore}
-        iconStyle={{
-          background: "green",
-          color: "#fff",
-          border: "3px solid black",
-          boxShadow: "none",
-        }}
-        icon={loading ? <AiOutlineEllipsis /> : <AiFillCaretDown />}
-      />
-    </VerticalTimeline>
+    <>
+      <div className={styles.eventGrid}>
+        {groupings.map((grouping) => {
+          if (grouping.length > 3) {
+            return <EventGrouping key={grouping[0].key} grouping={grouping} />;
+          } else {
+            return <EventList key={grouping[0].key} grouping={grouping} />;
+          }
+        })}
+      </div>
+      <div className={styles.loadMoreButtonContainer} onClick={loadMore}>
+        <button className={styles.loadMoreButton} onClick={loadMore}>
+          {" "}
+          {loading ? "Loading..." : "Load more"}
+        </button>
+      </div>
+    </>
   );
 };
 
-const TimeLineGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
+const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
   const [expanded, setExpanded] = useState(false);
   const event = grouping[0];
   const sum =
@@ -89,138 +54,90 @@ const TimeLineGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
 
   return (
     <>
-      <TimeLineEntry
+      <Event
         key={event.key}
-        time={event.date}
-        title={`${event.action} ${grouping.length} NFTs${
-          sum ? " for a total of " + weiToEth(sum) + " eth" : ""
-        }`}
-        subTitle={
+        imgUrl={event.collectionImgUrl}
+        main={
           <>
-            from{" "}
-            <a
-              href={event.collectionUrl}
-              style={{
-                color: "rgb(33, 150, 243)",
-                textDecoration: "underline",
-              }}
-            >
-              {event.collectionName}{" "}
-            </a>
+            <h3 className={styles.title}>
+              {event.action} {grouping.length} NFTs{" "}
+            </h3>
+            <h4 className={styles.subTitle}>
+              <a href={event.collectionUrl}>{event.collectionName} </a>
+            </h4>
           </>
         }
-        imgUrl={event.collectionImgUrl}
-        text={event.collectionDescription}
+        details={
+          <div
+            style={{
+              marginTop: "10px",
+            }}
+          >
+            <div
+              className={styles.details}
+              style={{
+                marginBottom: "5px",
+              }}
+            >
+              {sum ? "Total: " + weiToEth(sum) + " ETH" : "View on Etherscan"}
+            </div>
+            <div className={styles.subDetail}>{event.date}</div>
+          </div>
+        }
       />
-      {expanded ? (
-        <TimeLineEvents grouping={grouping} />
-      ) : (
-        <VerticalTimelineElement
-          iconOnClick={handleClick}
-          iconStyle={{
-            background: "red",
-            color: "#fff",
-            border: "3px solid black",
-            boxShadow: "none",
-          }}
-          icon={expanded ? <AiFillCaretUp /> : <AiFillCaretDown />}
-          date={"View All"}
-        />
-      )}
     </>
   );
 };
 
-const TimeLineEvents: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
+const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
   <>
     {grouping.map((event) => (
-      <TimeLineEntry
+      <Event
         key={event.key}
-        time={event.date}
-        title={
+        main={
           <>
-            {event.action + " "}
-            <a
-              href={event.assetUrl}
-              style={{
-                color: "rgb(33, 150, 243)",
-                textDecoration: "underline",
-              }}
-            >
-              {event.assetName}
-            </a>
-            {event.price ? " for " + weiToEth(event.price) + " eth" : null}
+            <h3 className={styles.title}>
+              {event.action} <a href={event.assetUrl}>{event.assetName}</a>
+            </h3>
+            <h4 className={styles.subTitle}>
+              <a href={event.collectionUrl}>{event.collectionName} </a>
+            </h4>
           </>
         }
-        subTitle={
-          <>
-            from{" "}
-            <a
-              href={event.collectionUrl}
+        details={
+          <div
+            style={{
+              marginTop: "10px",
+            }}
+          >
+            <div
               style={{
-                color: "rgb(33, 150, 243)",
-                textDecoration: "underline",
+                marginBottom: "5px",
               }}
+              className={styles.detail}
             >
-              {event.collectionName}{" "}
-            </a>
-          </>
+              {event.action === "Bought" || event.action === "Sold"
+                ? weiToEth(event.price) + " ETH"
+                : "View on Etherscan"}
+            </div>
+            <div className={styles.subDetail}>{event.date}</div>
+          </div>
         }
         imgUrl={event.assetImgUrl}
-        text={event.assetDescription}
       />
     ))}
   </>
 );
 
-const TimeLineEntry: FC<{
-  time: string;
-  title: ReactNode;
-  subTitle: ReactNode;
+const Event: FC<{
+  main: ReactNode;
+  details: ReactNode;
   imgUrl: string;
-  text: string;
-}> = ({ time, title, subTitle, imgUrl, text }) => (
-  <VerticalTimelineElement
-    contentStyle={{
-      border: "3px solid black",
-      boxShadow: "none",
-    }}
-    contentArrowStyle={{ borderRight: "9px solid  black" }}
-    className="vertical-timeline-element--work"
-    date={time}
-    iconStyle={{
-      background: "rgb(33, 150, 243)",
-      color: "#fff",
-      border: "4px solid black",
-      boxShadow: "none",
-    }}
-  >
-    <h3
-      className="vertical-timeline-element-title"
-      style={{ marginBottom: "5px" }}
-    >
-      {title}
-    </h3>
-    <h4 className="vertical-timeline-element-subtitle">{subTitle}</h4>
-    <NftDisplay description={text} imgUrl={imgUrl} />
-  </VerticalTimelineElement>
-);
-
-const NftDisplay: FC<{ description: string; imgUrl: string }> = ({
-  description,
-  imgUrl,
-}) => (
-  <div
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "stretch",
-      margin: "20px 0px",
-      wordBreak: "break-all",
-    }}
-  >
-    <img style={{ borderRadius: "10px", maxHeight: "50vh" }} src={imgUrl}></img>
-    <p>{description}</p>
+}> = ({ main, details, imgUrl }) => (
+  <div className={styles.eventCard}>
+    <img className={styles.eventImg} src={imgUrl}></img>
+    <div className={styles.titleContainer}>{main}</div>
+    <div className={styles.detailContainer}>{details}</div>
   </div>
 );
 

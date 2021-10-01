@@ -1,0 +1,102 @@
+.eventGrid {
+  width: 100%;
+  display: grid;
+  grid-gap: 1em;
+  padding: 0px 20px;
+}
+
+.eventCard {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border-radius: 25px;
+  background-color: black;
+  color: white;
+  box-shadow: 0px 10px 20px rgb(0 0 0 / 5%);
+}
+
+.eventImg {
+  width: 100%;
+  border-radius: 25px 25px 0px 0px;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+
+.titleContainer {
+  flex: 1;
+  padding: 20px 20px 0px 20px;
+  border-radius: 0px 0px 25px 25px;
+  min-width: 0;
+}
+
+.title {
+  font-size: 24px;
+  margin: 0px 0px 5px 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subTitle {
+  font-weight: normal;
+  font-size: 16px;
+  margin: 0;
+  color: lightgray;
+}
+
+.detailContainer {
+  flex: 0;
+  padding: 20px 20px 30px 20px;
+}
+
+.detail {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.subDetail {
+  color: lightgray;
+  font-size: 12px;
+}
+
+.loadMoreButtonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadMoreButton {
+  font-size: 18px;
+  background-color: black;
+  color: white;
+  border: none;
+  padding: 10px;
+  margin: 20px 0px;
+  border-radius: 10px;
+}
+
+@media (min-width: 0px) {
+  .eventGrid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 600px) {
+  .eventGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 900px) {
+  .eventGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1200px) {
+  .eventGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
