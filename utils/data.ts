@@ -16,6 +16,7 @@ export interface NFTEvent {
   to: string;
   action: Action;
   key: string;
+  transactionHash: string; // event's from opensea can have the same transaction hash, can't just store this in key (ex. mintpass transaction)
   price?: number;
 }
 
@@ -69,9 +70,8 @@ const determineAction = (openseaData: any, address: string): Action => {
 
   if (
     !transactionParticipant ||
-    (transactionParticipant.address ===
-      openseaData.asset.asset_contract.address &&
-      transactionStarter.address === reciever.address)
+    (transactionStarter.address === reciever.address &&
+      sender.address === "0x0000000000000000000000000000000000000000")
   ) {
     return "Minted";
   } else if (sender.address.toUpperCase() === address.toUpperCase()) {
@@ -99,17 +99,21 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
       const transfer = d.event_type === "transfer";
       const sale = d.event_type === "successful";
 
+      // Just filter out until more is known about this case
+      if (!d.transaction) {
+        return false;
+      }
+
       if (sale) {
         return true;
       }
 
       if (transfer) {
-        const minted =
-          !d.transaction.to_account ||
-          !d.transaction.to_account.user ||
-          d.transaction.to_account.user.username !== "OpenSea-Orders";
-
-        return minted;
+        const saleTransfer =
+          d.transaction.to_account &&
+          d.transaction.to_account.user &&
+          d.transaction.to_account.user.username === "OpenSea-Orders";
+        return !saleTransfer;
       }
     })
     .map((d) => {
@@ -131,7 +135,8 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
           from: d.seller.address,
           to: d.winner_account.address,
           action: action,
-          key: d.transaction.transaction_hash,
+          key: d.transaction.transaction_hash + d.asset.id,
+          transactionHash: d.transaction_hash,
           price: Number.parseInt(d.total_price),
         };
       } else if (d.event_type === "transfer") {
@@ -150,7 +155,8 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
           from: d.from_account.address.toUpperCase(),
           to: d.to_account.address.toUpperCase(),
           action: action,
-          key: d.transaction.transaction_hash,
+          key: d.transaction.transaction_hash + d.asset.id,
+          transactionHash: d.transaction_hash,
         };
       }
     });
