@@ -5,18 +5,29 @@ import Timeline from "../components/timeline";
 import { Search, SearchCriteria } from "../components/search";
 
 export default function Home() {
-  const [search, setSearch] = useState<SearchCriteria>({
+  const [search, setSearch] = useState<{
+    address: string;
+    startDate: string;
+    endDate: string;
+    page: number;
+  }>({
     address: "",
     startDate: "",
     endDate: "",
+    page: 1,
   });
+
   const [data, setData] = useState<NFTEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   const loadMore = () => {
-    setPage(page + 1);
+    setSearch({ ...search, page: search.page + 1 });
+  };
+
+  const handleSearch = (search: SearchCriteria): void => {
+    console.log("Handle Search");
+    setSearch({ ...search, page: 1 });
   };
 
   useEffect(() => {
@@ -27,12 +38,12 @@ export default function Home() {
         const events = await getEvents(
           search.address,
           60,
-          60 * (page - 1),
+          60 * (search.page - 1),
           search.startDate,
           search.endDate
         );
 
-        if (page > 1) {
+        if (search.page > 1) {
           setData([...data, ...events]);
         } else {
           setData(events);
@@ -48,7 +59,7 @@ export default function Home() {
     if (search.address) {
       loadData();
     }
-  }, [search, page]);
+  }, [search]);
 
   return (
     <div
@@ -60,7 +71,7 @@ export default function Home() {
         minHeight: "100vh",
       }}
     >
-      <Search updateSearch={setSearch} />
+      <Search handleSearch={handleSearch} />
       <div
         style={{
           width: "100%",
@@ -74,7 +85,7 @@ export default function Home() {
       >
         {errorMsg ? (
           <div>{errorMsg}</div>
-        ) : loading && page === 1 ? (
+        ) : loading && search.page === 1 ? (
           <Audio width="100" />
         ) : search.address ? (
           <Timeline

@@ -10,9 +10,9 @@ export interface SearchCriteria {
   endDate: string;
 }
 
-export const Search: FC<{ updateSearch: (search: SearchCriteria) => void }> = ({
-  updateSearch,
-}) => {
+export const Search: FC<{
+  handleSearch: (search: SearchCriteria) => void;
+}> = ({ handleSearch }) => {
   const [searchInput, setSearchInput] = useState<string>("");
   const [ens, setEns] = useState<string>("");
   const [loadingEns, setLoadingEns] = useState<boolean>(true);
@@ -37,22 +37,13 @@ export const Search: FC<{ updateSearch: (search: SearchCriteria) => void }> = ({
 
   const handleSearchSubmit = async (event) => {
     event.preventDefault();
-    console.log(
-      "submitting, search input = " +
-        searchInput +
-        " start date = " +
-        startDate +
-        " end date = " +
-        endDate
-    );
-
     setLoadingEns(true);
 
     try {
       const [address, ens] = await resolveSearchInput(searchInput);
       setAddress(address);
       setEns(ens);
-      updateSearch({
+      handleSearch({
         address: address,
         startDate: startDate,
         endDate: endDate,
