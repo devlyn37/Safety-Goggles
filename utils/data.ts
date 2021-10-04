@@ -20,12 +20,54 @@ export interface NFTEvent {
   price?: number;
 }
 
+export interface CollectionInfo {
+  name: string;
+  slug: string;
+  imgUrl: string;
+}
+
+export const getCollections = async (
+  address: string
+): Promise<CollectionInfo[]> => {
+  const collectionUrl = `https://api.opensea.io/api/v1/collections?${
+    "asset_owner=" + address
+  }&offset=0`;
+  const eventUrl = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=0&limit=300`;
+
+  const [holding, recent] = await Promise.all([
+    axios.get(collectionUrl),
+    axios.get(eventUrl),
+  ]);
+
+  let collections = [
+    ...holding.data,
+    ...recent.data.asset_events.map((d) => d.asset.collection),
+  ];
+
+  let hash = {};
+  collections = collections.filter((c) => {
+    if (hash[c.slug]) {
+      return false;
+    } else {
+      hash[c.slug] = true;
+      return true;
+    }
+  });
+
+  return collections.map((c) => ({
+    name: c.name,
+    slug: c.slug,
+    imgUrl: c.image_url,
+  }));
+};
+
 export const getEvents = async (
   address: string,
   limit: number,
   offset: number,
   startDate?: string,
-  endDate?: string
+  endDate?: string,
+  collection?: string
 ): Promise<NFTEvent[]> => {
   let url = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
 
@@ -37,11 +79,15 @@ export const getEvents = async (
     url += "&occurred_before=" + endDate + "T00:00:00";
   }
 
-  console.log(url);
+  if (collection) {
+    url += "&collection_slug=" + collection;
+  }
+
+  //console.log(url);
   const results = await axios.get(url);
   const data = results.data.asset_events;
-  console.log(data);
-  console.log(openseaDataToEvents(data, address));
+  //console.log(data);
+  //console.log(openseaDataToEvents(data, address));
 
   return openseaDataToEvents(data, address);
 };
@@ -69,9 +115,10 @@ const determineAction = (openseaData: any, address: string): Action => {
   const sender = openseaData.from_account;
 
   if (
-    !transactionParticipant ||
-    (transactionStarter.address === reciever.address &&
-      sender.address === "0x0000000000000000000000000000000000000000")
+    transactionParticipant &&
+    transactionStarter.address.toUpperCase() ===
+      reciever.address.toUpperCase() &&
+    transactionStarter.address.toUpperCase() === address.toUpperCase()
   ) {
     return "Minted";
   } else if (sender.address.toUpperCase() === address.toUpperCase()) {
@@ -99,8 +146,8 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
       const transfer = d.event_type === "transfer";
       const sale = d.event_type === "successful";
 
-      // Just filter out until more is known about this case
-      if (!d.transaction) {
+      // Just filter out until more is known about these cases
+      if (!d.transaction || !d.asset) {
         return false;
       }
 
@@ -121,7 +168,7 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
 
       if (action === "Bought" || action === "Sold") {
         return {
-          assetName: d.asset.name,
+          assetName: d.asset.name ?? d.asset.token_id,
           assetDescription: d.asset.description,
           assetImgUrl: d.asset.image_url,
           assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.asset.token_id}`,
@@ -130,18 +177,21 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
             d.asset.collection.external_url ??
             `https://opensea.io/collection/${d.asset.collection.slug}}`,
           collectionDescription: d.asset.collection.description,
-          collectionImgUrl: d.asset.collection.featured_image_url,
+          collectionImgUrl:
+            d.asset.collection.featured_image_url ??
+            d.asset.collection.image_url ??
+            d.asset.collection.banner_image_url,
           date: new Date(d.transaction.timestamp).toUTCString(),
           from: d.seller.address,
           to: d.winner_account.address,
           action: action,
           key: d.transaction.transaction_hash + d.asset.id,
-          transactionHash: d.transaction_hash,
+          transactionHash: d.transaction.transaction_hash,
           price: Number.parseInt(d.total_price),
         };
       } else if (d.event_type === "transfer") {
         return {
-          assetName: d.asset.name,
+          assetName: d.asset.name ?? d.asset.token_id,
           assetDescription: d.asset.description,
           assetImgUrl: d.asset.image_url,
           assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.asset.token_id}`,
@@ -150,13 +200,16 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
             d.asset.collection.external_url ??
             `https://opensea.io/collection/${d.asset.collection.slug}}`,
           collectionDescription: d.asset.collection.description,
-          collectionImgUrl: d.asset.collection.featured_image_url,
+          collectionImgUrl:
+            d.asset.collection.featured_image_url ??
+            d.asset.collection.image_url ??
+            d.asset.collection.banner_image_url,
           date: new Date(d.transaction.timestamp).toUTCString(),
           from: d.from_account.address.toUpperCase(),
           to: d.to_account.address.toUpperCase(),
           action: action,
           key: d.transaction.transaction_hash + d.asset.id,
-          transactionHash: d.transaction_hash,
+          transactionHash: d.transaction.transaction_hash,
         };
       }
     });

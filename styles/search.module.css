@@ -4,7 +4,6 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: stretch;
-  margin-bottom: 20px;
 }
 
 .searchBarContainer {
@@ -12,7 +11,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 /* min width to account for default size */
@@ -24,7 +23,7 @@
   margin-right: 20px;
   border: 3px solid black;
   border-radius: 10px;
-  font-size: 20px;
+  font-size: 24px;
 }
 
 .searchBarButton {

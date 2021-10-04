@@ -2,12 +2,17 @@ import { FC, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import { ethers } from "ethers";
 import styles from "../styles/search.module.css";
+import { CollectionSearch } from "./collectionSearch";
+import { CollectionInfo } from "../utils/data";
+
 const etherScanAPIKey = "K14P3TW12QCI2VDR3YIDY7XA9Y5XP2D232";
 
 export interface SearchCriteria {
   address: string;
+  ens: string;
   startDate: string;
   endDate: string;
+  collection: CollectionInfo;
 }
 
 export const Search: FC<{
@@ -20,6 +25,7 @@ export const Search: FC<{
   const [startDate, setStartDate] = useState<string>("");
   const [endDate, setEndDate] = useState<string>("");
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [collection, setCollection] = useState<CollectionInfo>(undefined);
 
   const handleSearchInputchange = (event) => {
     setSearchInput(event.target.value);
@@ -45,10 +51,16 @@ export const Search: FC<{
       setEns(ens);
       handleSearch({
         address: address,
+        ens: ens,
         startDate: startDate,
         endDate: endDate,
+        collection: collection,
       });
+
+      setCollection(null);
       setErrorMsg("");
+      setEndDate("");
+      setStartDate("");
     } catch (e) {
       setErrorMsg(e.message);
     }
@@ -99,16 +111,18 @@ export const Search: FC<{
         </button>
       </div>
       <div className={styles.controlsContainer}>
-        {address || ens ? (
-          <div className={styles.addresses}>
-            Activity of {loadingEns ? "..." : ens ?? address}
-          </div>
-        ) : null}
         <label>
           from:
           <br />
           <input
-            style={{ marginTop: "5px" }}
+            style={{
+              marginTop: "3px",
+              height: "38px",
+              borderRadius: "10px",
+              paddingLeft: "8px",
+              fontSize: "16px",
+              paddingRight: "4px",
+            }}
             type="date"
             placeholder="from"
             value={startDate}
@@ -119,13 +133,35 @@ export const Search: FC<{
           until:
           <br />
           <input
-            style={{ marginTop: "5px" }}
+            style={{
+              marginTop: "3px",
+              height: "38px",
+              borderRadius: "10px",
+              paddingLeft: "8px",
+              fontSize: "16px",
+              paddingRight: "4px",
+            }}
             type="date"
             placeholder="from"
             value={endDate}
             onChange={handleEndDateChange}
           />
         </label>
+        {address ? (
+          <div style={{ flex: 1, minWidth: "200px" }}>
+            <label>
+              Collection:
+              <br />
+              <div style={{ marginTop: "3px" }}>
+                <CollectionSearch
+                  value={collection}
+                  onChange={setCollection}
+                  address={address}
+                />
+              </div>
+            </label>
+          </div>
+        ) : null}
       </div>
       {errorMsg ? ( // To-do style
         <div className={styles.errorMessage}>{errorMsg}</div>

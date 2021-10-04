@@ -63,7 +63,9 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
               {event.action} {grouping.length} NFTs{" "}
             </h3>
             <h4 className={styles.subTitle}>
-              <a href={event.collectionUrl}>{event.collectionName} </a>
+              <a href={event.collectionUrl} target="_blank">
+                {event.collectionName}{" "}
+              </a>
             </h4>
           </>
         }
@@ -113,7 +115,9 @@ const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
               </a>
             </h3>
             <h4 className={styles.subTitle}>
-              <a href={event.collectionUrl}>{event.collectionName} </a>
+              <a target="_blank" href={event.collectionUrl}>
+                {event.collectionName}{" "}
+              </a>
             </h4>
           </>
         }

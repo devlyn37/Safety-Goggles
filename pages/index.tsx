@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getEvents, NFTEvent } from "../utils/data";
+import { CollectionInfo, getEvents, NFTEvent } from "../utils/data";
 import { Audio } from "@agney/react-loading";
 import Timeline from "../components/timeline";
 import { Search, SearchCriteria } from "../components/search";
@@ -7,11 +7,14 @@ import { Search, SearchCriteria } from "../components/search";
 export default function Home() {
   const [search, setSearch] = useState<{
     address: string;
+    ens: string;
     startDate: string;
     endDate: string;
     page: number;
+    collection?: CollectionInfo;
   }>({
     address: "",
+    ens: "",
     startDate: "",
     endDate: "",
     page: 1,
@@ -40,7 +43,8 @@ export default function Home() {
           60,
           60 * (search.page - 1),
           search.startDate,
-          search.endDate
+          search.endDate,
+          search.collection ? search.collection.slug : undefined
         );
 
         if (search.page > 1) {
@@ -79,21 +83,47 @@ export default function Home() {
           minHeight: "1vh",
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          justifyContent: "flex-start",
+          padding: "0px 20px",
         }}
       >
         {errorMsg ? (
           <div>{errorMsg}</div>
         ) : loading && search.page === 1 ? (
-          <Audio width="100" />
+          <div style={{ alignSelf: "center" }}>
+            <Audio width="100" />
+          </div>
         ) : search.address ? (
-          <Timeline
-            data={data}
-            address={search.address}
-            loadMore={loadMore}
-            loading={loading}
-          />
+          <>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                marginBottom: "30px",
+                marginTop: "20px",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <h1 style={{ margin: "0px 0px 5px 0px" }}>
+                  Activity of {search.ens ? search.ens : search.address}
+                  {search.collection
+                    ? " with collection " + search.collection.name
+                    : ""}
+                </h1>
+                <div style={{ color: "dimgray", fontSize: "16px" }}>
+                  {search.startDate ? "From: " + search.startDate : ""}{" "}
+                  {search.endDate ? "Until: " + search.endDate : ""}
+                </div>
+              </div>
+            </div>
+            <Timeline
+              data={data}
+              address={search.address}
+              loadMore={loadMore}
+              loading={loading}
+            />
+          </>
         ) : null}
       </div>
     </div>
