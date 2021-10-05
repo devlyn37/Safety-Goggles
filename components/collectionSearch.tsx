@@ -6,8 +6,7 @@ export const CollectionSearch: FC<{
   value: CollectionInfo;
   onChange: (option: CollectionInfo) => void;
   address: string;
-  style?: any;
-}> = ({ value, onChange, address, style }) => {
+}> = ({ value, onChange, address }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [collections, setCollections] = useState<CollectionInfo[]>([]);
 

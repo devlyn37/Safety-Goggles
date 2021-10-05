@@ -1,22 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { CollectionInfo, getEvents, NFTEvent } from "../utils/data";
+import {
+  CollectionInfo,
+  getEvents,
+  NFTEvent,
+  resolveWallet,
+} from "../utils/data";
 import { Audio } from "@agney/react-loading";
 import Timeline from "../components/timeline";
 import { Search, SearchCriteria } from "../components/search";
+import { useRouter } from "next/dist/client/router";
 
 export default function Home() {
+  const router = useRouter();
+
   const [search, setSearch] = useState<{
     address: string;
     ens: string;
     startDate: string;
     endDate: string;
     page: number;
-    collection?: CollectionInfo;
+    collectionSlug?: string;
   }>({
     address: "",
     ens: "",
     startDate: "",
     endDate: "",
+    collectionSlug: "",
     page: 1,
   });
 
@@ -30,8 +39,47 @@ export default function Home() {
 
   const handleSearch = (search: SearchCriteria): void => {
     console.log("Handle Search");
-    setSearch({ ...search, page: 1 });
+    const url = `/?wallet=${search.ens ?? search.address}${
+      search.startDate ? "&startDate=" + search.startDate : ""
+    }${search.endDate ? "&endDate=" + search.endDate : ""}${
+      search.collectionSlug ? "&collectionSlug=" + search.collectionSlug : ""
+    }`;
+
+    router.push(url, undefined, { shallow: true });
   };
+
+  useEffect(() => {
+    setLoading(true);
+    const { wallet, startDate, endDate, collectionSlug } = router.query;
+    console.log(router.query);
+
+    const handleParams = async () => {
+      if (
+        Array.isArray(wallet) ||
+        Array.isArray(startDate) ||
+        Array.isArray(endDate) ||
+        Array.isArray(collectionSlug)
+      ) {
+        setErrorMsg("Invalid wallet parameter");
+        return;
+      }
+
+      const [address, ens] = await resolveWallet(wallet);
+      setSearch({
+        address: address,
+        ens: ens,
+        startDate: startDate,
+        endDate: endDate,
+        page: 1,
+        collectionSlug: collectionSlug,
+      });
+    };
+
+    // Initially query is an empty object
+    if (wallet) {
+      handleParams();
+    }
+  }, [router.query]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -44,7 +92,7 @@ export default function Home() {
           60 * (search.page - 1),
           search.startDate,
           search.endDate,
-          search.collection ? search.collection.slug : undefined
+          search.collectionSlug ? search.collectionSlug : undefined
         );
 
         if (search.page > 1) {
@@ -75,7 +123,12 @@ export default function Home() {
         minHeight: "100vh",
       }}
     >
-      <Search handleSearch={handleSearch} />
+      <Search
+        handleSearch={handleSearch}
+        startDate={router.query.startDate as string}
+        endDate={router.query.endDate as string}
+        wallet={router.query.wallet as string}
+      />
       <div
         style={{
           width: "100%",
@@ -107,8 +160,8 @@ export default function Home() {
               <div style={{ display: "flex", flexDirection: "column" }}>
                 <h1 style={{ margin: "0px 0px 5px 0px" }}>
                   Activity of {search.ens ? search.ens : search.address}
-                  {search.collection
-                    ? " with collection " + search.collection.name
+                  {search.collectionSlug
+                    ? " with collection " + search.collectionSlug
                     : ""}
                 </h1>
                 <div style={{ color: "dimgray", fontSize: "16px" }}>

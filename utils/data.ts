@@ -1,4 +1,6 @@
 import axios from "axios";
+import { ethers } from "ethers";
+const etherScanAPIKey = "K14P3TW12QCI2VDR3YIDY7XA9Y5XP2D232";
 
 export type Action = "Minted" | "Bought" | "Sold" | "Sent" | "Received";
 
@@ -23,7 +25,6 @@ export interface NFTEvent {
 export interface CollectionInfo {
   name: string;
   slug: string;
-  imgUrl: string;
 }
 
 export const getCollections = async (
@@ -57,7 +58,6 @@ export const getCollections = async (
   return collections.map((c) => ({
     name: c.name,
     slug: c.slug,
-    imgUrl: c.image_url,
   }));
 };
 
@@ -67,7 +67,7 @@ export const getEvents = async (
   offset: number,
   startDate?: string,
   endDate?: string,
-  collection?: string
+  collectionSlug?: string
 ): Promise<NFTEvent[]> => {
   let url = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
 
@@ -79,8 +79,8 @@ export const getEvents = async (
     url += "&occurred_before=" + endDate + "T00:00:00";
   }
 
-  if (collection) {
-    url += "&collection_slug=" + collection;
+  if (collectionSlug) {
+    url += "&collection_slug=" + collectionSlug;
   }
 
   //console.log(url);
@@ -239,4 +239,32 @@ export const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
   }
 
   return groups;
+};
+
+export const resolveWallet = async (
+  input: string
+): Promise<[string, string]> => {
+  const provider = new ethers.providers.EtherscanProvider(1, etherScanAPIKey);
+  let address;
+  let ens;
+
+  // Todo this is hacky, use a regex or something
+  // If the input is a normal address, otherwise its an ens address
+  if (input.length === 42) {
+    address = input;
+    ens = await provider.lookupAddress(address);
+  } else {
+    ens = input;
+    if (ens.slice(-4) !== ".eth") {
+      ens += ".eth";
+    }
+
+    address = await provider.resolveName(ens);
+  }
+
+  if (address === null) {
+    throw new Error("Provided ENS name does not have an associated wallet");
+  }
+
+  return [address, ens];
 };
