@@ -48,6 +48,9 @@
 .detailContainer {
   flex: 0;
   padding: 20px 20px 30px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .detail {

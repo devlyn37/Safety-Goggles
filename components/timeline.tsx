@@ -1,4 +1,4 @@
-import React, { FC, ReactNode, useState } from "react";
+import React, { FC, useState } from "react";
 import { NFTEvent } from "../utils/data";
 import { groupEvents } from "../utils/data";
 import styles from "../styles/timeline.module.css";
@@ -54,27 +54,19 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
 
   return (
     <>
-      <Event
-        key={event.key}
-        imgUrl={event.collectionImgUrl}
-        main={
-          <>
-            <h3 className={styles.title}>
-              {event.action} {grouping.length} NFTs{" "}
-            </h3>
-            <h4 className={styles.subTitle}>
-              <a href={event.collectionUrl} target="_blank">
-                {event.collectionName}{" "}
-              </a>
-            </h4>
-          </>
-        }
-        details={
-          <div
-            style={{
-              marginTop: "10px",
-            }}
-          >
+      <EventCard key={event.key} imgUrl={event.collectionImgUrl}>
+        <div className={styles.titleContainer}>
+          <h3 className={styles.title}>
+            {event.action} {grouping.length} NFTs{" "}
+          </h3>
+          <h4 className={styles.subTitle}>
+            <a href={event.collectionUrl} target="_blank">
+              {event.collectionName}{" "}
+            </a>
+          </h4>
+        </div>
+        <div className={styles.detailContainer} style={{ marginTop: "10px" }}>
+          <div>
             <div
               className={styles.detail}
               style={{
@@ -95,8 +87,21 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
             </div>
             <div className={styles.subDetail}>{event.date}</div>
           </div>
-        }
-      />
+          <div
+            style={{
+              padding: "10px",
+              backgroundColor: "white",
+              color: "black",
+              borderRadius: "10px",
+            }}
+            onClick={handleClick}
+          >
+            {" "}
+            {expanded ? "Hide" : "Show"}
+          </div>
+        </div>
+      </EventCard>
+      {expanded ? <EventList grouping={grouping}></EventList> : null}
     </>
   );
 };
@@ -104,29 +109,22 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
 const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
   <>
     {grouping.map((event) => (
-      <Event
-        key={event.key}
-        main={
-          <>
-            <h3 className={styles.title}>
-              {event.action}{" "}
-              <a className={styles.link} target="_blank" href={event.assetUrl}>
-                {event.assetName}
-              </a>
-            </h3>
-            <h4 className={styles.subTitle}>
-              <a target="_blank" href={event.collectionUrl}>
-                {event.collectionName}{" "}
-              </a>
-            </h4>
-          </>
-        }
-        details={
-          <div
-            style={{
-              marginTop: "10px",
-            }}
-          >
+      <EventCard key={event.key} imgUrl={event.assetImgUrl}>
+        <div className={styles.titleContainer}>
+          <h3 className={styles.title}>
+            {event.action}{" "}
+            <a className={styles.link} target="_blank" href={event.assetUrl}>
+              {event.assetName}
+            </a>
+          </h3>
+          <h4 className={styles.subTitle}>
+            <a target="_blank" href={event.collectionUrl}>
+              {event.collectionName}{" "}
+            </a>
+          </h4>
+        </div>
+        <div className={styles.detailContainer} style={{ marginTop: "10px" }}>
+          <div>
             <div
               style={{
                 marginBottom: "5px",
@@ -147,22 +145,18 @@ const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
             </div>
             <div className={styles.subDetail}>{event.date}</div>
           </div>
-        }
-        imgUrl={event.assetImgUrl}
-      />
+        </div>
+      </EventCard>
     ))}
   </>
 );
 
-const Event: FC<{
-  main: ReactNode;
-  details: ReactNode;
+const EventCard: FC<{
   imgUrl: string;
-}> = ({ main, details, imgUrl }) => (
+}> = ({ children, imgUrl }) => (
   <div className={styles.eventCard}>
-    <img className={styles.eventImg} src={imgUrl}></img>
-    <div className={styles.titleContainer}>{main}</div>
-    <div className={styles.detailContainer}>{details}</div>
+    <img className={styles.eventImg} src={imgUrl} loading="lazy"></img>
+    {children}
   </div>
 );
 
