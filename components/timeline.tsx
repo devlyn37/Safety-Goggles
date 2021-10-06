@@ -176,7 +176,7 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
             </a>
           </h4>
         </div>
-        <div className={styles.detailContainer} style={{ marginTop: "10px" }}>
+        <div className={styles.detailContainer}>
           <div>
             <div
               className={styles.detail}
@@ -200,6 +200,7 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
           </div>
           <div
             style={{
+              marginLeft: "10px",
               padding: "10px",
               backgroundColor: "white",
               color: "black",
@@ -269,6 +270,12 @@ const EventCard: FC<{
     <img className={styles.eventImg} src={imgUrl} loading="lazy"></img>
     <div
       style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        alignItems: "stretch",
         backgroundColor: "black",
         color: "white",
         borderRadius: "0px 0px 25px 25px",
