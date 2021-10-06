@@ -86,7 +86,7 @@ export const getEvents = async (
   //console.log(url);
   const results = await axios.get(url);
   const data = results.data.asset_events;
-  //console.log(data);
+  console.log(data);
   //console.log(openseaDataToEvents(data, address));
 
   return openseaDataToEvents(data, address);
@@ -114,11 +114,14 @@ const determineAction = (openseaData: any, address: string): Action => {
   const reciever = openseaData.to_account;
   const sender = openseaData.from_account;
 
+  // This needs to be improved as I understand the data and different cases better
   if (
     transactionParticipant &&
     transactionStarter.address.toUpperCase() ===
       reciever.address.toUpperCase() &&
-    transactionStarter.address.toUpperCase() === address.toUpperCase()
+    transactionStarter.address.toUpperCase() === address.toUpperCase() &&
+    transactionParticipant.address !== reciever.address &&
+    transactionParticipant.address !== sender.address
   ) {
     return "Minted";
   } else if (sender.address.toUpperCase() === address.toUpperCase()) {

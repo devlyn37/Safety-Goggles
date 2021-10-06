@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  CollectionInfo,
-  getEvents,
-  NFTEvent,
-  resolveWallet,
-} from "../utils/data";
-import { Audio } from "@agney/react-loading";
+import { resolveWallet } from "../utils/data";
 import Timeline from "../components/timeline";
 import { Search, SearchCriteria } from "../components/search";
 import { useRouter } from "next/dist/client/router";
@@ -29,8 +23,6 @@ export default function Home() {
     page: 1,
   });
 
-  const [data, setData] = useState<NFTEvent[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   const loadMore = () => {
@@ -39,6 +31,16 @@ export default function Home() {
 
   const handleSearch = (search: SearchCriteria): void => {
     console.log("Handle Search");
+
+    setSearch({
+      address: search.address,
+      ens: search.ens,
+      startDate: search.startDate,
+      endDate: search.endDate,
+      page: 1,
+      collectionSlug: search.collectionSlug,
+    });
+
     const url = `/?wallet=${search.ens ?? search.address}${
       search.startDate ? "&startDate=" + search.startDate : ""
     }${search.endDate ? "&endDate=" + search.endDate : ""}${
@@ -49,10 +51,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    setLoading(true);
     const { wallet, startDate, endDate, collectionSlug } = router.query;
-    console.log(router.query);
-
     const handleParams = async () => {
       if (
         Array.isArray(wallet) ||
@@ -75,43 +74,14 @@ export default function Home() {
       });
     };
 
-    // Initially query is an empty object
-    if (wallet) {
+    // Initially query is an empty object, don't run then
+    // only run if the user has just landed on the page
+    // with query params
+    if (wallet && search.address === "") {
+      console.log("running");
       handleParams();
     }
   }, [router.query]);
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-
-      try {
-        const events = await getEvents(
-          search.address,
-          60,
-          60 * (search.page - 1),
-          search.startDate,
-          search.endDate,
-          search.collectionSlug ? search.collectionSlug : undefined
-        );
-
-        if (search.page > 1) {
-          setData([...data, ...events]);
-        } else {
-          setData(events);
-        }
-      } catch (e) {
-        setErrorMsg(e.message);
-        throw e;
-      }
-
-      setLoading(false);
-    };
-
-    if (search.address) {
-      loadData();
-    }
-  }, [search]);
 
   return (
     <div
@@ -142,41 +112,8 @@ export default function Home() {
       >
         {errorMsg ? (
           <div>{errorMsg}</div>
-        ) : loading && search.page === 1 ? (
-          <div style={{ alignSelf: "center" }}>
-            <Audio width="100" />
-          </div>
         ) : search.address ? (
-          <>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                marginBottom: "30px",
-                marginTop: "20px",
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <h1 style={{ margin: "0px 0px 5px 0px" }}>
-                  Activity of {search.ens ? search.ens : search.address}
-                  {search.collectionSlug
-                    ? " with collection " + search.collectionSlug
-                    : ""}
-                </h1>
-                <div style={{ color: "dimgray", fontSize: "16px" }}>
-                  {search.startDate ? "From: " + search.startDate : ""}{" "}
-                  {search.endDate ? "Until: " + search.endDate : ""}
-                </div>
-              </div>
-            </div>
-            <Timeline
-              data={data}
-              address={search.address}
-              loadMore={loadMore}
-              loading={loading}
-            />
-          </>
+          <Timeline search={search} loadMore={loadMore} />
         ) : null}
       </div>
     </div>

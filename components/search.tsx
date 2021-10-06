@@ -44,7 +44,9 @@ export const Search: FC<{
     };
 
     if (wallet) {
-      setSearchInput(wallet);
+      if (!searchInput) {
+        setSearchInput(wallet);
+      }
       resolve();
     }
   }, [startDate, endDate, wallet]);
@@ -81,8 +83,6 @@ export const Search: FC<{
 
       setCollection(null);
       setErrorMsg("");
-      // setEndDate("");
-      // setStartDate("");
     } catch (e) {
       setErrorMsg(e.message);
     }
