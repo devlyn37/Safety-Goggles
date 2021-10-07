@@ -69,7 +69,7 @@ const Timeline: FC<{
   if (loading && search.page === 1) {
     return (
       <>
-        <div
+        {/* <div
           style={{
             marginBottom: "30px",
             marginTop: "20px",
@@ -79,7 +79,7 @@ const Timeline: FC<{
           }}
         >
           <LoadingTitle />
-        </div>
+        </div> */}
         <div className={styles.eventGrid}>
           <LoadingCard />
           <LoadingCard />
@@ -100,28 +100,6 @@ const Timeline: FC<{
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          alignItems: "center",
-          marginBottom: "30px",
-          marginTop: "20px",
-        }}
-      >
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          <h1 style={{ margin: "0px 0px 5px 0px" }}>
-            Activity of {search.ens ? search.ens : search.address}
-            {search.collectionSlug
-              ? " with collection " + search.collectionSlug
-              : ""}
-          </h1>
-          <div style={{ color: "dimgray", fontSize: "16px" }}>
-            {search.startDate ? "From: " + search.startDate : ""}{" "}
-            {search.endDate ? "Until: " + search.endDate : ""}
-          </div>
-        </div>
-      </div>
       <div className={styles.eventGrid}>
         {groupings.map((grouping) => {
           if (grouping.length > 3) {
@@ -202,8 +180,8 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
             style={{
               marginLeft: "10px",
               padding: "10px",
-              backgroundColor: "white",
-              color: "black",
+              backgroundColor: "black",
+              color: "white",
               borderRadius: "10px",
             }}
             onClick={handleClick}
@@ -266,7 +244,10 @@ const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
 const EventCard: FC<{
   imgUrl: string;
 }> = ({ children, imgUrl }) => (
-  <div className={styles.eventCard}>
+  <div
+    className={styles.eventCard}
+    style={{ border: "4px solid black", boxShadow: "0.3rem 0.7rem black" }}
+  >
     <img className={styles.eventImg} src={imgUrl} loading="lazy"></img>
     <div
       style={{
@@ -276,9 +257,10 @@ const EventCard: FC<{
         flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "stretch",
-        backgroundColor: "black",
-        color: "white",
+        backgroundColor: "white",
+        color: "black",
         borderRadius: "0px 0px 25px 25px",
+        borderTop: "4px solid black",
       }}
     >
       {children}

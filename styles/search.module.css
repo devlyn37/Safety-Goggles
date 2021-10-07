@@ -40,13 +40,12 @@
 }
 
 .controlsContainer {
-  padding: 0px 20px 0px 20px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
   gap: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .addresses {

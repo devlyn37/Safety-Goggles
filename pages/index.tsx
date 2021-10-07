@@ -3,18 +3,21 @@ import { resolveWallet } from "../utils/data";
 import Timeline from "../components/timeline";
 import { Search, SearchCriteria } from "../components/search";
 import { useRouter } from "next/dist/client/router";
+import { Filter } from "../components/filter";
+
+interface SearchState {
+  address: string;
+  ens: string;
+  startDate: string;
+  endDate: string;
+  page: number;
+  collectionSlug?: string;
+}
 
 export default function Home() {
   const router = useRouter();
 
-  const [search, setSearch] = useState<{
-    address: string;
-    ens: string;
-    startDate: string;
-    endDate: string;
-    page: number;
-    collectionSlug?: string;
-  }>({
+  const [search, setSearch] = useState<SearchState>({
     address: "",
     ens: "",
     startDate: "",
@@ -29,25 +32,53 @@ export default function Home() {
     setSearch({ ...search, page: search.page + 1 });
   };
 
-  const handleSearch = (search: SearchCriteria): void => {
+  const handleSearch = async (input: string) => {
     console.log("Handle Search");
 
-    setSearch({
-      address: search.address,
-      ens: search.ens,
-      startDate: search.startDate,
-      endDate: search.endDate,
-      page: 1,
-      collectionSlug: search.collectionSlug,
-    });
+    try {
+      const [address, ens] = await resolveWallet(input); // Add loading here
+      setSearch({
+        ...search,
+        address: address,
+        ens: ens,
+        startDate: "",
+        endDate: "",
+        collectionSlug: "",
+      });
+      setErrorMsg("");
+    } catch (e) {
+      setErrorMsg(e.message);
+    }
 
-    const url = `/?wallet=${search.ens ?? search.address}${
-      search.startDate ? "&startDate=" + search.startDate : ""
-    }${search.endDate ? "&endDate=" + search.endDate : ""}${
-      search.collectionSlug ? "&collectionSlug=" + search.collectionSlug : ""
-    }`;
-
+    const url = `/?wallet=${search.ens ?? search.address}`;
     router.push(url, undefined, { shallow: true });
+  };
+
+  const updateUrl = (s: SearchState) => {
+    const url = `/?wallet=${s.ens ?? s.address}${
+      s.startDate ? "&startDate=" + s.startDate : ""
+    }${s.endDate ? "&endDate=" + s.endDate : ""}${
+      s.collectionSlug ? "&collectionSlug=" + s.collectionSlug : ""
+    }`;
+    router.push(url, undefined, { shallow: true });
+  };
+
+  const handleStartDateChange = (startDate: string) => {
+    const s = { ...search, startDate: startDate };
+    setSearch(s);
+    updateUrl(s);
+  };
+
+  const handleEndDateChange = (endDate: string) => {
+    const s = { ...search, endDate: endDate };
+    setSearch(s);
+    updateUrl(s);
+  };
+
+  const handleCollectionChange = (collectionSlug: string) => {
+    const s = { ...search, collectionSlug: collectionSlug };
+    setSearch(s);
+    updateUrl(s);
   };
 
   useEffect(() => {
@@ -95,8 +126,6 @@ export default function Home() {
     >
       <Search
         handleSearch={handleSearch}
-        startDate={router.query.startDate as string}
-        endDate={router.query.endDate as string}
         wallet={router.query.wallet as string}
       />
       <div
@@ -113,7 +142,40 @@ export default function Home() {
         {errorMsg ? (
           <div>{errorMsg}</div>
         ) : search.address ? (
-          <Timeline search={search} loadMore={loadMore} />
+          <>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                marginBottom: "20px",
+                marginTop: "20px",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <h1 style={{ margin: "0px 0px 5px 0px" }}>
+                  Activity of {search.ens ? search.ens : search.address}
+                  {search.collectionSlug
+                    ? " with collection " + search.collectionSlug
+                    : ""}
+                </h1>
+                <div style={{ color: "dimgray", fontSize: "16px" }}>
+                  {search.startDate ? "From: " + search.startDate : ""}{" "}
+                  {search.endDate ? "Until: " + search.endDate : ""}
+                </div>
+              </div>
+            </div>
+            <Filter
+              address={search.address}
+              startDate={search.startDate}
+              endDate={search.endDate}
+              collectionSlug={search.collectionSlug}
+              handleCollectionChange={handleCollectionChange}
+              handleEndDateChange={handleEndDateChange}
+              handleStartDateChange={handleStartDateChange}
+            />
+            <Timeline search={search} loadMore={loadMore} />
+          </>
         ) : null}
       </div>
     </div>
