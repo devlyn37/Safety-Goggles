@@ -2,14 +2,6 @@ import { FC, useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import styles from "../styles/search.module.css";
 
-export interface SearchCriteria {
-  address: string;
-  ens: string;
-  startDate: string;
-  endDate: string;
-  collectionSlug: string;
-}
-
 export const Search: FC<{
   handleSearch: (input: string) => Promise<void>;
   wallet: string;

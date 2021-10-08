@@ -1,32 +1,33 @@
-import React, { useState, useEffect } from "react";
-import { resolveWallet } from "../utils/data";
+import React, { useState, useEffect, FC } from "react";
+import { CollectionInfo, resolveWallet } from "../utils/data";
 import Timeline from "../components/timeline";
-import { Search, SearchCriteria } from "../components/search";
+import { Search } from "../components/search";
 import { useRouter } from "next/dist/client/router";
 import { Filter } from "../components/filter";
+import { Header } from "../components/header";
 
-interface SearchState {
+export interface SearchCriteria {
   address: string;
   ens: string;
   startDate: string;
   endDate: string;
   page: number;
-  collectionSlug?: string;
+  collection: CollectionInfo | null;
 }
 
 export default function Home() {
   const router = useRouter();
 
-  const [search, setSearch] = useState<SearchState>({
+  const [search, setSearch] = useState<SearchCriteria>({
     address: "",
     ens: "",
     startDate: "",
     endDate: "",
-    collectionSlug: "",
+    collection: null,
     page: 1,
   });
-
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [loadingWallet, setLoadingWallet] = useState<boolean>(false);
 
   const loadMore = () => {
     setSearch({ ...search, page: search.page + 1 });
@@ -36,30 +37,36 @@ export default function Home() {
     console.log("Handle Search");
 
     try {
+      setLoadingWallet(true);
       const [address, ens] = await resolveWallet(input); // Add loading here
-      setSearch({
-        ...search,
+
+      const s: SearchCriteria = {
         address: address,
         ens: ens,
         startDate: "",
         endDate: "",
-        collectionSlug: "",
-      });
+        page: 1,
+        collection: null,
+      };
+
+      setSearch(s);
+      updateUrl(s);
+
       setErrorMsg("");
     } catch (e) {
       setErrorMsg(e.message);
     }
 
-    const url = `/?wallet=${search.ens ?? search.address}`;
-    router.push(url, undefined, { shallow: true });
+    setLoadingWallet(false);
   };
 
-  const updateUrl = (s: SearchState) => {
+  const updateUrl = (s: SearchCriteria) => {
     const url = `/?wallet=${s.ens ?? s.address}${
       s.startDate ? "&startDate=" + s.startDate : ""
     }${s.endDate ? "&endDate=" + s.endDate : ""}${
-      s.collectionSlug ? "&collectionSlug=" + s.collectionSlug : ""
+      s.collection ? "&collectionSlug=" + s.collection.slug : ""
     }`;
+
     router.push(url, undefined, { shallow: true });
   };
 
@@ -75,8 +82,8 @@ export default function Home() {
     updateUrl(s);
   };
 
-  const handleCollectionChange = (collectionSlug: string) => {
-    const s = { ...search, collectionSlug: collectionSlug };
+  const handleCollectionChange = (collection: CollectionInfo) => {
+    const s = { ...search, collection: collection };
     setSearch(s);
     updateUrl(s);
   };
@@ -101,7 +108,7 @@ export default function Home() {
         startDate: startDate,
         endDate: endDate,
         page: 1,
-        collectionSlug: collectionSlug,
+        collection: null,
       });
     };
 
@@ -143,38 +150,29 @@ export default function Home() {
           <div>{errorMsg}</div>
         ) : search.address ? (
           <>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                marginBottom: "20px",
-                marginTop: "20px",
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <h1 style={{ margin: "0px 0px 5px 0px" }}>
-                  Activity of {search.ens ? search.ens : search.address}
-                  {search.collectionSlug
-                    ? " with collection " + search.collectionSlug
-                    : ""}
-                </h1>
-                <div style={{ color: "dimgray", fontSize: "16px" }}>
-                  {search.startDate ? "From: " + search.startDate : ""}{" "}
-                  {search.endDate ? "Until: " + search.endDate : ""}
-                </div>
-              </div>
-            </div>
+            <Header
+              address={search.address}
+              ens={search.ens}
+              endDate={search.endDate}
+              startDate={search.startDate}
+              collectionSlug={search.collection ? search.collection.slug : ""}
+              loading={loadingWallet}
+            />
             <Filter
               address={search.address}
               startDate={search.startDate}
               endDate={search.endDate}
-              collectionSlug={search.collectionSlug}
+              collection={search.collection}
+              loadingWallet={loadingWallet}
               handleCollectionChange={handleCollectionChange}
               handleEndDateChange={handleEndDateChange}
               handleStartDateChange={handleStartDateChange}
             />
-            <Timeline search={search} loadMore={loadMore} />
+            <Timeline
+              search={search}
+              loadMore={loadMore}
+              loadingWallet={loadingWallet}
+            />
           </>
         ) : null}
       </div>

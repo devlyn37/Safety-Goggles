@@ -1,26 +1,28 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import styles from "../styles/search.module.css";
 import { CollectionInfo } from "../utils/data";
 import { CollectionSearch } from "./collectionSearch";
+import ContentLoader from "react-content-loader";
 
 export const Filter: FC<{
   address: string;
   startDate: string;
   endDate: string;
-  collectionSlug: string;
+  loadingWallet: boolean;
+  collection: CollectionInfo;
   handleStartDateChange: (startDate: string) => void;
   handleEndDateChange: (endDate: string) => void;
-  handleCollectionChange: (collectionSlug: string) => void;
+  handleCollectionChange: (col: CollectionInfo) => void;
 }> = ({
   address,
   startDate,
   endDate,
+  loadingWallet,
+  collection,
   handleStartDateChange,
   handleEndDateChange,
   handleCollectionChange,
 }) => {
-  const [collection, setCollection] = useState<CollectionInfo>(null);
-
   const onStartDateChange = (event) => {
     handleStartDateChange(event.target.value);
   };
@@ -29,62 +31,92 @@ export const Filter: FC<{
     handleEndDateChange(event.target.value);
   };
 
-  const onCollectionChange = (option: CollectionInfo) => {
-    setCollection(option);
-    handleCollectionChange(option ? option.slug : "");
-  };
-
   return (
     <div className={styles.controlsContainer}>
-      <div style={{ flex: 1, minWidth: "200px", maxWidth: "600px" }}>
+      {loadingWallet ? (
+        <Placeholder />
+      ) : (
+        <div style={{ flex: 1, minWidth: "200px", maxWidth: "600px" }}>
+          <label>
+            Collection:
+            <br />
+            <div style={{ marginTop: "3px" }}>
+              <CollectionSearch
+                value={collection}
+                onChange={handleCollectionChange}
+                address={address}
+              />
+            </div>
+          </label>
+        </div>
+      )}
+      {loadingWallet ? (
+        <Placeholder />
+      ) : (
         <label>
-          Collection:
+          from:
           <br />
-          <div style={{ marginTop: "3px" }}>
-            <CollectionSearch
-              value={collection}
-              onChange={onCollectionChange}
-              address={address}
-            />
-          </div>
+          <input
+            style={{
+              marginTop: "3px",
+              height: "38px",
+              borderRadius: "10px",
+              paddingLeft: "8px",
+              fontSize: "16px",
+              paddingRight: "4px",
+            }}
+            type="date"
+            placeholder="from"
+            value={startDate}
+            onChange={onStartDateChange}
+          />
         </label>
-      </div>
-      <label>
-        from:
-        <br />
-        <input
-          style={{
-            marginTop: "3px",
-            height: "38px",
-            borderRadius: "10px",
-            paddingLeft: "8px",
-            fontSize: "16px",
-            paddingRight: "4px",
-          }}
-          type="date"
-          placeholder="from"
-          value={startDate}
-          onChange={onStartDateChange}
-        />
-      </label>
-      <label>
-        until:
-        <br />
-        <input
-          style={{
-            marginTop: "3px",
-            height: "38px",
-            borderRadius: "10px",
-            paddingLeft: "8px",
-            fontSize: "16px",
-            paddingRight: "4px",
-          }}
-          type="date"
-          placeholder="from"
-          value={endDate}
-          onChange={onEndDateChange}
-        />
-      </label>
+      )}
+      {loadingWallet ? (
+        <Placeholder />
+      ) : (
+        <label>
+          until:
+          <br />
+          <input
+            style={{
+              marginTop: "3px",
+              height: "38px",
+              borderRadius: "10px",
+              paddingLeft: "8px",
+              fontSize: "16px",
+              paddingRight: "4px",
+            }}
+            type="date"
+            placeholder="from"
+            value={endDate}
+            onChange={onEndDateChange}
+          />
+        </label>
+      )}
+    </div>
+  );
+};
+
+const Placeholder: FC = (props) => {
+  return (
+    <div
+      style={{
+        height: "60px",
+        width: "175px",
+        borderRadius: "25px",
+      }}
+    >
+      <ContentLoader
+        style={{ width: "100%", height: "100%", borderRadius: "15px" }}
+        speed={2}
+        viewBox="0 0 175 60"
+        backgroundColor="#f3f3f3"
+        foregroundColor="#ecebeb"
+        {...props}
+      >
+        <rect x="0" y="0" rx="0" ry="0" width="10000" height="10000" />
+      </ContentLoader>
     </div>
   );
 };

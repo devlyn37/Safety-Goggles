@@ -4,22 +4,17 @@ import { groupEvents } from "../utils/data";
 import styles from "../styles/timeline.module.css";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/dist/client/router";
+import { SearchCriteria } from "../pages";
 
 const weiToEth = (wei: number): number => {
   return wei / Math.pow(10, 18);
 };
 
 const Timeline: FC<{
-  search: {
-    address: string;
-    ens: string;
-    startDate: string;
-    endDate: string;
-    page: number;
-    collectionSlug?: string;
-  };
+  search: SearchCriteria;
   loadMore: () => void;
-}> = ({ search, loadMore }) => {
+  loadingWallet: boolean;
+}> = ({ search, loadMore, loadingWallet }) => {
   const [data, setData] = useState<NFTEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -41,7 +36,7 @@ const Timeline: FC<{
           60 * (search.page - 1),
           search.startDate,
           search.endDate,
-          search.collectionSlug ? search.collectionSlug : undefined
+          search.collection ? search.collection.slug : undefined
         );
 
         if (search.page > 1) {
@@ -57,6 +52,8 @@ const Timeline: FC<{
       setLoading(false);
     };
 
+    console.log("Search changed: ");
+    console.log(search);
     if (search.address) {
       loadData();
     }
@@ -66,29 +63,16 @@ const Timeline: FC<{
     return <div>{errorMsg}</div>;
   }
 
-  if (loading && search.page === 1) {
+  if ((loading && search.page === 1) || loadingWallet) {
     return (
-      <>
-        {/* <div
-          style={{
-            marginBottom: "30px",
-            marginTop: "20px",
-            height: "50px",
-            width: "300px",
-            borderRadius: "25px",
-          }}
-        >
-          <LoadingTitle />
-        </div> */}
-        <div className={styles.eventGrid}>
-          <LoadingCard />
-          <LoadingCard />
-          <LoadingCard />
-          <LoadingCard />
-          <LoadingCard />
-          <LoadingCard />
-        </div>
-      </>
+      <div className={styles.eventGrid}>
+        <LoadingCard />
+        <LoadingCard />
+        <LoadingCard />
+        <LoadingCard />
+        <LoadingCard />
+        <LoadingCard />
+      </div>
     );
   }
 
@@ -311,21 +295,6 @@ const LoadingCard: FC = () => {
         <rect x="0" y="130" rx="5" ry="5" width="281" height="13" />
       </ContentLoader>
     </div>
-  );
-};
-
-const LoadingTitle: FC = (props) => {
-  return (
-    <ContentLoader
-      style={{ width: "100%", height: "100%", borderRadius: "15px" }}
-      speed={2}
-      viewBox="0 0 400 50"
-      backgroundColor="#f3f3f3"
-      foregroundColor="#ecebeb"
-      {...props}
-    >
-      <rect x="0" y="0" rx="0" ry="0" width="10000" height="10000" />
-    </ContentLoader>
   );
 };
 
