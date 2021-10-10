@@ -21,9 +21,9 @@
   height: 55px;
   padding: 0px 15px;
   margin-right: 20px;
-  border: 3px solid black;
-  border-radius: 10px;
-  font-size: 24px;
+  border: 1px solid lightgrey;
+  border-radius: 15px;
+  font-size: 20px;
 }
 
 .searchBarButton {
@@ -57,4 +57,9 @@
   margin: 0px 20px 0px 20px;
   padding: 10px 20px 10px 20px;
   background-color: lightpink;
+}
+
+.searchBarInput:focus {
+  border: solid 3px black;
+  margin-left: -2px;
 }

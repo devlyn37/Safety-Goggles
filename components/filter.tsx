@@ -37,10 +37,10 @@ export const Filter: FC<{
         <Placeholder />
       ) : (
         <div style={{ flex: 1, minWidth: "200px", maxWidth: "600px" }}>
-          <label>
+          <label style={{ color: "dimgray" }}>
             Collection:
             <br />
-            <div style={{ marginTop: "3px" }}>
+            <div style={{ marginTop: "5px" }}>
               <CollectionSearch
                 value={collection}
                 onChange={handleCollectionChange}
@@ -53,17 +53,20 @@ export const Filter: FC<{
       {loadingWallet ? (
         <Placeholder />
       ) : (
-        <label>
+        <label style={{ color: "dimgray" }}>
           from:
           <br />
           <input
             style={{
-              marginTop: "3px",
+              marginTop: "4px",
               height: "38px",
               borderRadius: "10px",
               paddingLeft: "8px",
               fontSize: "16px",
               paddingRight: "4px",
+              color: "dimgray",
+              border: "solid 1px lightgray",
+              backgroundColor: "white",
             }}
             type="date"
             placeholder="from"
@@ -75,17 +78,20 @@ export const Filter: FC<{
       {loadingWallet ? (
         <Placeholder />
       ) : (
-        <label>
+        <label style={{ color: "dimgray" }}>
           until:
           <br />
           <input
             style={{
-              marginTop: "3px",
+              marginTop: "4px",
               height: "38px",
               borderRadius: "10px",
               paddingLeft: "8px",
               fontSize: "16px",
               paddingRight: "4px",
+              border: "solid 1px lightgray",
+              color: "dimgray",
+              backgroundColor: "white",
             }}
             type="date"
             placeholder="from"

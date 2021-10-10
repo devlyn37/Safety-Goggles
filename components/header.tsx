@@ -8,7 +8,7 @@ export const Header: FC<{
   endDate: string;
   collectionSlug: string;
   loading: boolean;
-}> = ({ ens, address, startDate, endDate, collectionSlug, loading }) => {
+}> = ({ ens, address, collectionSlug, loading }) => {
   return loading ? (
     <Placeholder />
   ) : (
@@ -21,16 +21,10 @@ export const Header: FC<{
         marginTop: "20px",
       }}
     >
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        <h1 style={{ margin: "0px 0px 5px 0px" }}>
-          Activity of {ens ? ens : address}
-          {collectionSlug ? " with collection " + collectionSlug : ""}
-        </h1>
-        <div style={{ color: "dimgray", fontSize: "16px" }}>
-          {startDate ? "From: " + startDate : ""}{" "}
-          {endDate ? "Until: " + endDate : ""}
-        </div>
-      </div>
+      <h1 style={{ margin: "0px 0px 5px 0px" }}>
+        Activity of {ens ? ens : address}
+        {collectionSlug ? " with collection " + collectionSlug : ""}
+      </h1>
     </div>
   );
 };

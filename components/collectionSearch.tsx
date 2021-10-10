@@ -33,7 +33,6 @@ export const CollectionSearch: FC<{
   const customStyles = {
     control: (provided) => ({
       ...provided,
-      border: "2px solid black",
       borderRadius: "10px",
     }),
   };
@@ -55,14 +54,6 @@ export const CollectionSearch: FC<{
           ...theme.colors,
           primary25: "lightgray",
           primary: "black",
-          neutral10: "black",
-          neutral20: "black",
-          neutral30: "black",
-          neutral40: "black",
-          neutral50: "black",
-          neutral60: "black",
-          neutral70: "black",
-          neutral80: "black",
         },
       })}
     />
