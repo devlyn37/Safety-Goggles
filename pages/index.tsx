@@ -1,10 +1,11 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useState, useEffect } from "react";
 import { CollectionInfo, resolveWallet } from "../utils/data";
 import Timeline from "../components/timeline";
 import { Search } from "../components/search";
 import { useRouter } from "next/dist/client/router";
 import { Filter } from "../components/filter";
 import { Header } from "../components/header";
+import { ParsedUrlQueryInput } from "querystring";
 
 export interface SearchCriteria {
   address: string;
@@ -13,6 +14,13 @@ export interface SearchCriteria {
   endDate: string;
   page: number;
   collection: CollectionInfo | null;
+}
+
+interface Params extends ParsedUrlQueryInput {
+  wallet?: string;
+  startDate?: string;
+  endDate?: string;
+  collectionSlug?: string;
 }
 
 export default function Home() {
@@ -61,13 +69,25 @@ export default function Home() {
   };
 
   const updateUrl = (s: SearchCriteria) => {
-    const url = `/?wallet=${s.ens ?? s.address}${
-      s.startDate ? "&startDate=" + s.startDate : ""
-    }${s.endDate ? "&endDate=" + s.endDate : ""}${
-      s.collection ? "&collectionSlug=" + s.collection.slug : ""
-    }`;
+    const query: Params = {};
 
-    router.push(url, undefined, { shallow: true });
+    if (s.ens || s.address) {
+      query.wallet = s.ens ?? s.address;
+    }
+
+    if (s.startDate) {
+      query.startDate = s.startDate;
+    }
+
+    if (s.endDate) {
+      query.endDate = s.endDate;
+    }
+
+    if (s.collection) {
+      query.collectionSlug = s.collection.slug;
+    }
+
+    router.push({ pathname: "/", query: query }, undefined, { shallow: true });
   };
 
   const handleStartDateChange = (startDate: string) => {
@@ -89,36 +109,92 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const { wallet, startDate, endDate, collectionSlug } = router.query;
+    const validateParams = (query: ParsedUrlQueryInput): string => {
+      let err = "";
+      const paramWL = ["wallet", "startDate", "endDate", "collectionSlug"];
+
+      Object.keys(query).forEach((param) => {
+        if (paramWL.includes(param) && typeof query[param] !== "string") {
+          err += `Invalid ${param} parameter\n`;
+        }
+      });
+
+      return err;
+    };
+
+    const matchingParamAndState = (
+      search: SearchCriteria,
+      query: Params
+    ): boolean => {
+      const walletMatch =
+        (!search.address && !query.wallet) ||
+        search.address === query.wallet ||
+        search.ens.includes(query.wallet as string);
+
+      const startMatch =
+        (!search.startDate && !query.startDate) ||
+        query.startDate === search.startDate;
+
+      const endMatch =
+        (!search.endDate && !query.endDate) || query.endDate === search.endDate;
+
+      const collectionMatch =
+        (!search.collection && !query.collectionSlug) ||
+        (search.collection && query.collectionSlug === search.collection.slug);
+
+      return walletMatch && startMatch && endMatch && collectionMatch;
+    };
+
     const handleParams = async () => {
-      if (
-        Array.isArray(wallet) ||
-        Array.isArray(startDate) ||
-        Array.isArray(endDate) ||
-        Array.isArray(collectionSlug)
-      ) {
-        setErrorMsg("Invalid wallet parameter");
+      const err = validateParams(router.query);
+      if (err) {
+        setErrorMsg(err);
         return;
       }
+
+      const { wallet, startDate, endDate, collectionSlug } =
+        router.query as Params;
+
+      // If the state matches the url already, that means that this change in query params
+      // was caused in the client after a user adjusted the search of the filtering
+      if (matchingParamAndState(search, router.query)) {
+        return;
+      }
+
+      if (!wallet && search.address) {
+        // The user has navigated back to base page
+        setSearch({
+          address: "",
+          ens: "",
+          startDate: "",
+          endDate: "",
+          page: 1,
+          collection: null,
+        });
+        return;
+      }
+
+      // Past this point its actions like url changes and pressing back
+      console.log("Current state: ");
+      console.log(search);
+
+      console.log("Current url: ");
+      console.log(router.query);
 
       const [address, ens] = await resolveWallet(wallet);
       setSearch({
         address: address,
         ens: ens,
-        startDate: startDate,
-        endDate: endDate,
+        startDate: startDate ?? "",
+        endDate: endDate ?? "",
         page: 1,
-        collection: null,
+        collection: collectionSlug
+          ? { name: collectionSlug, slug: collectionSlug } // To-do fix this
+          : null,
       });
     };
 
-    // Initially query is an empty object, don't run then
-    // only run if the user has just landed on the page
-    // with query params
-    if (wallet && search.address === "") {
-      console.log("running");
-      handleParams();
-    }
+    handleParams();
   }, [router.query]);
 
   return (

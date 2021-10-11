@@ -46,14 +46,11 @@ const Timeline: FC<{
         }
       } catch (e) {
         setErrorMsg(e.message);
-        throw e;
       }
 
       setLoading(false);
     };
 
-    console.log("Search changed: ");
-    console.log(search);
     if (search.address) {
       loadData();
     }
