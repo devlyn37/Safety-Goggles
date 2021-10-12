@@ -42,8 +42,6 @@ export default function Home() {
   };
 
   const handleSearch = async (input: string) => {
-    console.log("Handle Search");
-
     try {
       setLoadingWallet(true);
       const [address, ens] = await resolveWallet(input); // Add loading here
@@ -224,7 +222,7 @@ export default function Home() {
       >
         {errorMsg ? (
           <div>{errorMsg}</div>
-        ) : search.address ? (
+        ) : loadingWallet || search.address ? (
           <>
             <Header
               address={search.address}
@@ -232,7 +230,7 @@ export default function Home() {
               endDate={search.endDate}
               startDate={search.startDate}
               collectionSlug={search.collection ? search.collection.slug : ""}
-              loading={loadingWallet}
+              loadingWallet={loadingWallet}
             />
             <Filter
               address={search.address}

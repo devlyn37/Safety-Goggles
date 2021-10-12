@@ -7,9 +7,9 @@ export const Header: FC<{
   startDate: string;
   endDate: string;
   collectionSlug: string;
-  loading: boolean;
-}> = ({ ens, address, collectionSlug, loading }) => {
-  return loading ? (
+  loadingWallet: boolean;
+}> = ({ ens, address, collectionSlug, loadingWallet }) => {
+  return loadingWallet ? (
     <Placeholder />
   ) : (
     <div
