@@ -25,6 +25,7 @@ export interface NFTEvent {
 export interface CollectionInfo {
   name: string;
   slug: string;
+  imgUrl: string;
 }
 
 export const getCollections = async (

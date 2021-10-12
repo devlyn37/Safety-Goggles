@@ -1,35 +1,13 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import Select from "react-select";
-import { getCollections, CollectionInfo } from "../utils/data";
+import { CollectionInfo } from "../utils/data";
 
 export const CollectionSearch: FC<{
+  collections: CollectionInfo[];
+  loading: boolean;
   value: CollectionInfo;
   onChange: (option: CollectionInfo) => void;
-  address: string;
-}> = ({ value, onChange, address }) => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const [collections, setCollections] = useState<CollectionInfo[]>([]);
-
-  useEffect(() => {
-    const loadData = async () => {
-      setLoading(true);
-
-      try {
-        const data = await getCollections(address);
-        setCollections(data);
-      } catch (e) {
-        //handle this
-        console.log(e);
-      }
-
-      setLoading(false);
-    };
-
-    if (address) {
-      loadData();
-    }
-  }, [address]);
-
+}> = ({ collections, loading, value, onChange }) => {
   const customStyles = {
     control: (provided) => ({
       ...provided,

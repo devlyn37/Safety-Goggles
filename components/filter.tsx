@@ -5,20 +5,22 @@ import { CollectionSearch } from "./collectionSearch";
 import ContentLoader from "react-content-loader";
 
 export const Filter: FC<{
-  address: string;
+  collections: CollectionInfo[];
   startDate: string;
   endDate: string;
   loadingWallet: boolean;
+  loadingCollections: boolean;
   collection: CollectionInfo;
   handleStartDateChange: (startDate: string) => void;
   handleEndDateChange: (endDate: string) => void;
   handleCollectionChange: (col: CollectionInfo) => void;
   handleFilterChange: (filter: string) => void;
 }> = ({
-  address,
+  collections,
   startDate,
   endDate,
   loadingWallet,
+  loadingCollections,
   collection,
   handleStartDateChange,
   handleEndDateChange,
@@ -125,9 +127,10 @@ export const Filter: FC<{
             <br />
             <div style={{ marginTop: "5px" }}>
               <CollectionSearch
+                collections={collections}
+                loading={loadingCollections} // To-do
                 value={collection}
                 onChange={handleCollectionChange}
-                address={address}
               />
             </div>
           </label>

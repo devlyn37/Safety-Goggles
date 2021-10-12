@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { CollectionInfo, resolveWallet } from "../utils/data";
+import { CollectionInfo, resolveWallet, getCollections } from "../utils/data";
 import Timeline from "../components/timeline";
 import { Search } from "../components/search";
 import { useRouter } from "next/dist/client/router";
@@ -41,28 +41,46 @@ export default function Home() {
   });
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [loadingWallet, setLoadingWallet] = useState<boolean>(false);
+  const [collections, setCollections] = useState<CollectionInfo[]>([]);
+  const [loadingCollections, setLoadingCollections] = useState<boolean>(false);
 
   const loadMore = () => {
     setSearch({ ...search, page: search.page + 1 });
   };
 
-  const handleSearch = async (input: string) => {
+  const handleSearch = async (
+    input: string,
+    setUrl: boolean = true,
+    startDate?: string,
+    endDate?: string,
+    filter?: Filter,
+    collectionSlug?: string
+  ) => {
+    let address, ens;
+
+    setLoadingWallet(true);
+    setLoadingCollections(true);
+
     try {
-      setLoadingWallet(true);
-      const [address, ens] = await resolveWallet(input); // Add loading here
+      [address, ens] = await resolveWallet(input); // Add loading here
 
       const s: SearchCriteria = {
         address: address,
         ens: ens,
-        startDate: "",
-        endDate: "",
-        filter: "",
+        startDate: startDate ?? "",
+        endDate: endDate ?? "",
+        filter: filter ?? "",
         page: 1,
-        collection: null,
+        collection: collectionSlug
+          ? { name: collectionSlug, slug: collectionSlug, imgUrl: "" }
+          : null, // to-do fix
       };
 
       setSearch(s);
-      updateUrl(s);
+
+      if (setUrl) {
+        updateUrl(s);
+      }
 
       setErrorMsg("");
     } catch (e) {
@@ -70,6 +88,16 @@ export default function Home() {
     }
 
     setLoadingWallet(false);
+
+    try {
+      const usersCollections = await getCollections(address);
+      setCollections(usersCollections);
+      setErrorMsg("");
+    } catch (e) {
+      setErrorMsg(e.message);
+    }
+
+    setLoadingCollections(false);
   };
 
   const updateUrl = (s: SearchCriteria) => {
@@ -218,18 +246,14 @@ export default function Home() {
       console.log("Current url: ");
       console.log(router.query);
 
-      const [address, ens] = await resolveWallet(wallet);
-      setSearch({
-        address: address,
-        ens: ens,
-        startDate: startDate ?? "",
-        endDate: endDate ?? "",
-        filter: filter,
-        page: 1,
-        collection: collectionSlug
-          ? { name: collectionSlug, slug: collectionSlug } // To-do fix this
-          : null,
-      });
+      await handleSearch(
+        wallet,
+        false,
+        startDate ?? "",
+        endDate ?? "",
+        filter,
+        collectionSlug
+      );
     };
 
     handleParams();
@@ -273,11 +297,12 @@ export default function Home() {
               loadingWallet={loadingWallet}
             />
             <Filter
-              address={search.address}
+              collections={collections}
               startDate={search.startDate}
               endDate={search.endDate}
               collection={search.collection}
               loadingWallet={loadingWallet}
+              loadingCollections={loadingCollections}
               handleCollectionChange={handleCollectionChange}
               handleEndDateChange={handleEndDateChange}
               handleStartDateChange={handleStartDateChange}
