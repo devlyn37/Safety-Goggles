@@ -159,9 +159,13 @@ export default function Home() {
       search: SearchCriteria,
       query: Params
     ): boolean => {
-      const startMatch = query.startDate === search.startDate;
-      const endMatch = query.endDate === search.endDate;
-      const filterMatch = search.filter === query.filter;
+      const startMatch =
+        query.startDate === search.startDate ||
+        (!query.startDate && !search.startDate);
+      const endMatch =
+        query.endDate === search.endDate || (!query.endDate && !search.endDate);
+      const filterMatch =
+        search.filter === query.filter || (!query.filter && !search.filter);
 
       const collectionMatch =
         (!search.collection && !query.collectionSlug) ||

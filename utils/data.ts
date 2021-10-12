@@ -58,6 +58,7 @@ export const getCollections = async (
   return collections.map((c) => ({
     name: c.name,
     slug: c.slug,
+    imgUrl: c.image_url,
   }));
 };
 
