@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import styles from "../styles/search.module.css";
 import { CollectionInfo } from "../utils/data";
 import { CollectionSearch } from "./collectionSearch";
@@ -13,6 +13,7 @@ export const Filter: FC<{
   handleStartDateChange: (startDate: string) => void;
   handleEndDateChange: (endDate: string) => void;
   handleCollectionChange: (col: CollectionInfo) => void;
+  handleFilterChange: (filter: string) => void;
 }> = ({
   address,
   startDate,
@@ -22,7 +23,11 @@ export const Filter: FC<{
   handleStartDateChange,
   handleEndDateChange,
   handleCollectionChange,
+  handleFilterChange,
 }) => {
+  const [buySellCheck, setBuySellCheck] = useState<boolean>(false);
+  const [mintTransCheck, setMintTransCheck] = useState<boolean>(false);
+
   const onStartDateChange = (event) => {
     handleStartDateChange(event.target.value);
   };
@@ -30,6 +35,84 @@ export const Filter: FC<{
   const onEndDateChange = (event) => {
     handleEndDateChange(event.target.value);
   };
+
+  const handleBuySellChange = () => {
+    setBuySellCheck(!buySellCheck);
+    setMintTransCheck(false);
+
+    handleFilterChange(buySellCheck ? "" : "successful");
+  };
+
+  const handleMintTransChange = () => {
+    setMintTransCheck(!mintTransCheck);
+    setBuySellCheck(false);
+
+    handleFilterChange(mintTransCheck ? "" : "transfer");
+  };
+
+  const checks = (
+    <div style={{ color: "dimgray" }}>
+      Activity Type:
+      <br />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+          alignItems: "center",
+        }}
+      >
+        <label
+          style={{
+            marginTop: "4px",
+            height: "38px",
+            border: "solid 1px lightgray",
+            borderRadius: "10px",
+            paddingLeft: "8px",
+            fontSize: "16px",
+            paddingRight: "12px",
+            color: "dimgray",
+            backgroundColor: "white",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginRight: "20px",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={buySellCheck}
+            onChange={handleBuySellChange}
+            style={{ marginRight: "8px" }}
+          />
+          Buy and Sell
+        </label>
+        <label
+          style={{
+            marginTop: "4px",
+            height: "38px",
+            border: "solid 1px lightgray",
+            borderRadius: "10px",
+            paddingLeft: "8px",
+            fontSize: "16px",
+            paddingRight: "12px",
+            color: "dimgray",
+            backgroundColor: "white",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <input
+            type="checkbox"
+            checked={mintTransCheck}
+            onChange={handleMintTransChange}
+            style={{ marginRight: "8px" }}
+          />
+          Mint and Transfer
+        </label>
+      </div>
+    </div>
+  );
 
   return (
     <div className={styles.controlsContainer}>
@@ -100,6 +183,7 @@ export const Filter: FC<{
           />
         </label>
       )}
+      {loadingWallet ? <Placeholder /> : checks}
     </div>
   );
 };

@@ -7,11 +7,14 @@ import { Filter } from "../components/filter";
 import { Header } from "../components/header";
 import { ParsedUrlQueryInput } from "querystring";
 
+export type Filter = "successful" | "transfer" | "";
+
 export interface SearchCriteria {
   address: string;
   ens: string;
   startDate: string;
   endDate: string;
+  filter: Filter;
   page: number;
   collection: CollectionInfo | null;
 }
@@ -21,6 +24,7 @@ interface Params extends ParsedUrlQueryInput {
   startDate?: string;
   endDate?: string;
   collectionSlug?: string;
+  filter?: Filter;
 }
 
 export default function Home() {
@@ -31,6 +35,7 @@ export default function Home() {
     ens: "",
     startDate: "",
     endDate: "",
+    filter: "",
     collection: null,
     page: 1,
   });
@@ -51,6 +56,7 @@ export default function Home() {
         ens: ens,
         startDate: "",
         endDate: "",
+        filter: "",
         page: 1,
         collection: null,
       };
@@ -85,6 +91,10 @@ export default function Home() {
       query.collectionSlug = s.collection.slug;
     }
 
+    if (s.filter) {
+      query.filter = s.filter;
+    }
+
     router.push({ pathname: "/", query: query }, undefined, { shallow: true });
   };
 
@@ -106,14 +116,39 @@ export default function Home() {
     updateUrl(s);
   };
 
+  const handleFilterChange = (filter: Filter) => {
+    const s = { ...search, filter: filter };
+    setSearch(s);
+    updateUrl(s);
+  };
+
   useEffect(() => {
     const validateParams = (query: ParsedUrlQueryInput): string => {
       let err = "";
-      const paramWL = ["wallet", "startDate", "endDate", "collectionSlug"];
+      const paramWL = [
+        "wallet",
+        "startDate",
+        "endDate",
+        "collectionSlug",
+        "filter",
+      ];
 
-      Object.keys(query).forEach((param) => {
-        if (paramWL.includes(param) && typeof query[param] !== "string") {
+      Object.keys(query).forEach((param: string) => {
+        const val = query[param];
+
+        if (paramWL.includes(param) && typeof val !== "string") {
           err += `Invalid ${param} parameter\n`;
+        }
+
+        val as string;
+
+        if (
+          param === "filter" &&
+          val !== "" &&
+          val !== "successful" &&
+          val != "transfer"
+        ) {
+          err += `filter ${val} is not valid`;
         }
       });
 
@@ -124,23 +159,22 @@ export default function Home() {
       search: SearchCriteria,
       query: Params
     ): boolean => {
-      const walletMatch =
-        (!search.address && !query.wallet) ||
-        search.address === query.wallet ||
-        search.ens.includes(query.wallet as string);
-
-      const startMatch =
-        (!search.startDate && !query.startDate) ||
-        query.startDate === search.startDate;
-
-      const endMatch =
-        (!search.endDate && !query.endDate) || query.endDate === search.endDate;
+      const startMatch = query.startDate === search.startDate;
+      const endMatch = query.endDate === search.endDate;
+      const filterMatch = search.filter === query.filter;
 
       const collectionMatch =
         (!search.collection && !query.collectionSlug) ||
         (search.collection && query.collectionSlug === search.collection.slug);
 
-      return walletMatch && startMatch && endMatch && collectionMatch;
+      const walletMatch =
+        (!search.address && !query.wallet) ||
+        search.address === query.wallet ||
+        search.ens.includes(query.wallet as string);
+
+      return (
+        walletMatch && startMatch && endMatch && collectionMatch && filterMatch
+      );
     };
 
     const handleParams = async () => {
@@ -150,7 +184,7 @@ export default function Home() {
         return;
       }
 
-      const { wallet, startDate, endDate, collectionSlug } =
+      const { wallet, startDate, endDate, collectionSlug, filter } =
         router.query as Params;
 
       // If the state matches the url already, that means that this change in query params
@@ -166,6 +200,7 @@ export default function Home() {
           ens: "",
           startDate: "",
           endDate: "",
+          filter: "",
           page: 1,
           collection: null,
         });
@@ -185,6 +220,7 @@ export default function Home() {
         ens: ens,
         startDate: startDate ?? "",
         endDate: endDate ?? "",
+        filter: filter,
         page: 1,
         collection: collectionSlug
           ? { name: collectionSlug, slug: collectionSlug } // To-do fix this
@@ -241,6 +277,7 @@ export default function Home() {
               handleCollectionChange={handleCollectionChange}
               handleEndDateChange={handleEndDateChange}
               handleStartDateChange={handleStartDateChange}
+              handleFilterChange={handleFilterChange}
             />
             <Timeline
               search={search}

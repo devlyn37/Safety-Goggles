@@ -67,9 +67,12 @@ export const getEvents = async (
   offset: number,
   startDate?: string,
   endDate?: string,
-  collectionSlug?: string
+  collectionSlug?: string,
+  filter?: string
 ): Promise<NFTEvent[]> => {
   let url = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
+
+  // To-do lets use query string here
 
   if (startDate) {
     url += "&occurred_after=" + startDate + "T00:00:00";
@@ -81,6 +84,10 @@ export const getEvents = async (
 
   if (collectionSlug) {
     url += "&collection_slug=" + collectionSlug;
+  }
+
+  if (filter) {
+    url += "&event_type=" + filter;
   }
 
   //console.log(url);
@@ -115,6 +122,8 @@ const determineAction = (openseaData: any, address: string): Action => {
   const sender = openseaData.from_account;
 
   // This needs to be improved as I understand the data and different cases better
+  // For example a case that is currently broken is nfts being purchased from other marketplaces
+  // http://localhost:3000/?wallet=0x1eb59fb4c8b6675ba2a8f4153f99bdef6ca24696&collectionSlug=rarible&filter=transfer
   if (
     transactionParticipant &&
     transactionStarter.address.toUpperCase() ===

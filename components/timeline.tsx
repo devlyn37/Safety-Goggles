@@ -36,7 +36,8 @@ const Timeline: FC<{
           60 * (search.page - 1),
           search.startDate,
           search.endDate,
-          search.collection ? search.collection.slug : undefined
+          search.collection ? search.collection.slug : undefined,
+          search.filter
         );
 
         if (search.page > 1) {
