@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { CollectionInfo, resolveWallet, getCollections } from "../utils/data";
+import {
+  CollectionInfo,
+  resolveWallet,
+  getCollections,
+  getCollection,
+} from "../utils/data";
 import Timeline from "../components/timeline";
 import { Search } from "../components/search";
 import { useRouter } from "next/dist/client/router";
@@ -16,14 +21,14 @@ export interface SearchCriteria {
   endDate: string;
   filter: Filter;
   page: number;
-  collection: CollectionInfo | null;
+  contractAddress: string;
 }
 
 interface Params extends ParsedUrlQueryInput {
   wallet?: string;
   startDate?: string;
   endDate?: string;
-  collectionSlug?: string;
+  contractAddress?: string;
   filter?: Filter;
 }
 
@@ -36,11 +41,13 @@ export default function Home() {
     startDate: "",
     endDate: "",
     filter: "",
-    collection: null,
+    contractAddress: "",
     page: 1,
   });
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [loadingWallet, setLoadingWallet] = useState<boolean>(false);
+  const [collection, setCollection] = useState<CollectionInfo | null>(null);
+  const [loadingCollection, setLoadingCollection] = useState<boolean>(false);
   const [collections, setCollections] = useState<CollectionInfo[]>([]);
   const [loadingCollections, setLoadingCollections] = useState<boolean>(false);
 
@@ -54,10 +61,12 @@ export default function Home() {
     startDate?: string,
     endDate?: string,
     filter?: Filter,
-    collectionSlug?: string
+    contractAddress?: string
   ) => {
     let address, ens;
 
+    setCollection(null);
+    setLoadingCollections(false);
     setLoadingWallet(true);
     setLoadingCollections(true);
 
@@ -71,11 +80,8 @@ export default function Home() {
         endDate: endDate ?? "",
         filter: filter ?? "",
         page: 1,
-        collection: collectionSlug
-          ? { name: collectionSlug, slug: collectionSlug, imgUrl: "" }
-          : null, // to-do fix
+        contractAddress: contractAddress ?? "",
       };
-
       setSearch(s);
 
       if (setUrl) {
@@ -92,11 +98,31 @@ export default function Home() {
     try {
       const usersCollections = await getCollections(address);
       setCollections(usersCollections);
+
+      // User arriving from shared link or refreshing etc
+      if (contractAddress) {
+        setLoadingCollection(true);
+
+        // Search for collection based on asset contract
+        let collection = usersCollections.find(
+          (c: CollectionInfo) =>
+            c.contractAddress.toUpperCase() === contractAddress.toUpperCase()
+        );
+
+        // If not found fetch data
+        if (!collection) {
+          collection = await getCollection(contractAddress);
+        }
+
+        setCollection(collection);
+      }
+
       setErrorMsg("");
     } catch (e) {
       setErrorMsg(e.message);
     }
 
+    setLoadingCollection(false);
     setLoadingCollections(false);
   };
 
@@ -115,8 +141,8 @@ export default function Home() {
       query.endDate = s.endDate;
     }
 
-    if (s.collection) {
-      query.collectionSlug = s.collection.slug;
+    if (s.contractAddress) {
+      query.contractAddress = s.contractAddress;
     }
 
     if (s.filter) {
@@ -139,7 +165,23 @@ export default function Home() {
   };
 
   const handleCollectionChange = (collection: CollectionInfo) => {
-    const s = { ...search, collection: collection };
+    const s = {
+      ...search,
+      contractAddress: collection ? collection.contractAddress : "",
+    };
+    setCollection(collection);
+
+    if (collection && !collection.floor) {
+      const loadData = async () => {
+        setLoadingCollection(true);
+        const c = await getCollection(collection.contractAddress);
+        setCollection(c);
+        setLoadingCollection(false);
+      };
+
+      loadData();
+    }
+
     setSearch(s);
     updateUrl(s);
   };
@@ -157,7 +199,7 @@ export default function Home() {
         "wallet",
         "startDate",
         "endDate",
-        "collectionSlug",
+        "contractAddress",
         "filter",
       ];
 
@@ -194,10 +236,9 @@ export default function Home() {
         query.endDate === search.endDate || (!query.endDate && !search.endDate);
       const filterMatch =
         search.filter === query.filter || (!query.filter && !search.filter);
-
       const collectionMatch =
-        (!search.collection && !query.collectionSlug) ||
-        (search.collection && query.collectionSlug === search.collection.slug);
+        (!search.contractAddress && !query.contractAddress) ||
+        query.contractAddress === search.contractAddress;
 
       const walletMatch =
         (!search.address && !query.wallet) ||
@@ -216,7 +257,7 @@ export default function Home() {
         return;
       }
 
-      const { wallet, startDate, endDate, collectionSlug, filter } =
+      const { wallet, startDate, endDate, contractAddress, filter } =
         router.query as Params;
 
       // If the state matches the url already, that means that this change in query params
@@ -234,25 +275,19 @@ export default function Home() {
           endDate: "",
           filter: "",
           page: 1,
-          collection: null,
+          contractAddress: "",
         });
         return;
       }
 
       // Past this point its actions like url changes and pressing back
-      console.log("Current state: ");
-      console.log(search);
-
-      console.log("Current url: ");
-      console.log(router.query);
-
       await handleSearch(
         wallet,
         false,
         startDate ?? "",
         endDate ?? "",
         filter,
-        collectionSlug
+        contractAddress
       );
     };
 
@@ -293,14 +328,15 @@ export default function Home() {
               ens={search.ens}
               endDate={search.endDate}
               startDate={search.startDate}
-              collectionSlug={search.collection ? search.collection.slug : ""}
+              collection={collection}
+              loadingCollection={loadingCollection}
               loadingWallet={loadingWallet}
             />
             <Filter
               collections={collections}
               startDate={search.startDate}
               endDate={search.endDate}
-              collection={search.collection}
+              collection={collection}
               loadingWallet={loadingWallet}
               loadingCollections={loadingCollections}
               handleCollectionChange={handleCollectionChange}

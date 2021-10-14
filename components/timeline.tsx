@@ -36,7 +36,7 @@ const Timeline: FC<{
           60 * (search.page - 1),
           search.startDate,
           search.endDate,
-          search.collection ? search.collection.slug : undefined,
+          search.contractAddress,
           search.filter
         );
 
@@ -83,11 +83,13 @@ const Timeline: FC<{
   return (
     <>
       <div className={styles.eventGrid}>
-        {groupings.map((grouping) => {
+        {groupings.map((grouping, i) => {
           if (grouping.length > 3) {
-            return <EventGrouping key={grouping[0].key} grouping={grouping} />;
+            return (
+              <EventGrouping key={grouping[0].key + i} grouping={grouping} />
+            );
           } else {
-            return <EventList key={grouping[0].key} grouping={grouping} />;
+            return <EventList key={grouping[0].key + i} grouping={grouping} />;
           }
         })}
         {loading && search.page > 1 ? (

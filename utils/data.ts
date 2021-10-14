@@ -26,6 +26,9 @@ export interface CollectionInfo {
   name: string;
   slug: string;
   imgUrl: string;
+  contractAddress: string;
+  holding: string;
+  floor?: string;
 }
 
 export const getCollections = async (
@@ -33,7 +36,7 @@ export const getCollections = async (
 ): Promise<CollectionInfo[]> => {
   const collectionUrl = `https://api.opensea.io/api/v1/collections?${
     "asset_owner=" + address
-  }&offset=0`;
+  }&offset=0&limit=300`;
   const eventUrl = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=0&limit=300`;
 
   const [holding, recent] = await Promise.all([
@@ -41,13 +44,38 @@ export const getCollections = async (
     axios.get(eventUrl),
   ]);
 
-  let collections = [
-    ...holding.data,
-    ...recent.data.asset_events.map((d) => d.asset.collection),
-  ];
+  const eventToCollectionInfo = (d: any): CollectionInfo => ({
+    name: d.asset.collection.name,
+    slug: d.asset.collection.slug,
+    imgUrl: d.asset.collection.image_url,
+    contractAddress: d.asset.asset_contract.address,
+    holding: "0",
+  });
 
+  const collectionToCollectionInfo = (c: any): CollectionInfo => ({
+    name: c.name,
+    slug: c.slug,
+    imgUrl: c.image_url,
+    contractAddress: c.primary_asset_contracts.length
+      ? c.primary_asset_contracts[0].address
+      : "",
+    holding: c.owned_asset_count,
+    floor: c.stats.floor_price,
+  });
+
+  const fromHeld: CollectionInfo[] = holding.data.map(
+    collectionToCollectionInfo
+  );
+  let fromEvents: CollectionInfo[] = recent.data.asset_events.map(
+    eventToCollectionInfo
+  );
+
+  // Filter duplicate data from events for held collections
   let hash = {};
-  collections = collections.filter((c) => {
+  fromHeld.forEach((c) => {
+    hash[c.slug] = true;
+  });
+  fromEvents = fromEvents.filter((c) => {
     if (hash[c.slug]) {
       return false;
     } else {
@@ -56,11 +84,29 @@ export const getCollections = async (
     }
   });
 
-  return collections.map((c) => ({
-    name: c.name,
-    slug: c.slug,
-    imgUrl: c.image_url,
-  }));
+  console.log(fromHeld);
+
+  return [...fromHeld, ...fromEvents];
+};
+
+export const getCollection = async (
+  contractAddress: string
+): Promise<CollectionInfo> => {
+  const url = `https://api.opensea.io/api/v1/asset/${contractAddress}/1`;
+  console.log(url);
+  const results = await axios.get(url);
+  const asset = results.data;
+
+  console.log(asset);
+
+  return {
+    name: asset.collection.name,
+    slug: asset.collection.slug,
+    imgUrl: asset.collection.image_url,
+    contractAddress: asset.asset_contract.address,
+    holding: "0",
+    floor: asset.collection.stats.floor_price,
+  };
 };
 
 export const getEvents = async (
@@ -69,7 +115,7 @@ export const getEvents = async (
   offset: number,
   startDate?: string,
   endDate?: string,
-  collectionSlug?: string,
+  contractAddress?: string,
   filter?: string
 ): Promise<NFTEvent[]> => {
   let url = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
@@ -84,8 +130,8 @@ export const getEvents = async (
     url += "&occurred_before=" + endDate + "T00:00:00";
   }
 
-  if (collectionSlug) {
-    url += "&collection_slug=" + collectionSlug;
+  if (contractAddress) {
+    url += "&asset_contract_address=" + contractAddress;
   }
 
   if (filter) {
@@ -95,8 +141,6 @@ export const getEvents = async (
   //console.log(url);
   const results = await axios.get(url);
   const data = results.data.asset_events;
-  console.log(data);
-  //console.log(openseaDataToEvents(data, address));
 
   return openseaDataToEvents(data, address);
 };
@@ -125,7 +169,7 @@ const determineAction = (openseaData: any, address: string): Action => {
 
   // This needs to be improved as I understand the data and different cases better
   // For example a case that is currently broken is nfts being purchased from other marketplaces
-  // http://localhost:3000/?wallet=0x1eb59fb4c8b6675ba2a8f4153f99bdef6ca24696&collectionSlug=rarible&filter=transfer
+  // http://localhost:3000/?wallet=0x1eb59fb4c8b6675ba2a8f4153f99bdef6ca24696&contract_address=rarible&filter=transfer
   if (
     transactionParticipant &&
     transactionStarter.address.toUpperCase() ===
