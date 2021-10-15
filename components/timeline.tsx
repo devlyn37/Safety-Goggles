@@ -5,6 +5,7 @@ import styles from "../styles/timeline.module.css";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/dist/client/router";
 import { SearchCriteria } from "../pages";
+import { VerticalTimeline, Interval } from "./verticalTimeline";
 
 const weiToEth = (wei: number): number => {
   return wei / Math.pow(10, 18);
@@ -61,20 +62,7 @@ const Timeline: FC<{
     return <div>{errorMsg}</div>;
   }
 
-  if ((loading && search.page === 1) || loadingWallet) {
-    return (
-      <div className={styles.eventGrid}>
-        <LoadingCard />
-        <LoadingCard />
-        <LoadingCard />
-        <LoadingCard />
-        <LoadingCard />
-        <LoadingCard />
-      </div>
-    );
-  }
-
-  if (!data.length) {
+  if (!loading && !data.length) {
     return <div>No Results</div>; // To-do expand this
   }
 
@@ -82,27 +70,47 @@ const Timeline: FC<{
 
   return (
     <>
-      <div className={styles.eventGrid}>
-        {groupings.map((grouping, i) => {
-          if (grouping.length > 3) {
-            return (
-              <EventGrouping key={grouping[0].key + i} grouping={grouping} />
-            );
-          } else {
-            return <EventList key={grouping[0].key + i} grouping={grouping} />;
-          }
-        })}
-        {loading && search.page > 1 ? (
-          <>
-            <LoadingCard />
-            <LoadingCard />
-            <LoadingCard />
-            <LoadingCard />
-            <LoadingCard />
-            <LoadingCard />
-          </>
-        ) : null}
-      </div>
+      <VerticalTimeline>
+        <Interval interval={"2016 - 2018"}>
+          <div className={styles.eventGrid}>
+            {(loading && search.page === 1) || loadingWallet ? (
+              <>
+                <LoadingCard />
+                <LoadingCard />
+                <LoadingCard />
+                <LoadingCard />
+                <LoadingCard />
+                <LoadingCard />
+              </>
+            ) : (
+              groupings.map((grouping, i) => {
+                if (grouping.length > 3) {
+                  return (
+                    <EventGrouping
+                      key={grouping[0].key + i}
+                      grouping={grouping}
+                    />
+                  );
+                } else {
+                  return (
+                    <EventList key={grouping[0].key + i} grouping={grouping} />
+                  );
+                }
+              })
+            )}
+            {loading && search.page > 1 ? (
+              <>
+                <LoadingCard />
+                <LoadingCard />
+                <LoadingCard />
+                <LoadingCard />
+                <LoadingCard />
+                <LoadingCard />
+              </>
+            ) : null}
+          </div>
+        </Interval>
+      </VerticalTimeline>
       <div className={styles.loadMoreButtonContainer} onClick={loadMore}>
         <button className={styles.loadMoreButton} onClick={loadMore}>
           {" "}
