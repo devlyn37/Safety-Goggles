@@ -90,6 +90,7 @@ export default function Home() {
 
       setErrorMsg("");
     } catch (e) {
+      throw e;
       setErrorMsg(e.message);
     }
 
@@ -119,6 +120,7 @@ export default function Home() {
 
       setErrorMsg("");
     } catch (e) {
+      throw e;
       setErrorMsg(e.message);
     }
 
@@ -153,21 +155,25 @@ export default function Home() {
   };
 
   const handleStartDateChange = (startDate: string) => {
-    const s = { ...search, startDate: startDate };
+    const s = { ...search, startDate: startDate, page: 1 };
     setSearch(s);
     updateUrl(s);
   };
 
   const handleEndDateChange = (endDate: string) => {
-    const s = { ...search, endDate: endDate };
+    const s = { ...search, endDate: endDate, page: 1 };
     setSearch(s);
     updateUrl(s);
   };
 
   const handleCollectionChange = (collection: CollectionInfo) => {
+    // Seems like its possible to have an asset without a contract address
+    // look into this ecumenopolis-by-joshua-bagley
+
     const s = {
       ...search,
       contractAddress: collection ? collection.contractAddress : "",
+      page: 1,
     };
     setCollection(collection);
 
@@ -187,7 +193,7 @@ export default function Home() {
   };
 
   const handleFilterChange = (filter: Filter) => {
-    const s = { ...search, filter: filter };
+    const s = { ...search, filter: filter, page: 1 };
     setSearch(s);
     updateUrl(s);
   };
@@ -337,6 +343,7 @@ export default function Home() {
               startDate={search.startDate}
               endDate={search.endDate}
               collection={collection}
+              filter={search.filter}
               loadingWallet={loadingWallet}
               loadingCollections={loadingCollections}
               handleCollectionChange={handleCollectionChange}

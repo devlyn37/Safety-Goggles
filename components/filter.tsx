@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import styles from "../styles/search.module.css";
 import { CollectionInfo } from "../utils/data";
 import { CollectionSearch } from "./collectionSearch";
@@ -11,6 +11,7 @@ export const Filter: FC<{
   loadingWallet: boolean;
   loadingCollections: boolean;
   collection: CollectionInfo;
+  filter: "successful" | "transfer" | "";
   handleStartDateChange: (startDate: string) => void;
   handleEndDateChange: (endDate: string) => void;
   handleCollectionChange: (col: CollectionInfo) => void;
@@ -22,14 +23,12 @@ export const Filter: FC<{
   loadingWallet,
   loadingCollections,
   collection,
+  filter,
   handleStartDateChange,
   handleEndDateChange,
   handleCollectionChange,
   handleFilterChange,
 }) => {
-  const [buySellCheck, setBuySellCheck] = useState<boolean>(false);
-  const [mintTransCheck, setMintTransCheck] = useState<boolean>(false);
-
   const onStartDateChange = (event) => {
     handleStartDateChange(event.target.value);
   };
@@ -39,17 +38,11 @@ export const Filter: FC<{
   };
 
   const handleBuySellChange = () => {
-    setBuySellCheck(!buySellCheck);
-    setMintTransCheck(false);
-
-    handleFilterChange(buySellCheck ? "" : "successful");
+    handleFilterChange(filter === "successful" ? "" : "successful");
   };
 
   const handleMintTransChange = () => {
-    setMintTransCheck(!mintTransCheck);
-    setBuySellCheck(false);
-
-    handleFilterChange(mintTransCheck ? "" : "transfer");
+    handleFilterChange(filter === "transfer" ? "" : "transfer");
   };
 
   const checks = (
@@ -82,7 +75,7 @@ export const Filter: FC<{
         >
           <input
             type="checkbox"
-            checked={buySellCheck}
+            checked={filter === "successful"}
             onChange={handleBuySellChange}
             style={{ marginRight: "8px" }}
           />
@@ -106,7 +99,7 @@ export const Filter: FC<{
         >
           <input
             type="checkbox"
-            checked={mintTransCheck}
+            checked={filter === "transfer"}
             onChange={handleMintTransChange}
             style={{ marginRight: "8px" }}
           />

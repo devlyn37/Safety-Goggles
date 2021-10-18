@@ -44,13 +44,18 @@ export const getCollections = async (
     axios.get(eventUrl),
   ]);
 
-  const eventToCollectionInfo = (d: any): CollectionInfo => ({
-    name: d.asset.collection.name,
-    slug: d.asset.collection.slug,
-    imgUrl: d.asset.collection.image_url,
-    contractAddress: d.asset.asset_contract.address,
-    holding: "0",
-  });
+  const eventToCollectionInfo = (d: any): CollectionInfo => {
+    // Account for bundle sales To-do expand this
+    const asset = d.asset ?? d.asset_bundle.assets[0];
+
+    return {
+      name: asset.collection.name,
+      slug: asset.collection.slug,
+      imgUrl: asset.collection.image_url,
+      contractAddress: asset.asset_contract.address,
+      holding: "0",
+    };
+  };
 
   const collectionToCollectionInfo = (c: any): CollectionInfo => ({
     name: c.name,

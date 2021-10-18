@@ -1,15 +1,55 @@
 import React, { FC, useState, useEffect } from "react";
-import { NFTEvent, getEvents } from "../utils/data";
-import { groupEvents } from "../utils/data";
+import { NFTEvent, getEvents, groupEvents } from "../utils/data";
 import styles from "../styles/timeline.module.css";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/dist/client/router";
 import { SearchCriteria } from "../pages";
+import { subDays, differenceInDays, format } from "date-fns";
 import { VerticalTimeline, Interval } from "./verticalTimeline";
 
 const weiToEth = (wei: number): number => {
   return wei / Math.pow(10, 18);
 };
+
+const groupAndOrganizeTimeline = (
+  events: NFTEvent[]
+): Map<string, NFTEvent[][]> => {
+  // event times are in UTC
+  const buckets: NFTEvent[][] = [];
+  const now = new Date();
+
+  for (const event of events) {
+    const eventDate = new Date(event.date);
+    const diff = differenceInDays(now, eventDate);
+    const bucketIndex = Math.floor(diff / 7);
+
+    if (buckets[bucketIndex]) {
+      buckets[bucketIndex].push(event);
+    } else {
+      buckets[bucketIndex] = [event];
+    }
+  }
+
+  const map = new Map<string, NFTEvent[][]>();
+  buckets.forEach((bucket: NFTEvent[], i) => {
+    if (!bucket) {
+      return;
+    }
+
+    const dateFormat = "MMM d, yyyy";
+
+    const rangeString = `${format(subDays(now, (i + 1) * 7), dateFormat)} - ${
+      i === 0 ? "Today" : format(subDays(now, i * 7), dateFormat)
+    }`;
+
+    map.set(rangeString, groupEvents(bucket));
+  });
+
+  return map;
+};
+
+const GROUPING_MIN = 3;
+const PAGE_LENGTH = 120;
 
 const Timeline: FC<{
   search: SearchCriteria;
@@ -33,13 +73,15 @@ const Timeline: FC<{
       try {
         const events = await getEvents(
           search.address,
-          60,
-          60 * (search.page - 1),
+          PAGE_LENGTH,
+          PAGE_LENGTH * (search.page - 1),
           search.startDate,
           search.endDate,
           search.contractAddress,
           search.filter
         );
+
+        // to-do: Page must be separate to avoid appending when a filter or etc changes
 
         if (search.page > 1) {
           setData([...data, ...events]);
@@ -47,6 +89,7 @@ const Timeline: FC<{
           setData(events);
         }
       } catch (e) {
+        throw e;
         setErrorMsg(e.message);
       }
 
@@ -58,65 +101,69 @@ const Timeline: FC<{
     }
   }, [search]);
 
+  const loadingFirstPage = loading && search.page === 1;
+  const loadingMore = loading && search.page > 1;
+
+  // To-do expand these two
+
   if (errorMsg) {
     return <div>{errorMsg}</div>;
   }
 
   if (!loading && !data.length) {
-    return <div>No Results</div>; // To-do expand this
+    return <div>No Results</div>;
   }
 
-  const groupings = groupEvents(data);
+  if (loadingFirstPage || loadingWallet) {
+    return (
+      <VerticalTimeline>
+        <Interval interval={"Today - ..."}>
+          <div className={styles.eventGrid}>
+            <LoadingGroup />
+          </div>
+        </Interval>
+      </VerticalTimeline>
+    );
+  }
+
+  const timelineData: Map<string, NFTEvent[][]> =
+    groupAndOrganizeTimeline(data);
+  const keys = Array.from(timelineData.keys());
 
   return (
     <>
       <VerticalTimeline>
-        <Interval interval={"2016 - 2018"}>
-          <div className={styles.eventGrid}>
-            {(loading && search.page === 1) || loadingWallet ? (
-              <>
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
-              </>
-            ) : (
-              groupings.map((grouping, i) => {
-                if (grouping.length > 3) {
-                  return (
+        {keys.map((key: string, i: number) => {
+          const groupings = timelineData.get(key);
+
+          return (
+            <Interval interval={key} key={key}>
+              <div className={styles.eventGrid}>
+                {groupings.map((grouping, i) => {
+                  return grouping.length > GROUPING_MIN ? (
                     <EventGrouping
                       key={grouping[0].key + i}
                       grouping={grouping}
                     />
-                  );
-                } else {
-                  return (
+                  ) : (
                     <EventList key={grouping[0].key + i} grouping={grouping} />
                   );
-                }
-              })
-            )}
-            {loading && search.page > 1 ? (
-              <>
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
-                <LoadingCard />
-              </>
-            ) : null}
-          </div>
-        </Interval>
+                })}
+
+                {loadingMore && i === keys.length - 1 ? <LoadingGroup /> : null}
+              </div>
+            </Interval>
+          );
+        })}
       </VerticalTimeline>
-      <div className={styles.loadMoreButtonContainer} onClick={loadMore}>
-        <button className={styles.loadMoreButton} onClick={loadMore}>
-          {" "}
-          {loading ? "Loading..." : "Load more"}
-        </button>
-      </div>
+      {loadingFirstPage ? null : (
+        <div className={styles.loadMoreButtonContainer} onClick={loadMore}>
+          <button className={styles.loadMoreButton} onClick={loadMore}>
+            {" "}
+            {loading ? "Loading..." : "Load more"}
+          </button>
+        </div>
+      )}
     </>
   );
 };
@@ -258,6 +305,17 @@ const EventCard: FC<{
       {children}
     </div>
   </div>
+);
+
+const LoadingGroup: FC = () => (
+  <>
+    <LoadingCard />
+    <LoadingCard />
+    <LoadingCard />
+    <LoadingCard />
+    <LoadingCard />
+    <LoadingCard />
+  </>
 );
 
 const LoadingCard: FC = () => {
