@@ -1,0 +1,58 @@
+.heading {
+  margin: 0;
+  font-size: 3em;
+}
+
+.headingContainer {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "name collection";
+  gap: 20px;
+}
+
+.collection {
+  grid-area: collection;
+}
+
+.name {
+  grid-area: name;
+}
+
+.collectionImg {
+  height: 70px;
+  width: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.collectionName {
+  margin: 0px 0px 5px 0px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 24px;
+}
+
+@media (max-width: 700px) {
+  .heading {
+    font-size: 2em;
+  }
+
+  .collectionImg {
+    height: 45px;
+    width: 45px;
+    margin-right: 10px;
+  }
+
+  .collectionName {
+    font-size: 18px;
+  }
+
+  .headingContainer {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "name"
+      "collection";
+  }
+}

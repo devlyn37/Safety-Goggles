@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useMediaQuery } from "../hooks/useMediaQuery";
 import {
   CollectionInfo,
   resolveWallet,
@@ -11,6 +12,7 @@ import { useRouter } from "next/dist/client/router";
 import { Filter } from "../components/filter";
 import { Header } from "../components/header";
 import { ParsedUrlQueryInput } from "querystring";
+import styles from "../styles/home.module.css";
 
 export type Filter = "successful" | "transfer" | "";
 
@@ -44,15 +46,21 @@ export default function Home() {
     contractAddress: "",
     page: 1,
   });
+
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [loadingWallet, setLoadingWallet] = useState<boolean>(false);
   const [collection, setCollection] = useState<CollectionInfo | null>(null);
   const [loadingCollection, setLoadingCollection] = useState<boolean>(false);
   const [collections, setCollections] = useState<CollectionInfo[]>([]);
   const [loadingCollections, setLoadingCollections] = useState<boolean>(false);
+  const [showFilters, setShowFilters] = useState(true);
 
   const loadMore = () => {
     setSearch({ ...search, page: search.page + 1 });
+  };
+
+  const handleShowFilters = () => {
+    setShowFilters(!showFilters);
   };
 
   const handleSearch = async (
@@ -302,62 +310,57 @@ export default function Home() {
 
   return (
     <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "stretch",
-        minHeight: "100vh",
-      }}
+      className={`${styles.pageContainer} ${
+        showFilters ? "" : styles.collapsedContainer
+      }`}
     >
-      <Search
-        handleSearch={handleSearch}
-        wallet={router.query.wallet as string}
-      />
+      <div className={styles.nav}>
+        <Search
+          handleSearch={handleSearch}
+          wallet={router.query.wallet as string}
+        />
+      </div>
+      <div className={styles.header}>
+        <Header
+          address={search.address}
+          ens={search.ens}
+          endDate={search.endDate}
+          startDate={search.startDate}
+          showFilters={showFilters}
+          collection={collection}
+          loadingCollection={loadingCollection}
+          loadingWallet={loadingWallet}
+          handleShowFilters={handleShowFilters}
+        />
+        {errorMsg ? <div>{errorMsg}</div> : null}
+      </div>
       <div
-        style={{
-          width: "100%",
-          flex: 1,
-          minHeight: "1vh",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          padding: "0px 20px",
-        }}
+        className={`${styles.side} ${showFilters ? "" : styles.collapsedSide}`}
       >
-        {errorMsg ? (
-          <div>{errorMsg}</div>
-        ) : loadingWallet || search.address ? (
-          <>
-            <Header
-              address={search.address}
-              ens={search.ens}
-              endDate={search.endDate}
-              startDate={search.startDate}
-              collection={collection}
-              loadingCollection={loadingCollection}
-              loadingWallet={loadingWallet}
-            />
-            <Filter
-              collections={collections}
-              startDate={search.startDate}
-              endDate={search.endDate}
-              collection={collection}
-              filter={search.filter}
-              loadingWallet={loadingWallet}
-              loadingCollections={loadingCollections}
-              handleCollectionChange={handleCollectionChange}
-              handleEndDateChange={handleEndDateChange}
-              handleStartDateChange={handleStartDateChange}
-              handleFilterChange={handleFilterChange}
-            />
-            <Timeline
-              search={search}
-              loadMore={loadMore}
-              loadingWallet={loadingWallet}
-            />
-          </>
-        ) : null}
+        <Filter
+          collections={collections}
+          startDate={search.startDate}
+          endDate={search.endDate}
+          collection={collection}
+          filter={search.filter}
+          loadingWallet={loadingWallet}
+          loadingCollections={loadingCollections}
+          handleCollectionChange={handleCollectionChange}
+          handleEndDateChange={handleEndDateChange}
+          handleStartDateChange={handleStartDateChange}
+          handleFilterChange={handleFilterChange}
+        />{" "}
+      </div>
+      <div
+        className={`${styles.main} ${styles.column} ${
+          showFilters ? styles.collapsedMain : ""
+        }`}
+      >
+        <Timeline
+          search={search}
+          loadMore={loadMore}
+          loadingWallet={loadingWallet}
+        />
       </div>
     </div>
   );

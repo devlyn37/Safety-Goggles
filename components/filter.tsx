@@ -1,5 +1,5 @@
 import { FC } from "react";
-import styles from "../styles/search.module.css";
+import styles from "../styles/filter.module.css";
 import { CollectionInfo } from "../utils/data";
 import { CollectionSearch } from "./collectionSearch";
 import ContentLoader from "react-content-loader";
@@ -46,9 +46,9 @@ export const Filter: FC<{
   };
 
   const checks = (
-    <div style={{ color: "dimgray" }}>
-      Activity Type:
-      <br />
+    <div className={styles.item}>
+      <div className={styles.label}>Activity Type</div>
+
       <div
         style={{
           display: "flex",
@@ -60,13 +60,12 @@ export const Filter: FC<{
           style={{
             marginTop: "4px",
             height: "38px",
-            border: "solid 1px lightgray",
             borderRadius: "10px",
             paddingLeft: "8px",
             fontSize: "16px",
             paddingRight: "12px",
             color: "dimgray",
-            backgroundColor: "white",
+            backgroundColor: "#f2f2f2",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -85,13 +84,12 @@ export const Filter: FC<{
           style={{
             marginTop: "4px",
             height: "38px",
-            border: "solid 1px lightgray",
             borderRadius: "10px",
             paddingLeft: "8px",
             fontSize: "16px",
             paddingRight: "12px",
             color: "dimgray",
-            backgroundColor: "white",
+            backgroundColor: "#f2f2f2",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
@@ -109,77 +107,86 @@ export const Filter: FC<{
     </div>
   );
 
+  const dates = (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
+        flexWrap: "wrap",
+        justifyContent: "flex-start",
+      }}
+      className={styles.item}
+    >
+      <div className={styles.label}>Date Range</div>
+
+      <label>
+        <span
+          style={{ color: "dimgray", display: "inline-block", width: "55px" }}
+        >
+          From
+        </span>
+        <input
+          style={{
+            marginTop: "4px",
+            height: "38px",
+            borderRadius: "10px",
+            paddingLeft: "8px",
+            fontSize: "16px",
+            paddingRight: "4px",
+            color: "dimgray",
+            border: "none",
+            backgroundColor: "#f2f2f2",
+            marginBottom: "20px",
+          }}
+          type="date"
+          placeholder="from"
+          value={startDate}
+          onChange={onStartDateChange}
+        />
+      </label>
+      <label>
+        <span
+          style={{ color: "dimgray", display: "inline-block", width: "55px" }}
+        >
+          To
+        </span>
+        <input
+          style={{
+            marginTop: "4px",
+            height: "38px",
+            borderRadius: "10px",
+            paddingLeft: "8px",
+            fontSize: "16px",
+            paddingRight: "4px",
+            border: "none",
+            color: "dimgray",
+            backgroundColor: "#f2f2f2",
+          }}
+          type="date"
+          placeholder="from"
+          value={endDate}
+          onChange={onEndDateChange}
+        />
+      </label>
+    </div>
+  );
+
   return (
-    <div className={styles.controlsContainer}>
-      {loadingWallet ? (
-        <Placeholder />
-      ) : (
-        <div style={{ flex: 1, minWidth: "200px", maxWidth: "600px" }}>
-          <label style={{ color: "dimgray" }}>
-            Collection:
-            <br />
-            <div style={{ marginTop: "5px" }}>
-              <CollectionSearch
-                collections={collections}
-                loading={loadingCollections} // To-do
-                value={collection}
-                onChange={handleCollectionChange}
-              />
-            </div>
-          </label>
+    <div className={styles.container}>
+      <label className={styles.item}>
+        <div className={styles.label}>Collection</div>
+        <div style={{ marginTop: "5px" }}>
+          <CollectionSearch
+            collections={collections}
+            loading={loadingCollections} // To-do
+            value={collection}
+            onChange={handleCollectionChange}
+          />
         </div>
-      )}
-      {loadingWallet ? (
-        <Placeholder />
-      ) : (
-        <label style={{ color: "dimgray" }}>
-          from:
-          <br />
-          <input
-            style={{
-              marginTop: "4px",
-              height: "38px",
-              borderRadius: "10px",
-              paddingLeft: "8px",
-              fontSize: "16px",
-              paddingRight: "4px",
-              color: "dimgray",
-              border: "solid 1px lightgray",
-              backgroundColor: "white",
-            }}
-            type="date"
-            placeholder="from"
-            value={startDate}
-            onChange={onStartDateChange}
-          />
-        </label>
-      )}
-      {loadingWallet ? (
-        <Placeholder />
-      ) : (
-        <label style={{ color: "dimgray" }}>
-          until:
-          <br />
-          <input
-            style={{
-              marginTop: "4px",
-              height: "38px",
-              borderRadius: "10px",
-              paddingLeft: "8px",
-              fontSize: "16px",
-              paddingRight: "4px",
-              border: "solid 1px lightgray",
-              color: "dimgray",
-              backgroundColor: "white",
-            }}
-            type="date"
-            placeholder="from"
-            value={endDate}
-            onChange={onEndDateChange}
-          />
-        </label>
-      )}
-      {loadingWallet ? <Placeholder /> : checks}
+      </label>
+      {dates}
+      {checks}
     </div>
   );
 };

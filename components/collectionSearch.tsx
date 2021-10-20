@@ -12,6 +12,7 @@ export const CollectionSearch: FC<{
     control: (provided) => ({
       ...provided,
       borderRadius: "10px",
+      border: "none",
     }),
   };
 
@@ -57,6 +58,7 @@ export const CollectionSearch: FC<{
   return (
     <Select<CollectionInfo>
       value={value}
+      placeholder="Select a collection..."
       onChange={onChange}
       getOptionLabel={(option) => option.name}
       getOptionValue={(option) => option.slug}
@@ -71,7 +73,8 @@ export const CollectionSearch: FC<{
         colors: {
           ...theme.colors,
           primary25: "lightgray",
-          primary: "black",
+          primary: "#f2f2f2",
+          neutral0: "#f2f2f2",
         },
       })}
     />

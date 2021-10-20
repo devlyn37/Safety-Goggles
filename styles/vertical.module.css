@@ -60,11 +60,6 @@
 }
 
 @media (min-width: 0px) {
-  .separator {
-    border-bottom: 1px solid lightgray;
-    margin-bottom: 1em;
-  }
-
   .body {
     left: 0em;
     width: 100%;
@@ -75,17 +70,13 @@
   }
 }
 
-@media (min-width: 600px) {
-  .separator {
-    display: none;
-  }
-
+@media (min-width: 700px) {
   .body {
     left: 2em;
     width: calc(100% - 2em);
   }
 
   .timeline::before {
-    background-color: lightgray;
+    background-color: #f2f2f2;
   }
 }

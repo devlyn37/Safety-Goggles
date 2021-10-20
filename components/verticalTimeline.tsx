@@ -13,7 +13,6 @@ export const Interval = ({ interval, children }) => (
     <label className={`${styles.icon} ${styles.contained}`}></label>
     <div className={`${styles.body} ${styles.contained}`}>
       <p className={`${styles.date} ${styles.contained}`}>{interval}</p>
-      <div className={`${styles.separator} ${styles.contained}`}></div>
       {children}
     </div>
   </li>
