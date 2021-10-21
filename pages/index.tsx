@@ -57,6 +57,7 @@ export default function Home() {
   const [showFilters, setShowFilters] = useState(true);
 
   const loadMore = () => {
+    console.log("Loading more baby!");
     setSearch({ ...search, page: search.page + 1 });
   };
 

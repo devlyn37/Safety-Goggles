@@ -6,6 +6,7 @@ import { useRouter } from "next/dist/client/router";
 import { SearchCriteria } from "../pages";
 import { subDays, differenceInDays, format } from "date-fns";
 import { VerticalTimeline, Interval } from "./verticalTimeline";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const weiToEth = (wei: number): number => {
   return wei / Math.pow(10, 18);
@@ -59,6 +60,7 @@ const Timeline: FC<{
   const [data, setData] = useState<NFTEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [hasMore, setHasMore] = useState<boolean>(true);
   const router = useRouter();
 
   // Hook into routing for quicker loading response on first load
@@ -71,7 +73,7 @@ const Timeline: FC<{
       setLoading(true);
 
       try {
-        const events = await getEvents(
+        const [events, moreData] = await getEvents(
           search.address,
           PAGE_LENGTH,
           PAGE_LENGTH * (search.page - 1),
@@ -81,13 +83,13 @@ const Timeline: FC<{
           search.filter
         );
 
-        // to-do: Page must be separate to avoid appending when a filter or etc changes
-
         if (search.page > 1) {
           setData([...data, ...events]);
         } else {
           setData(events);
         }
+
+        setHasMore(moreData);
       } catch (e) {
         throw e;
         setErrorMsg(e.message);
@@ -131,8 +133,19 @@ const Timeline: FC<{
   const keys = Array.from(timelineData.keys());
 
   return (
-    <>
-      <VerticalTimeline>
+    <VerticalTimeline>
+      <InfiniteScroll
+        dataLength={data.length}
+        next={loadMore}
+        hasMore={hasMore}
+        loader={null}
+        scrollThreshold={0.97}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>This is the beginning for {search.ens ?? search.address}!</b>
+          </p>
+        }
+      >
         {keys.map((key: string, i: number) => {
           const groupings = timelineData.get(key);
 
@@ -155,16 +168,8 @@ const Timeline: FC<{
             </Interval>
           );
         })}
-      </VerticalTimeline>
-      {loadingFirstPage ? null : (
-        <div className={styles.loadMoreButtonContainer} onClick={loadMore}>
-          <button className={styles.loadMoreButton} onClick={loadMore}>
-            {" "}
-            {loading ? "Loading..." : "Load more"}
-          </button>
-        </div>
-      )}
-    </>
+      </InfiniteScroll>
+    </VerticalTimeline>
   );
 };
 

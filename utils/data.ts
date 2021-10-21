@@ -122,7 +122,7 @@ export const getEvents = async (
   endDate?: string,
   contractAddress?: string,
   filter?: string
-): Promise<NFTEvent[]> => {
+): Promise<[NFTEvent[], boolean]> => {
   let url = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
 
   // To-do lets use query string here
@@ -146,8 +146,9 @@ export const getEvents = async (
   //console.log(url);
   const results = await axios.get(url);
   const data = results.data.asset_events;
+  const moreData = data.length === limit;
 
-  return openseaDataToEvents(data, address);
+  return [openseaDataToEvents(data, address), moreData];
 };
 
 const determineAction = (openseaData: any, address: string): Action => {

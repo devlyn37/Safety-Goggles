@@ -64,22 +64,6 @@
   font-size: 12px;
 }
 
-.loadMoreButtonContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.loadMoreButton {
-  font-size: 18px;
-  background-color: black;
-  color: white;
-  border: none;
-  padding: 10px;
-  margin: 50px 0px;
-  border-radius: 10px;
-}
-
 .link {
   text-decoration: underline;
 }
