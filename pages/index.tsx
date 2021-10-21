@@ -13,6 +13,7 @@ import { Filter } from "../components/filter";
 import { Header } from "../components/header";
 import { ParsedUrlQueryInput } from "querystring";
 import styles from "../styles/home.module.css";
+import { Control } from "../components/control";
 
 export type Filter = "successful" | "transfer" | "";
 
@@ -326,30 +327,36 @@ export default function Home() {
           ens={search.ens}
           endDate={search.endDate}
           startDate={search.startDate}
-          showFilters={showFilters}
           collection={collection}
           loadingCollection={loadingCollection}
           loadingWallet={loadingWallet}
-          handleShowFilters={handleShowFilters}
         />
         {errorMsg ? <div>{errorMsg}</div> : null}
+      </div>
+      <div className={styles.control}>
+        <Control
+          showFilters={showFilters}
+          handleShowFilters={handleShowFilters}
+        ></Control>
       </div>
       <div
         className={`${styles.side} ${showFilters ? "" : styles.collapsedSide}`}
       >
-        <Filter
-          collections={collections}
-          startDate={search.startDate}
-          endDate={search.endDate}
-          collection={collection}
-          filter={search.filter}
-          loadingWallet={loadingWallet}
-          loadingCollections={loadingCollections}
-          handleCollectionChange={handleCollectionChange}
-          handleEndDateChange={handleEndDateChange}
-          handleStartDateChange={handleStartDateChange}
-          handleFilterChange={handleFilterChange}
-        />{" "}
+        <div className={styles.sidestick}>
+          <Filter
+            collections={collections}
+            startDate={search.startDate}
+            endDate={search.endDate}
+            collection={collection}
+            filter={search.filter}
+            loadingWallet={loadingWallet}
+            loadingCollections={loadingCollections}
+            handleCollectionChange={handleCollectionChange}
+            handleEndDateChange={handleEndDateChange}
+            handleStartDateChange={handleStartDateChange}
+            handleFilterChange={handleFilterChange}
+          />
+        </div>
       </div>
       <div
         className={`${styles.main} ${styles.column} ${

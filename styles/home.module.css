@@ -6,6 +6,7 @@
   grid-template-areas:
     "nav     nav"
     "header  header"
+    "control control"
     "side main";
 }
 
@@ -18,11 +19,22 @@
   grid-template-areas:
     "nav"
     "header"
+    "control"
     "main";
 }
 
 .header {
   grid-area: header;
+}
+
+.control {
+  grid-area: control;
+  position: -webkit-sticky;
+  position: sticky;
+  height: 70px;
+  top: 0px;
+  background-color: white;
+  z-index: 1;
 }
 
 .nav {
@@ -31,6 +43,13 @@
 
 .side {
   grid-area: side;
+}
+
+.sidestick {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 70px;
+  left: 0px;
 }
 
 .main {
@@ -50,6 +69,7 @@
     grid-template-areas:
       "nav"
       "header"
+      "control"
       "main";
   }
 
