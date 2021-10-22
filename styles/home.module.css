@@ -52,8 +52,10 @@
   left: 0px;
 }
 
+/* overflow: visible for event card boxshadow */
 .main {
   grid-area: main;
+  overflow: visible;
 }
 
 .column {

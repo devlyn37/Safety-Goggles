@@ -187,11 +187,7 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
 
   return (
     <>
-      <EventCard
-        key={event.key}
-        imgUrl={event.collectionImgUrl}
-        boxShadow={true}
-      >
+      <EventCard key={event.key} imgUrl={event.collectionImgUrl}>
         <div className={styles.titleContainer}>
           <h3 className={styles.title}>
             {event.action} {grouping.length} NFTs{" "}
@@ -296,13 +292,14 @@ const Event: FC<{ event: NFTEvent }> = ({ event }) => (
 const EventCard: FC<{
   imgUrl: string;
   boxShadow?: boolean;
-}> = ({ children, imgUrl, boxShadow }) => (
+}> = ({ children, imgUrl }) => (
   <div
     className={styles.eventCard}
-    style={{
-      border: "4px solid black",
-      boxShadow: boxShadow ? "0.3rem 0.7rem black" : "",
-    }}
+    style={
+      {
+        //border: "2px solid #f2f2f2",
+      }
+    }
   >
     <img className={styles.eventImg} src={imgUrl} loading="lazy"></img>
     <div
@@ -316,7 +313,9 @@ const EventCard: FC<{
         backgroundColor: "white",
         color: "black",
         borderRadius: "0px 0px 25px 25px",
-        borderTop: "4px solid black",
+        borderBottom: "2px solid #f2f2f2",
+        borderLeft: "2px solid #f2f2f2",
+        borderRight: "2px solid #f2f2f2",
       }}
     >
       {children}

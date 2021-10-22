@@ -37,6 +37,7 @@ interface Params extends ParsedUrlQueryInput {
 
 export default function Home() {
   const router = useRouter();
+  const smallScreen = useMediaQuery("(max-width: 700px)");
 
   const [search, setSearch] = useState<SearchCriteria>({
     address: "",
@@ -55,6 +56,10 @@ export default function Home() {
   const [collections, setCollections] = useState<CollectionInfo[]>([]);
   const [loadingCollections, setLoadingCollections] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState(true);
+
+  useEffect(() => {
+    setShowFilters(!smallScreen);
+  }, [smallScreen]);
 
   const loadMore = () => {
     console.log("Loading more baby!");
