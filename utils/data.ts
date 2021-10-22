@@ -308,7 +308,12 @@ export const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
 export const resolveWallet = async (
   input: string
 ): Promise<[string, string]> => {
-  const provider = new ethers.providers.EtherscanProvider(1, etherScanAPIKey);
+  // const provider = new ethers.providers.EtherscanProvider(1, etherScanAPIKey);
+  const provider = new ethers.providers.AlchemyProvider(
+    1,
+    "tGyGfxK0E7NHtzkVyqmzRBqRji4jtaBa"
+  );
+
   let address;
   let ens;
 
