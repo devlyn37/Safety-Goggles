@@ -12,104 +12,71 @@ export const Header: FC<{
   loadingCollection: boolean;
   loadingWallet: boolean;
 }> = ({ ens, address, collection, loadingWallet, loadingCollection }) => {
-  if (loadingWallet) {
-    return <Placeholder />;
-  }
-
   return (
-    <div style={{ marginBottom: "35px", paddingTop: "20px" }}>
-      <div className={styles.headingContainer}>
-        <div className={styles.name}>
-          <h1 className={styles.heading}>{ens ? ens : address}</h1>
-          <div
-            style={{
-              display: "inline-block",
-              marginTop: "10px",
-              padding: "5px 10px",
-              border: "1px solid lightgray",
-              borderRadius: "10px",
-              width: "100%",
-              color: "dimgray",
-              overflow: "hidden",
-              whiteSpace: "nowrap",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {address}
-          </div>
-        </div>
-        {loadingCollection ? (
-          <ContentLoader
-            style={{ width: "300px", height: "38px", borderRadius: "15px" }}
-            speed={2}
-            viewBox="0 0 300 38"
-            backgroundColor="#f3f3f3"
-            foregroundColor="#ecebeb"
-          >
-            <rect x="0" y="0" rx="0" ry="0" width="10000" height="10000" />
-          </ContentLoader>
-        ) : collection ? (
-          <CollectionDisplay collection={collection} />
-        ) : null}
+    <div className={styles.headingContainer}>
+      <div className={styles.nameContainer}>
+        {loadingWallet ? (
+          <Placeholder />
+        ) : (
+          <>
+            {ens && <h1 className={styles.ens}>{ens}</h1>}
+            <div className={styles.address}>{address}</div>
+          </>
+        )}
       </div>
+      {collection ? (
+        <div className={styles.collection}>
+          {loadingCollection ? (
+            <CollectionPlaceholder />
+          ) : (
+            <>
+              {" "}
+              <img src={collection.imgUrl} className={styles.collectionImg} />
+              <div className={styles.collectionTextContainer}>
+                <h3 className={styles.collectionName}>{collection.name}</h3>
+                <div className={styles.collectionSubText}>
+                  {`Floor: ${collection.floor} ETH, Holding: ${collection.holding}`}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      ) : null}
     </div>
   );
 };
 
-const CollectionDisplay: FC<{
-  collection: CollectionInfo;
-}> = ({ collection }) => {
+// To-do upon final styling update: make these close to actual
+
+const CollectionPlaceholder: FC = (props) => {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "flex-start",
-        alignItems: "center",
-      }}
-      className={styles.collection}
+    <ContentLoader
+      style={{ width: "396px", height: "70px" }}
+      speed={2}
+      viewBox="0 0 396 70"
+      backgroundColor="#f3f3f3"
+      foregroundColor="#ecebeb"
+      {...props}
     >
-      <img src={collection.imgUrl} className={styles.collectionImg} />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-          alignItems: "stretch",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        }}
-      >
-        <h3 className={styles.collectionName}>{collection.name}</h3>
-        <div style={{ color: "gray" }}>
-          {`Floor: ${collection.floor} ETH, Holding: ${collection.holding}`}
-        </div>
-      </div>
-    </div>
+      <circle cx="35" cy="35" r="35" />
+      <rect x="80" y="10" rx="15" ry="15" width="170" height="30" />
+      <rect x="80" y="45" rx="4" ry="4" width="250" height="15" />
+    </ContentLoader>
   );
 };
 
 const Placeholder: FC = (props) => {
   return (
-    <div
-      style={{
-        marginBottom: "30px",
-        marginTop: "20px",
-        height: "38px",
-        width: "300px",
-        borderRadius: "25px",
-      }}
+    <ContentLoader
+      style={{ width: "407px", height: "93px" }}
+      speed={2}
+      viewBox="0 0 407 93"
+      backgroundColor="#f3f3f3"
+      foregroundColor="#ecebeb"
+      {...props}
     >
-      <ContentLoader
-        style={{ width: "100%", height: "100%", borderRadius: "15px" }}
-        speed={2}
-        viewBox="0 0 300 38"
-        backgroundColor="#f3f3f3"
-        foregroundColor="#ecebeb"
-        {...props}
-      >
-        <rect x="0" y="0" rx="0" ry="0" width="10000" height="10000" />
-      </ContentLoader>
-    </div>
+      <rect x="0" y="10" rx="15" ry="15" width="250" height="36" />
+      <rect x="0" y="63" rx="10" ry="10" width="407" height="30" />
+    </ContentLoader>
   );
 };

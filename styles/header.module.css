@@ -1,21 +1,46 @@
-.heading {
-  margin: 0;
-  font-size: 3em;
+.headingContainer {
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 35px;
 }
 
-.headingContainer {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  grid-template-areas: "name collection";
-  gap: 20px;
+.nameContainer {
+  padding-top: 20px;
+  margin-right: 20px;
+  min-width: 0;
+  max-width: 700px;
+}
+
+.ens {
+  margin: 0;
+  font-size: 3em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.address {
+  max-width: 420px;
+  margin-top: 10px;
+  padding: 5px 10px;
+  border: 1px solid lightgray;
+  border-radius: 10px;
+  color: dimgray;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .collection {
-  grid-area: collection;
-}
-
-.name {
-  grid-area: name;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-top: 20px;
+  min-width: 0;
+  max-width: 700px;
 }
 
 .collectionImg {
@@ -26,6 +51,14 @@
   margin-right: 15px;
 }
 
+.collectionTextContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  min-width: 0;
+}
+
 .collectionName {
   margin: 0px 0px 5px 0px;
   white-space: nowrap;
@@ -34,8 +67,15 @@
   font-size: 24px;
 }
 
+.collectionSubText {
+  color: gray;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 @media (max-width: 700px) {
-  .heading {
+  .ens {
     font-size: 2em;
   }
 
@@ -47,12 +87,5 @@
 
   .collectionName {
     font-size: 18px;
-  }
-
-  .headingContainer {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      "name"
-      "collection";
   }
 }
