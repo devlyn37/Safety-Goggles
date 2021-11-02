@@ -135,6 +135,7 @@ const Timeline: FC<{
   return (
     <VerticalTimeline>
       <InfiniteScroll
+        style={{ overflow: "visible" }} // For the box shadow
         dataLength={data.length}
         next={loadMore}
         hasMore={hasMore}

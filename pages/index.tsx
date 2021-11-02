@@ -366,7 +366,7 @@ export default function Home() {
       </div>
       <div
         className={`${styles.main} ${styles.column} ${
-          showFilters ? styles.collapsedMain : ""
+          showFilters ? styles.collapsedMain : styles.onlyMain
         }`}
       >
         <Timeline

@@ -1,7 +1,6 @@
 .pageContainer {
   display: grid;
   gap: 20px;
-  padding: 0 20px;
   grid-template-columns: 375px minmax(0, 1fr);
   grid-template-areas:
     "nav     nav"
@@ -23,14 +22,20 @@
     "main";
 }
 
+.onlyMain {
+  padding: 0px 20px;
+}
+
 .header {
   grid-area: header;
+  padding: 0px 20px;
 }
 
 .control {
   grid-area: control;
   position: -webkit-sticky;
   position: sticky;
+  padding: 0px 20px;
   height: 70px;
   top: 0px;
   background-color: white;
@@ -39,10 +44,12 @@
 
 .nav {
   grid-area: nav;
+  margin: 0px 20px;
 }
 
 .side {
   grid-area: side;
+  padding-left: 20px;
 }
 
 .sidestick {
@@ -54,6 +61,7 @@
 
 /* overflow: visible for event card boxshadow */
 .main {
+  padding-right: 20px;
   grid-area: main;
   overflow: visible;
 }
@@ -75,10 +83,15 @@
       "main";
   }
 
+  .main {
+    padding: 0px 20px;
+  }
+
   .side {
     grid-area: main;
     position: relative;
     left: 0;
+    padding: 0px 20px;
   }
 
   .collapsedMain {
