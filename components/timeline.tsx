@@ -2,7 +2,7 @@ import React, { FC, useState, useEffect } from "react";
 import { NFTEvent, getEvents, groupEvents } from "../utils/data";
 import styles from "../styles/timeline.module.css";
 import ContentLoader from "react-content-loader";
-import { SearchCriteria } from "../pages";
+import { SearchCriteria } from "../pages/wallet/[wallet]";
 import { subDays, differenceInDays, format } from "date-fns";
 import { VerticalTimeline, Interval } from "./verticalTimeline";
 import InfiniteScroll from "react-infinite-scroll-component";

@@ -1,16 +1,7 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: stretch;
-}
-
 .searchBarContainer {
-  padding: 20px 0px 20px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #f2f2f2;
 }
 
 /* min width to account for default size */

@@ -1,19 +1,11 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import styles from "../styles/search.module.css";
 
 export const Search: FC<{
   handleSearch: (input: string) => Promise<void>;
-  wallet: string;
-}> = ({ handleSearch, wallet }) => {
+}> = ({ handleSearch }) => {
   const [searchInput, setSearchInput] = useState<string>("");
-
-  // Keep input updated to reflect searches from url
-  useEffect(() => {
-    if (wallet && !searchInput) {
-      setSearchInput(wallet);
-    }
-  }, [wallet]);
 
   const handleSearchInputchange = (event) => {
     setSearchInput(event.target.value);
@@ -25,19 +17,17 @@ export const Search: FC<{
   };
 
   return (
-    <form onSubmit={handleSearchSubmit} className={styles.container}>
-      <div className={styles.searchBarContainer}>
-        <input
-          value={searchInput}
-          onChange={handleSearchInputchange}
-          type="text"
-          placeholder="Address/ENS"
-          className={styles.searchBarInput}
-        ></input>
-        <button onClick={handleSearchSubmit} className={styles.searchBarButton}>
-          <FaSearch />
-        </button>
-      </div>
+    <form onSubmit={handleSearchSubmit} className={styles.searchBarContainer}>
+      <input
+        value={searchInput}
+        onChange={handleSearchInputchange}
+        type="text"
+        placeholder="Address/ENS"
+        className={styles.searchBarInput}
+      ></input>
+      <button onClick={handleSearchSubmit} className={styles.searchBarButton}>
+        <FaSearch />
+      </button>
     </form>
   );
 };
