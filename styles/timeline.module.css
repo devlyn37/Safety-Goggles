@@ -71,6 +71,13 @@
   text-decoration: underline;
 }
 
+.errorContainer {
+  padding: 10px;
+  background-color: lightpink;
+  color: darkred;
+  border-radius: 10px;
+}
+
 @media (min-width: 0px) {
   .eventGrid {
     grid-template-columns: repeat(1, minmax(0, 1fr));

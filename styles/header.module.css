@@ -74,6 +74,13 @@
   text-overflow: ellipsis;
 }
 
+.errorContainer {
+  padding: 10px;
+  background-color: lightpink;
+  color: darkred;
+  border-radius: 10px;
+}
+
 @media (max-width: 700px) {
   .ens {
     font-size: 2em;

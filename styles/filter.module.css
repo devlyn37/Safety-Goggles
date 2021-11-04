@@ -15,3 +15,10 @@
   font-weight: 600;
   margin-bottom: 20px;
 }
+
+.errorContainer {
+  padding: 10px;
+  background-color: lightpink;
+  color: darkred;
+  border-radius: 10px;
+}

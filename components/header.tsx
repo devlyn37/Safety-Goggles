@@ -11,9 +11,19 @@ export const Header: FC<{
   collection: CollectionInfo | null;
   loadingCollection: boolean;
   loadingWallet: boolean;
-}> = ({ ens, address, collection, loadingWallet, loadingCollection }) => {
-  return (
-    <div className={styles.headingContainer}>
+  errorMsg: string;
+}> = ({
+  ens,
+  address,
+  collection,
+  loadingWallet,
+  loadingCollection,
+  errorMsg,
+}) => {
+  const errorContent = <div className={styles.errorContainer}>{errorMsg}</div>;
+
+  const regularContent = (
+    <>
       <div className={styles.nameContainer}>
         {loadingWallet ? (
           <Placeholder />
@@ -42,6 +52,12 @@ export const Header: FC<{
           )}
         </div>
       ) : null}
+    </>
+  );
+
+  return (
+    <div className={styles.headingContainer}>
+      {errorMsg ? errorContent : regularContent}
     </div>
   );
 };

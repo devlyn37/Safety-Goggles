@@ -66,6 +66,7 @@ export const CollectionSearch: FC<{
       styles={customStyles}
       options={collections}
       isLoading={loading}
+      isDisabled={loading}
       isClearable={true} // Clearing sets value to null fyi
       theme={(theme) => ({
         ...theme,

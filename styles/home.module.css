@@ -1,4 +1,5 @@
 .pageContainer {
+  min-height: 100vh;
   display: grid;
   gap: 20px;
   grid-template-columns: 375px minmax(0, 1fr);
@@ -7,6 +8,7 @@
     "header  header"
     "control control"
     "side main";
+  grid-template-rows: auto auto auto 1fr;
 }
 
 .collapsedSide {

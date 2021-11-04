@@ -2,7 +2,6 @@ import React, { FC, useState, useEffect } from "react";
 import { NFTEvent, getEvents, groupEvents } from "../utils/data";
 import styles from "../styles/timeline.module.css";
 import ContentLoader from "react-content-loader";
-import { useRouter } from "next/dist/client/router";
 import { SearchCriteria } from "../pages";
 import { subDays, differenceInDays, format } from "date-fns";
 import { VerticalTimeline, Interval } from "./verticalTimeline";
@@ -57,16 +56,10 @@ const Timeline: FC<{
   loadMore: () => void;
   loadingWallet: boolean;
 }> = ({ search, loadMore, loadingWallet }) => {
-  const [data, setData] = useState<NFTEvent[]>([]);
+  const [data, setData] = useState<NFTEvent[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [hasMore, setHasMore] = useState<boolean>(true);
-  const router = useRouter();
-
-  // Hook into routing for quicker loading response on first load
-  useEffect(() => {
-    setLoading(true);
-  }, [router.query]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -90,9 +83,11 @@ const Timeline: FC<{
         }
 
         setHasMore(moreData);
+        setErrorMsg("");
       } catch (e) {
-        throw e;
-        setErrorMsg(e.message);
+        setErrorMsg(
+          "There was an issue loading OpenSea data, please try again later."
+        );
       }
 
       setLoading(false);
@@ -105,18 +100,9 @@ const Timeline: FC<{
 
   const loadingFirstPage = loading && search.page === 1;
   const loadingMore = loading && search.page > 1;
+  const noResults = data && !loading && !data.length;
 
-  // To-do expand these two
-
-  if (errorMsg) {
-    return <div>{errorMsg}</div>;
-  }
-
-  if (!loading && !data.length) {
-    return <div>No Results</div>;
-  }
-
-  if (loadingFirstPage || loadingWallet) {
+  if (data === null || loadingWallet || loadingFirstPage) {
     return (
       <VerticalTimeline>
         <Interval interval={"Today - ..."}>
@@ -126,6 +112,14 @@ const Timeline: FC<{
         </Interval>
       </VerticalTimeline>
     );
+  }
+
+  if (errorMsg) {
+    return <UserInfo src="clumsy.svg" message={errorMsg} />;
+  }
+
+  if (noResults) {
+    return <UserInfo src="sitting.svg" message={"No Results Found"} />;
   }
 
   const timelineData: Map<string, NFTEvent[][]> =
@@ -244,13 +238,13 @@ const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
 const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
   <>
     {grouping.map((event) => (
-      <Event event={event} />
+      <Event event={event} key={event.key} />
     ))}
   </>
 );
 
 const Event: FC<{ event: NFTEvent }> = ({ event }) => (
-  <EventCard key={event.key} imgUrl={event.assetImgUrl}>
+  <EventCard imgUrl={event.assetImgUrl}>
     <div className={styles.titleContainer}>
       <h3 className={styles.title}>
         {event.action}{" "}
@@ -380,5 +374,30 @@ const LoadingCard: FC = () => {
     </div>
   );
 };
+
+const UserInfo: FC<{ src: string; message: string }> = ({ src, message }) => (
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      height: "100%",
+    }}
+  >
+    <div style={{ width: "400px" }}>
+      <img src={src} style={{ width: "100%" }} />
+      <p
+        style={{
+          fontSize: "20px",
+          color: "#000000B8",
+          textAlign: "center",
+        }}
+      >
+        {message}
+      </p>
+    </div>
+  </div>
+);
 
 export default Timeline;

@@ -49,7 +49,8 @@ export default function Home() {
     page: 1,
   });
 
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [walletErrorMsg, setWalletErrorMsg] = useState<string>("");
+  const [collectionErrorMsg, setCollectionErrorMsg] = useState<string>("");
   const [loadingWallet, setLoadingWallet] = useState<boolean>(false);
   const [collection, setCollection] = useState<CollectionInfo | null>(null);
   const [loadingCollection, setLoadingCollection] = useState<boolean>(false);
@@ -86,7 +87,7 @@ export default function Home() {
     setLoadingCollections(true);
 
     try {
-      [address, ens] = await resolveWallet(input); // Add loading here
+      [address, ens] = await resolveWallet(input);
 
       const s: SearchCriteria = {
         address: address,
@@ -103,10 +104,11 @@ export default function Home() {
         updateUrl(s);
       }
 
-      setErrorMsg("");
+      setWalletErrorMsg("");
     } catch (e) {
-      throw e;
-      setErrorMsg(e.message);
+      setWalletErrorMsg(e.message);
+      setLoadingWallet(false);
+      return;
     }
 
     setLoadingWallet(false);
@@ -133,10 +135,9 @@ export default function Home() {
         setCollection(collection);
       }
 
-      setErrorMsg("");
+      setCollectionErrorMsg("");
     } catch (e) {
-      throw e;
-      setErrorMsg(e.message);
+      setCollectionErrorMsg(e.message);
     }
 
     setLoadingCollection(false);
@@ -274,7 +275,7 @@ export default function Home() {
     const handleParams = async () => {
       const err = validateParams(router.query);
       if (err) {
-        setErrorMsg(err);
+        setWalletErrorMsg(err);
         return;
       }
 
@@ -336,8 +337,8 @@ export default function Home() {
           collection={collection}
           loadingCollection={loadingCollection}
           loadingWallet={loadingWallet}
+          errorMsg={walletErrorMsg}
         />
-        {errorMsg ? <div>{errorMsg}</div> : null}
       </div>
       <div className={styles.control}>
         <Control
@@ -361,6 +362,7 @@ export default function Home() {
             handleEndDateChange={handleEndDateChange}
             handleStartDateChange={handleStartDateChange}
             handleFilterChange={handleFilterChange}
+            collectionErrorMsg={collectionErrorMsg}
           />
         </div>
       </div>
