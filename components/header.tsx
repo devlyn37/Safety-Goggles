@@ -20,12 +20,13 @@ export const Header: FC<{
   loadingCollection,
   errorMsg,
 }) => {
+  const preHydrate = ens === "" && address === "";
   const errorContent = <div className={styles.errorContainer}>{errorMsg}</div>;
 
   const regularContent = (
     <>
       <div className={styles.nameContainer}>
-        {loadingWallet ? (
+        {loadingWallet || preHydrate ? (
           <Placeholder />
         ) : (
           <>

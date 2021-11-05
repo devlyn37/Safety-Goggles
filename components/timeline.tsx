@@ -57,7 +57,7 @@ const Timeline: FC<{
   loadingWallet: boolean;
   externalErrorMsg: string;
 }> = ({ search, loadMore, loadingWallet, externalErrorMsg }) => {
-  const [data, setData] = useState<NFTEvent[] | null>(null);
+  const [data, setData] = useState<NFTEvent[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [hasMore, setHasMore] = useState<boolean>(true);
@@ -102,6 +102,7 @@ const Timeline: FC<{
   const loadingFirstPage = loading && search.page === 1;
   const loadingMore = loading && search.page > 1;
   const noResults = data && !loading && !data.length;
+  const preHyrate = search.ens === "" && search.address === "";
 
   if (externalErrorMsg || errorMsg) {
     return (
@@ -112,7 +113,7 @@ const Timeline: FC<{
     );
   }
 
-  if (data === null || loadingWallet || loadingFirstPage) {
+  if (preHyrate || loadingWallet || loadingFirstPage) {
     return (
       <VerticalTimeline>
         <Interval interval={"Today - ..."}>
