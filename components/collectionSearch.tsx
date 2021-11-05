@@ -6,8 +6,9 @@ export const CollectionSearch: FC<{
   collections: CollectionInfo[];
   loading: boolean;
   value: CollectionInfo;
+  disabled: boolean;
   onChange: (option: CollectionInfo) => void;
-}> = ({ collections, loading, value, onChange }) => {
+}> = ({ collections, loading, value, onChange, disabled }) => {
   const customStyles = {
     control: (provided) => ({
       ...provided,
@@ -66,7 +67,7 @@ export const CollectionSearch: FC<{
       styles={customStyles}
       options={collections}
       isLoading={loading}
-      isDisabled={loading}
+      isDisabled={loading || disabled}
       isClearable={true} // Clearing sets value to null fyi
       theme={(theme) => ({
         ...theme,

@@ -3,6 +3,7 @@ import styles from "../styles/filter.module.css";
 import { CollectionInfo } from "../utils/data";
 import { CollectionSearch } from "./collectionSearch";
 export const Filter: FC<{
+  disabled: boolean;
   collections: CollectionInfo[];
   startDate: string;
   endDate: string;
@@ -16,6 +17,7 @@ export const Filter: FC<{
   handleFilterChange: (filter: string) => void;
   collectionErrorMsg: string;
 }> = ({
+  disabled,
   collections,
   startDate,
   endDate,
@@ -73,6 +75,7 @@ export const Filter: FC<{
           }}
         >
           <input
+            disabled={disabled}
             type="checkbox"
             checked={filter === "successful"}
             onChange={handleBuySellChange}
@@ -96,6 +99,7 @@ export const Filter: FC<{
           }}
         >
           <input
+            disabled={disabled}
             type="checkbox"
             checked={filter === "transfer"}
             onChange={handleMintTransChange}
@@ -139,6 +143,7 @@ export const Filter: FC<{
             backgroundColor: "#f2f2f2",
             marginBottom: "20px",
           }}
+          disabled={disabled}
           type="date"
           placeholder="from"
           value={startDate}
@@ -163,6 +168,7 @@ export const Filter: FC<{
             color: "dimgray",
             backgroundColor: "#f2f2f2",
           }}
+          disabled={disabled}
           type="date"
           placeholder="from"
           value={endDate}
@@ -181,6 +187,7 @@ export const Filter: FC<{
         <div className={styles.label}>Collection</div>
         <div style={{ marginTop: "5px" }}>
           <CollectionSearch
+            disabled={disabled}
             collections={collections}
             loading={loadingCollections}
             value={collection}

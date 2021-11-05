@@ -105,6 +105,7 @@ export default function Home() {
 
       setWalletErrorMsg("");
     } catch (e) {
+      // To-do handle different cases more extensivly
       setWalletErrorMsg(e.message);
       setLoadingWallet(false);
       return;
@@ -349,6 +350,7 @@ export default function Home() {
       >
         <div className={styles.sidestick}>
           <Filter
+            disabled={!!walletErrorMsg}
             collections={collections}
             startDate={search.startDate}
             endDate={search.endDate}
@@ -373,6 +375,7 @@ export default function Home() {
           search={search}
           loadMore={loadMore}
           loadingWallet={loadingWallet}
+          externalErrorMsg={walletErrorMsg}
         />
       </div>
     </div>

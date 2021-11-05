@@ -55,7 +55,8 @@ const Timeline: FC<{
   search: SearchCriteria;
   loadMore: () => void;
   loadingWallet: boolean;
-}> = ({ search, loadMore, loadingWallet }) => {
+  externalErrorMsg: string;
+}> = ({ search, loadMore, loadingWallet, externalErrorMsg }) => {
   const [data, setData] = useState<NFTEvent[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -102,6 +103,15 @@ const Timeline: FC<{
   const loadingMore = loading && search.page > 1;
   const noResults = data && !loading && !data.length;
 
+  if (externalErrorMsg || errorMsg) {
+    return (
+      <UserInfo
+        src="/clumsy.svg"
+        message={externalErrorMsg ? externalErrorMsg : errorMsg}
+      />
+    );
+  }
+
   if (data === null || loadingWallet || loadingFirstPage) {
     return (
       <VerticalTimeline>
@@ -114,12 +124,8 @@ const Timeline: FC<{
     );
   }
 
-  if (errorMsg) {
-    return <UserInfo src="clumsy.svg" message={errorMsg} />;
-  }
-
   if (noResults) {
-    return <UserInfo src="sitting.svg" message={"No Results Found"} />;
+    return <UserInfo src="/sitting.svg" message={"No Results Found"} />;
   }
 
   const timelineData: Map<string, NFTEvent[][]> =

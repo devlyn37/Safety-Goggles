@@ -13,16 +13,3 @@
   min-height: 100vh;
   max-width: 800px;
 }
-
-.noAddress {
-  margin: 20px 0px;
-  padding: 10px;
-}
-
-.errorContainer {
-  margin: 20px 0px;
-  padding: 10px;
-  background-color: lightpink;
-  color: darkred;
-  border-radius: 10px;
-}

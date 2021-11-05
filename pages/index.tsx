@@ -1,33 +1,16 @@
-import React, { useState } from "react";
-import { resolveWallet } from "../utils/data";
+import React from "react";
 import { Search } from "../components/search";
 import styles from "../styles/home.module.css";
 import { useRouter } from "next/dist/client/router";
 
 export default function Home() {
   const router = useRouter();
-  const [errorMsg, setErrorMsg] = useState<string>("");
-  const [noAddress, setNoAddress] = useState<boolean>(false);
 
   const handleSearch = async (search: string) => {
-    try {
-      const [address, ens] = await resolveWallet(search);
-      router.push({
-        pathname: "/wallet/[wallet]",
-        query: { wallet: ens ?? address },
-      });
-
-      setNoAddress(false);
-      setErrorMsg("");
-    } catch (e) {
-      if (
-        e.message === "Provided ENS name does not have an associated wallet"
-      ) {
-        setNoAddress(true);
-      } else {
-        setErrorMsg(e.message);
-      }
-    }
+    router.push({
+      pathname: "/wallet/[wallet]",
+      query: { wallet: search },
+    });
   };
 
   return (
@@ -41,12 +24,6 @@ export default function Home() {
           </h2>
         </div>
         <Search handleSearch={handleSearch} />
-        {errorMsg && <div className={styles.errorContainer}>{errorMsg}</div>}
-        {noAddress && (
-          <div className={styles.noAddress}>
-            Nothing was found for this address
-          </div>
-        )}
         <div
           style={{
             marginTop: "50px",
