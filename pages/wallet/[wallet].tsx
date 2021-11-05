@@ -267,7 +267,8 @@ export default function Home() {
       const walletMatch =
         (!search.address && !query.wallet) ||
         search.address === query.wallet ||
-        search.ens.includes(query.wallet as string);
+        search.ens === query.wallet ||
+        search.ens.slice(0, -4) === query.wallet;
 
       return (
         walletMatch && startMatch && endMatch && collectionMatch && filterMatch
