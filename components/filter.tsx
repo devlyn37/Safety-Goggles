@@ -214,6 +214,7 @@ export const Filter: FC<{
 const CollectionPlaceholder: FC = (props) => {
   return (
     <ContentLoader
+      uniqueKey="filter"
       style={{ width: "355px", height: "38px" }}
       speed={2}
       viewBox="0 0 355 38"

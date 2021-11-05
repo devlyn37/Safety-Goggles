@@ -68,6 +68,7 @@ export const Header: FC<{
 const CollectionPlaceholder: FC = (props) => {
   return (
     <ContentLoader
+      uniqueKey="header-col"
       style={{ width: "396px", height: "70px" }}
       speed={2}
       viewBox="0 0 396 70"
@@ -85,6 +86,7 @@ const CollectionPlaceholder: FC = (props) => {
 const Placeholder: FC = (props) => {
   return (
     <ContentLoader
+      uniqueKey="header"
       style={{ width: "407px", height: "93px" }}
       speed={2}
       viewBox="0 0 407 93"

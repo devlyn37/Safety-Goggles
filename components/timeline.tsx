@@ -336,6 +336,7 @@ const LoadingGroup: FC = () => (
   </>
 );
 
+// To-do take another look at this
 const LoadingCard: FC = () => {
   return (
     <div
@@ -349,6 +350,7 @@ const LoadingCard: FC = () => {
     >
       {/* Must expand with container */}
       <ContentLoader
+        uniqueKey="loading-card-1"
         style={{ borderRadius: "25px 25px 0px 0px", maxWidth: "100%" }}
         speed={2}
         viewBox="0 0 400 402"
@@ -363,6 +365,7 @@ const LoadingCard: FC = () => {
 
       {/* Should have static height */}
       <ContentLoader
+        uniqueKey="loading-card-2"
         style={{
           borderRadius: "25px",
           height: "170px",
