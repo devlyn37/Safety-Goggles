@@ -71,7 +71,7 @@ export const CollectionSearch: FC<{
       isClearable={true} // Clearing sets value to null fyi
       theme={(theme) => ({
         ...theme,
-        borderRadius: 5,
+        borderRadius: 10,
         colors: {
           ...theme.colors,
           primary25: "lightgray",

@@ -1,7 +1,17 @@
 import { FC } from "react";
 import styles from "../styles/filter.module.css";
 import { CollectionInfo } from "../utils/data";
-import { CollectionSearch } from "./collectionSearch";
+import dynamic from "next/dynamic";
+import ContentLoader from "react-content-loader";
+
+const CollectionSearch = dynamic(
+  () => import("./collectionSearch").then((mod) => mod.CollectionSearch),
+  {
+    loading: () => <CollectionPlaceholder />,
+    ssr: false,
+  }
+);
+
 export const Filter: FC<{
   disabled: boolean;
   collections: CollectionInfo[];
@@ -198,5 +208,20 @@ export const Filter: FC<{
       {dates}
       {checks}
     </div>
+  );
+};
+
+const CollectionPlaceholder: FC = (props) => {
+  return (
+    <ContentLoader
+      style={{ width: "355px", height: "38px" }}
+      speed={2}
+      viewBox="0 0 355 38"
+      backgroundColor="#f3f3f3"
+      foregroundColor="#ecebeb"
+      {...props}
+    >
+      <rect x="0" y="0" rx="10" ry="10" width="355" height="38" />
+    </ContentLoader>
   );
 };
