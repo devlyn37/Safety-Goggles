@@ -326,7 +326,9 @@ export default function Home() {
       }`}
     >
       <div className={styles.nav}>
-        <Search handleSearch={handleSearch} />
+        <div className={styles.search}>
+          <Search handleSearch={handleSearch} />
+        </div>
       </div>
       <div className={styles.header}>
         <Header

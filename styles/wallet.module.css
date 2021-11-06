@@ -46,9 +46,17 @@
 
 .nav {
   grid-area: nav;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 0px 20px;
   padding: 20px 0px;
   border-bottom: 2px solid #f2f2f2;
+}
+
+.search {
+  width: 100%;
+  max-width: 1000px;
 }
 
 .side {
@@ -85,6 +93,19 @@
       "header"
       "control"
       "main";
+  }
+
+  .nav {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "search";
+  }
+
+  .name {
+    display: none;
+  }
+
+  .extras {
+    display: none;
   }
 
   .main {

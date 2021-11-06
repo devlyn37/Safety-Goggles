@@ -10,38 +10,27 @@
   min-width: 30px;
   height: 52px;
   padding: 0px 15px;
-  margin-right: 20px;
   border: 2px solid #f2f2f2;
   background-color: #f2f2f2;
-  border-radius: 15px;
+  border-radius: 15px 0px 0px 15px;
   font-size: 20px;
 }
 
 .searchBarButton {
   height: 52px;
-  padding: 0px 15px;
+  padding: 20px;
   background-color: black;
   color: white;
   border: none;
-  border-radius: 50%;
+  border-radius: 0px 15px 15px 0px;
   font-size: 25px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.addresses {
-  font-size: 25px;
-  font-weight: bold;
-}
-
 .errorMessage {
   margin: 0px 20px 0px 20px;
   padding: 10px 20px 10px 20px;
   background-color: lightpink;
-}
-
-.searchBarInput:focus {
-  border: solid 3px black;
-  margin-left: -2px;
 }
