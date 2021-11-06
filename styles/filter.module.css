@@ -22,3 +22,49 @@
   color: darkred;
   border-radius: 10px;
 }
+
+.dateContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.dateLabel {
+  color: dimgray;
+  display: inline-block;
+  width: 55px;
+}
+
+.dateButton {
+  margin-top: 4px;
+  height: 38px;
+  border-radius: 10px;
+  padding-left: 8px;
+  font-size: 16px;
+  padding-right: 4px;
+  color: dimgray;
+  border: none;
+  background-color: #f2f2f2;
+}
+
+.checkButton {
+  margin-top: 4px;
+  height: 38px;
+  border-radius: 10px;
+  padding-left: 8px;
+  font-size: 16px;
+  padding-right: 12px;
+  color: dimgray;
+  background-color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.checkContainer {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}

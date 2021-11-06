@@ -61,29 +61,8 @@ export const Filter: FC<{
     <div className={styles.item}>
       <div className={styles.label}>Activity Type</div>
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-start",
-          alignItems: "center",
-        }}
-      >
-        <label
-          style={{
-            marginTop: "4px",
-            height: "38px",
-            borderRadius: "10px",
-            paddingLeft: "8px",
-            fontSize: "16px",
-            paddingRight: "12px",
-            color: "dimgray",
-            backgroundColor: "#f2f2f2",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            marginRight: "20px",
-          }}
-        >
+      <div className={styles.checkContainer}>
+        <label className={styles.checkButton}>
           <input
             disabled={disabled}
             type="checkbox"
@@ -93,21 +72,7 @@ export const Filter: FC<{
           />
           Buy and Sell
         </label>
-        <label
-          style={{
-            marginTop: "4px",
-            height: "38px",
-            borderRadius: "10px",
-            paddingLeft: "8px",
-            fontSize: "16px",
-            paddingRight: "12px",
-            color: "dimgray",
-            backgroundColor: "#f2f2f2",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+        <label className={styles.checkButton}>
           <input
             disabled={disabled}
             type="checkbox"
@@ -122,37 +87,15 @@ export const Filter: FC<{
   );
 
   const dates = (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "flex-start",
-        flexWrap: "wrap",
-        justifyContent: "flex-start",
-      }}
-      className={styles.item}
-    >
+    <div className={`${styles.item} ${styles.dateContainer}`}>
       <div className={styles.label}>Date Range</div>
-
       <label>
-        <span
-          style={{ color: "dimgray", display: "inline-block", width: "55px" }}
-        >
-          From
-        </span>
+        <span className={styles.dateLabel}>From</span>
         <input
           style={{
-            marginTop: "4px",
-            height: "38px",
-            borderRadius: "10px",
-            paddingLeft: "8px",
-            fontSize: "16px",
-            paddingRight: "4px",
-            color: "dimgray",
-            border: "none",
-            backgroundColor: "#f2f2f2",
             marginBottom: "20px",
           }}
+          className={styles.dateButton}
           disabled={disabled}
           type="date"
           placeholder="from"
@@ -161,23 +104,9 @@ export const Filter: FC<{
         />
       </label>
       <label>
-        <span
-          style={{ color: "dimgray", display: "inline-block", width: "55px" }}
-        >
-          To
-        </span>
+        <span className={styles.dateLabel}>To</span>
         <input
-          style={{
-            marginTop: "4px",
-            height: "38px",
-            borderRadius: "10px",
-            paddingLeft: "8px",
-            fontSize: "16px",
-            paddingRight: "4px",
-            border: "none",
-            color: "dimgray",
-            backgroundColor: "#f2f2f2",
-          }}
+          className={styles.dateButton}
           disabled={disabled}
           type="date"
           placeholder="from"
