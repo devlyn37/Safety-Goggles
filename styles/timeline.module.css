@@ -4,6 +4,28 @@
   grid-gap: 2em;
 }
 
+.infoContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.infoRestrictor {
+  width: 400px;
+}
+
+.infoImg {
+  width: 100%;
+}
+
+.infoText {
+  font-size: 20px;
+  color: #000000b8;
+  text-align: center;
+}
+
 @media (min-width: 0px) {
   .eventGrid {
     grid-template-columns: repeat(1, minmax(0, 1fr));

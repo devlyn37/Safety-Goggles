@@ -183,26 +183,10 @@ const LoadingGroup: FC = () => (
 );
 
 const UserInfo: FC<{ src: string; message: string }> = ({ src, message }) => (
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-      height: "100%",
-    }}
-  >
-    <div style={{ width: "400px" }}>
-      <img src={src} style={{ width: "100%" }} />
-      <p
-        style={{
-          fontSize: "20px",
-          color: "#000000B8",
-          textAlign: "center",
-        }}
-      >
-        {message}
-      </p>
+  <div className={styles.infoContainer}>
+    <div className={styles.infoRestrictor}>
+      <img src={src} className={styles.infoImg} />
+      <p className={styles.infoText}>{message}</p>
     </div>
   </div>
 );
