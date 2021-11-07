@@ -114,51 +114,81 @@ const EventCard: FC<{
   </div>
 );
 
-// To-do take another look at this
 export const LoadingCard: FC = () => {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        alignItems: "stretch",
-        overflow: "hidden",
-      }}
-    >
+    <div className={styles.eventCard}>
       {/* Must expand with container */}
       <ContentLoader
         uniqueKey="loading-card-1"
-        style={{ borderRadius: "25px 25px 0px 0px", maxWidth: "100%" }}
+        style={{
+          borderRadius: "25px 25px 0px 0px",
+          maxWidth: "100%",
+          border: "2px solid #f2f2f2",
+        }}
         speed={2}
         viewBox="0 0 400 402"
         backgroundColor="#f3f3f3"
         foregroundColor="#ecebeb"
       >
-        <rect x="0" y="0" rx="0" ry="0" width="592" height="402" />
+        <rect x="0" y="0" rx="0" ry="0" width="400" height="402" />
       </ContentLoader>
 
       {/* Buffer */}
-      <div style={{ flex: "1" }}></div>
+      <div
+        style={{
+          flex: "1",
+          borderRight: "2px solid #f2f2f2",
+          borderLeft: "2px solid #f2f2f2",
+        }}
+      ></div>
 
       {/* Should have static height */}
-      <ContentLoader
-        uniqueKey="loading-card-2"
+      <div
         style={{
-          borderRadius: "25px",
-          height: "170px",
-          width: "375px",
+          padding: "20px 20px",
+          borderRight: "2px solid #f2f2f2",
+          borderLeft: "2px solid #f2f2f2",
+          borderBottom: "2px solid #f2f2f2",
+          borderRadius: "0px 0px 25px 25px",
         }}
-        speed={2}
-        viewBox="0 0 400 180"
-        backgroundColor="#f3f3f3"
-        foregroundColor="#ecebeb"
       >
-        <rect x="0" y="15" rx="5" ry="5" width="350" height="32" />
-        <rect x="0" y="55" rx="5" ry="5" width="220" height="21" />
-        <rect x="0" y="105" rx="5" ry="5" width="220" height="21" />
-        <rect x="0" y="130" rx="5" ry="5" width="281" height="13" />
-      </ContentLoader>
+        <div
+          style={{
+            width: "95%",
+            height: "28px",
+            backgroundColor: "#f3f3f3",
+            borderRadius: "10px",
+          }}
+        />
+        <div
+          style={{
+            marginTop: "6px",
+            width: "80%",
+            height: "18px",
+            backgroundColor: "#f3f3f3",
+            borderRadius: "6px",
+          }}
+        />
+        <div
+          style={{
+            marginTop: "30px",
+            width: "65%",
+            height: "18px",
+            backgroundColor: "#f3f3f3",
+            borderRadius: "6px",
+          }}
+        />
+        <div
+          style={{
+            marginBottom: "10px",
+            marginTop: "6px",
+            width: "93%",
+            height: "15px",
+            backgroundColor: "#f3f3f3",
+            borderRadius: "6px",
+          }}
+        />
+      </div>
     </div>
   );
 };
