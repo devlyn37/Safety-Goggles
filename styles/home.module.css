@@ -13,3 +13,31 @@
   min-height: 100vh;
   max-width: 800px;
 }
+
+.title {
+  color: var(--font-color-high);
+  font-size: var(--heading-font-size);
+}
+
+.subTitle {
+  color: var(--font-color-med);
+  font-size: var(--large-font-size);
+}
+
+.creditContainer {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.linkContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.linkIcon {
+  width: 40px;
+  height: 40px;
+}

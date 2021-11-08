@@ -17,37 +17,29 @@ export default function Home() {
     <div className={styles.layout}>
       <div className={styles.container}>
         <div style={{ marginBottom: "50px" }}>
-          <h1>A Transparent Wallet Activity Timeline</h1>
-          <h2 style={{ color: "dimgray" }}>
-            See what a wallet has been up to, See what a wallet has been up to,
-            See what a wallet has been up to, See what a wallet has been up to.
+          <h1 className={styles.title}>
+            A Transparent Wallet NFT Activity Timeline 🏙
+          </h1>
+          <h2 className={styles.subTitle}>
+            See a visual timeline of NFT activity. Find and share activity
+            within collections and/or different time periods. Distinguish
+            between real mints and influencers being sent tokens.
           </h2>
         </div>
         <Search handleSearch={handleSearch} />
-        <div
-          style={{
-            marginTop: "50px",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
+        <div className={styles.creditContainer}>
           <p style={{ textAlign: "center" }}>Made by Devlyn</p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "flex-start",
-              alignItems: "center",
-            }}
-          >
-            <img
-              src={"twitter-logo.svg"}
-              style={{ width: "45px", height: "45px", marginRight: "20px" }}
-            ></img>
-            <img
-              src={"github-logo.svg"}
-              style={{ width: "45px", height: "45px" }}
-            ></img>
+          <div className={styles.linkContainer}>
+            <a href="https://twitter.com/Devlyn_3" target="_blank">
+              <img
+                src={"twitter-logo.svg"}
+                className={styles.linkIcon}
+                style={{ marginRight: "20px" }}
+              ></img>
+            </a>
+            <a href="https://github.com/devlyn37" target="_blank">
+              <img src={"github-logo.svg"} className={styles.linkIcon}></img>
+            </a>
           </div>
         </div>
       </div>
