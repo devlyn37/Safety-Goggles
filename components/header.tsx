@@ -42,7 +42,11 @@ export const Header: FC<{
           ) : (
             <>
               {" "}
-              <img src={collection.imgUrl} className={styles.collectionImg} />
+              <img
+                src={collection.imgUrl}
+                className={styles.collectionImg}
+                alt={`Collection Image for ${collection.name}`}
+              />
               <div className={styles.collectionTextContainer}>
                 <h3 className={styles.collectionName}>{collection.name}</h3>
                 <div className={styles.collectionSubText}>

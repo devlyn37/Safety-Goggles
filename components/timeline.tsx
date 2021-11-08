@@ -185,7 +185,11 @@ const LoadingGroup: FC = () => (
 const UserInfo: FC<{ src: string; message: string }> = ({ src, message }) => (
   <div className={styles.infoContainer}>
     <div className={styles.infoRestrictor}>
-      <img src={src} className={styles.infoImg} />
+      <img
+        src={src}
+        className={styles.infoImg}
+        alt={"cartoon image to represent the message"}
+      />
       <p className={styles.infoText}>{message}</p>
     </div>
   </div>

@@ -50,6 +50,7 @@ export const CollectionSearch: FC<{
             marginRight: "10px",
           }}
           src={imgUrl}
+          alt={`Collection Image for ${name}`}
         />
         <div>{name}</div>
       </div>

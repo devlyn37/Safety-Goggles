@@ -21,13 +21,17 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
 
   return (
     <>
-      <EventCard key={event.key} imgUrl={event.collectionImgUrl}>
+      <EventCard
+        key={event.key}
+        imgUrl={event.collectionImgUrl}
+        alt={`Collection Image for ${event.collectionName}`}
+      >
         <div className={styles.titleContainer}>
           <h3 className={styles.title}>
             {event.action} {grouping.length} NFTs{" "}
           </h3>
           <h4 className={styles.subTitle}>
-            <a href={event.collectionUrl} target="_blank">
+            <a href={event.collectionUrl} target="_blank" rel="noreferrer">
               {event.collectionName}{" "}
             </a>
           </h4>
@@ -41,6 +45,7 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
                 <a
                   className={styles.link}
                   target="_blank"
+                  rel="noreferrer"
                   href={"https://etherscan.io/tx/" + event.transactionHash}
                 >
                   View on Etherscan
@@ -69,16 +74,21 @@ export const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
 );
 
 export const Event: FC<{ event: NFTEvent }> = ({ event }) => (
-  <EventCard imgUrl={event.assetImgUrl}>
+  <EventCard imgUrl={event.assetImgUrl} alt={`image for ${event.assetName}`}>
     <div className={styles.titleContainer}>
       <h3 className={styles.title}>
         {event.action}{" "}
-        <a className={styles.link} target="_blank" href={event.assetUrl}>
+        <a
+          className={styles.link}
+          target="_blank"
+          rel="noreferrer"
+          href={event.assetUrl}
+        >
           {event.assetName}
         </a>
       </h3>
       <h4 className={styles.subTitle}>
-        <a target="_blank" href={event.collectionUrl}>
+        <a target="_blank" rel="noreferrer" href={event.collectionUrl}>
           {event.collectionName}{" "}
         </a>
       </h4>
@@ -92,6 +102,7 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => (
             <a
               className={styles.link}
               target="_blank"
+              rel="noreferrer"
               href={"https://etherscan.io/tx/" + event.transactionHash}
             >
               View on Etherscan
@@ -106,10 +117,15 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => (
 
 const EventCard: FC<{
   imgUrl: string;
-  boxShadow?: boolean;
-}> = ({ children, imgUrl }) => (
+  alt: string;
+}> = ({ children, imgUrl, alt }) => (
   <div className={styles.eventCard}>
-    <img className={styles.eventImg} src={imgUrl} loading="lazy"></img>
+    <img
+      className={styles.eventImg}
+      src={imgUrl}
+      loading="lazy"
+      alt={alt}
+    ></img>
     <div className={styles.eventDetails}>{children}</div>
   </div>
 );

@@ -30,15 +30,28 @@ export default function Home() {
         <div className={styles.creditContainer}>
           <p style={{ textAlign: "center" }}>Made by Devlyn</p>
           <div className={styles.linkContainer}>
-            <a href="https://twitter.com/Devlyn_3" target="_blank">
+            <a
+              href="https://twitter.com/Devlyn_3"
+              target="_blank"
+              rel="noreferrer"
+            >
               <img
                 src={"twitter-logo.svg"}
                 className={styles.linkIcon}
                 style={{ marginRight: "20px" }}
+                alt="twitter logo"
               ></img>
             </a>
-            <a href="https://github.com/devlyn37" target="_blank">
-              <img src={"github-logo.svg"} className={styles.linkIcon}></img>
+            <a
+              href="https://github.com/devlyn37"
+              target="_blank"
+              rel="noreferrer"
+            >
+              <img
+                src={"github-logo.svg"}
+                className={styles.linkIcon}
+                alt="github logo"
+              ></img>
             </a>
           </div>
         </div>
