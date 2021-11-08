@@ -61,6 +61,7 @@ const Timeline: FC<{
   useEffect(() => {
     const loadData = async () => {
       setLoading(true);
+      setErrorMsg("");
 
       try {
         const [events, moreData] = await getEvents(
@@ -80,7 +81,6 @@ const Timeline: FC<{
         }
 
         setHasMore(moreData);
-        setErrorMsg("");
       } catch (e) {
         setErrorMsg(
           "There was an issue loading OpenSea data, please try again later."

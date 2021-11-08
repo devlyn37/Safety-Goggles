@@ -84,6 +84,7 @@ export default function Home() {
     setLoadingCollections(false);
     setLoadingWallet(true);
     setLoadingCollections(true);
+    setWalletErrorMsg("");
 
     try {
       [address, ens] = await resolveWallet(input);
@@ -102,8 +103,6 @@ export default function Home() {
       if (setUrl) {
         updateUrl(s);
       }
-
-      setWalletErrorMsg("");
     } catch (e) {
       // To-do handle different cases more extensivly
       setWalletErrorMsg(e.message);
