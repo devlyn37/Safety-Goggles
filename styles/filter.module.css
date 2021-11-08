@@ -7,19 +7,19 @@
 
 .item {
   padding: 25px 0px;
-  border-bottom: 2px solid #f2f2f2;
+  border-bottom: var(--soft-border);
 }
 
 .label {
-  font-size: 20px;
+  font-size: var(--big-font-size);
   font-weight: 600;
   margin-bottom: 20px;
 }
 
 .errorContainer {
   padding: 10px;
-  background-color: lightpink;
-  color: darkred;
+  background-color: var(--err-background);
+  color: var(--font-color-err);
   border-radius: 10px;
 }
 
@@ -31,7 +31,7 @@
 }
 
 .dateLabel {
-  color: dimgray;
+  color: var(--font-color-med);
   display: inline-block;
   width: 55px;
 }
@@ -41,11 +41,11 @@
   height: 38px;
   border-radius: 10px;
   padding-left: 8px;
-  font-size: 16px;
+  font-size: var(--normal-font-size);
   padding-right: 4px;
-  color: dimgray;
+  color: var(--font-color-med);
   border: none;
-  background-color: #f2f2f2;
+  background-color: var(--foreground-1);
 }
 
 .checkButton {
@@ -53,10 +53,10 @@
   height: 38px;
   border-radius: 10px;
   padding-left: 8px;
-  font-size: 16px;
+  font-size: var(--normal-font-size);
   padding-right: 12px;
-  color: dimgray;
-  background-color: #f2f2f2;
+  color: var(--font-color-med);
+  background-color: var(--foreground-1);
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,3 +1,26 @@
+:root {
+  --soft-gray: #f2f2f2;
+  --hard-gray: lightgray;
+
+  --background: white;
+  --foreground-1: var(--soft-gray);
+  --err-background: lightpink;
+
+  --soft-border: 2px solid var(--soft-gray);
+  --hard-border: 1px solid var(--hard-gray);
+
+  --small-font-size: 0.75em;
+  --normal-font-size: 1em;
+  --big-font-size: 1.25em;
+  --large-font-size: 1.5em;
+  --heading-font-size: 3em;
+
+  --font-color-high: rgba(0, 0, 0, 0.87);
+  --font-color-med: rgba(0, 0, 0, 0.6);
+  --font-color-low: rgba(0, 0, 0, 0.38);
+  --font-color-err: darkred;
+}
+
 html,
 body {
   padding: 0;
@@ -6,6 +29,7 @@ body {
     Ubuntu, Cantarell, Fira Sans, Droid Sans, sans-serif;
   height: 100%;
   min-height: 100%;
+  font-size: 16px;
 }
 
 input:focus,
@@ -25,4 +49,10 @@ a {
 
 * {
   box-sizing: border-box;
+}
+
+@media screen and (max-width: 700px) {
+  :root {
+    --heading-font-size: 2em;
+  }
 }

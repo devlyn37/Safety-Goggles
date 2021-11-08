@@ -12,7 +12,7 @@
 .eventImg {
   width: 100%;
   border-radius: 25px 25px 0px 0px;
-  border: 2px solid #f2f2f2;
+  border: var(--soft-border);
   aspect-ratio: 1 / 1;
   object-fit: cover;
 }
@@ -24,12 +24,12 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: stretch;
-  background-color: white;
-  color: black;
+  background-color: var(--background);
+  color: var(--font-color-high);
   border-radius: 0px 0px 25px 25px;
-  border-bottom: 2px solid #f2f2f2;
-  border-left: 2px solid #f2f2f2;
-  border-right: 2px solid #f2f2f2;
+  border-bottom: var(--soft-border);
+  border-left: var(--soft-border);
+  border-right: var(--soft-border);
 }
 
 .titleContainer {
@@ -40,7 +40,7 @@
 }
 
 .title {
-  font-size: 24px;
+  font-size: var(--large-font-size);
   margin: 0px 0px 5px 0px;
   white-space: nowrap;
   overflow: hidden;
@@ -49,9 +49,9 @@
 
 .subTitle {
   font-weight: normal;
-  font-size: 16px;
+  font-size: var(--normal-font-size);
   margin: 0;
-  color: dimgray;
+  color: var(--font-color-med);
 }
 
 .detailContainer {
@@ -65,13 +65,13 @@
 
 .detail {
   font-weight: bold;
-  font-size: 16px;
+  font-size: var(--normal-font-size);
   margin-bottom: 5px;
 }
 
 .subDetail {
-  color: dimgray;
-  font-size: 12px;
+  color: var(--font-color-med);
+  font-size: var(--small-font-size);
 }
 
 .groupButton {

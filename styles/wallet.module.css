@@ -51,7 +51,7 @@
   align-items: center;
   margin: 0px 20px;
   padding: 20px 0px;
-  border-bottom: 2px solid #f2f2f2;
+  border-bottom: var(--soft-border);
 }
 
 .search {

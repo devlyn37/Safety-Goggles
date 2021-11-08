@@ -21,8 +21,8 @@
 }
 
 .infoText {
-  font-size: 20px;
-  color: #000000b8;
+  font-size: var(--big-font-size);
+  color: var(--font-color-high);
   text-align: center;
 }
 

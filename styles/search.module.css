@@ -10,16 +10,16 @@
   min-width: 30px;
   height: 52px;
   padding: 0px 15px;
-  border: 2px solid #f2f2f2;
-  background-color: #f2f2f2;
+  border: none;
+  background-color: var(--foreground-1);
   border-radius: 15px 0px 0px 15px;
-  font-size: 20px;
+  font-size: var(--big-font-size);
 }
 
 .searchBarButton {
   height: 52px;
   padding: 20px;
-  background-color: black;
+  background-color: var(--font-color-high);
   color: white;
   border: none;
   border-radius: 0px 15px 15px 0px;

@@ -16,7 +16,7 @@
 
 .ens {
   margin: 0;
-  font-size: 3em;
+  font-size: var(--heading-font-size);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -26,9 +26,9 @@
   max-width: 420px;
   margin-top: 10px;
   padding: 5px 10px;
-  border: 1px solid lightgray;
+  border: var(--hard-border);
   border-radius: 10px;
-  color: dimgray;
+  color: var(--font-color-med);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -64,11 +64,11 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 24px;
+  font-size: var(--large-font-size);
 }
 
 .collectionSubText {
-  color: gray;
+  color: var(--font-color-med);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -76,16 +76,12 @@
 
 .errorContainer {
   padding: 10px;
-  background-color: lightpink;
-  color: darkred;
+  background-color: var(--err-background);
+  color: var(--font-color-err);
   border-radius: 10px;
 }
 
 @media (max-width: 700px) {
-  .ens {
-    font-size: 2em;
-  }
-
   .collectionImg {
     height: 45px;
     width: 45px;
@@ -93,6 +89,6 @@
   }
 
   .collectionName {
-    font-size: 18px;
+    font-size: var(--normal-font-size);
   }
 }
