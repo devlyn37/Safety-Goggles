@@ -1,34 +1,56 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# A Transparent Wallet NFT Activity Timeline
 
-## Getting Started
+This is a website that displays NFT related activity with a few key focuses.
 
-First, run the development server:
+1. Transparency: Distinguishing between 'real' mints and devs minting to influencers.
+2. Shareability: Easily filter data to create simple consumable chunks of alpha.
+3. A Timeline View: Show a visual timeline of the wallets activity.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Transparency and Shareability
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+When scanning around discords for NFT alpha something I saw a lot was "Hey (insert influencer or whale) bought wagmi etc etc.." w/ an accompanying screenshot. Often, after going back and fourth between OpenSea and etherscan I'd discover that it was just the developers of the project minting to said influencer. If you go look at any popular opensea account it's full of random NFT's from devs trying to trick copy traders.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+This website distinguishes between these fake mints and real ones, labeling them accordingly.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+<img width="910" alt="Screen Shot 2021-11-08 at 9 41 38 PM" src="https://user-images.githubusercontent.com/17352012/140869041-e145bb1c-5dc5-4d3c-bec6-e9127f69c864.png">
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+with this, in combination with filtering, the goal of the site is to be a tool to help discover and share alpha and hopefully prevent some people from being tricked into fomo buying something.
 
-## Learn More
+## A Timeline View
 
-To learn more about Next.js, take a look at the following resources:
+I think the idea of a timeline is novel, visually appealing, and makes good use of the screen real estate as web3 folks are typically on desktop (the site is mobile friendly). Organizing the data this way may provide some insight in how successful traders act under different market conditions. Finally, showing a timeline of moves in a specific collection could be a fun way to gloat/cry on twitter about major wins/losses.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Note
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The website is deployed [here](https://eth-wallet-timeline.vercel.app/).
 
-## Deploy on Vercel
+This is still a work in progress, I haven't even thought of a name yet. Expect some issues here and there, especially with labeling less common event types. Event labelling surrounding the core goals of the project (buy, sell, mints vs dev mints mentioned above) is solid right now though.
+## Setup
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+First install dependencies
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+`npm i`
+
+## Developing Locally in dev mode
+
+First pull in a copy of the environment variables
+
+`npx vercel env pull .env.local`
+
+Next, run the app
+
+`npm run dev`
+
+## Creating a build locally
+
+Dev mode can be pretty slow, creating a build locally is better if you want to do a lot of testing.
+
+`npm run build`
+
+`npm run start`
+
+## Creating a test deployment
+
+In order to create a one off preview deployment, run the following.
+
+`npx vercel`
