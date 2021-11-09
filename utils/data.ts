@@ -94,6 +94,7 @@ export const getCollections = async (
   return [...fromHeld, ...fromEvents];
 };
 
+// Note: OpenSea API is saying the floor of collections is 0
 export const getCollection = async (
   contractAddress: string
 ): Promise<CollectionInfo> => {
@@ -192,7 +193,7 @@ const determineAction = (openseaData: any, address: string): Action => {
   }
 };
 
-const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
+const dataToEvent = (d: any, address: string): NFTEvent => {
   /* Data Mapping
 		*	Related events are linked by transaction hashes, a standard sale of an NFT
 		* will have a "successful" event and a "transfer" event each with the same
@@ -204,81 +205,74 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
 		* user name
 	*/
 
-  const events: NFTEvent[] = data
-    // Filter out tranfer events corresponing to sales
-    .filter((d) => {
-      const transfer = d.event_type === "transfer";
-      const sale = d.event_type === "successful";
+  const action: Action = determineAction(d, address);
+  const successAction: Boolean = action === "Bought" || action === "Sold";
 
-      // Just filter out until more is known about these cases
-      if (!d.transaction || !d.asset) {
-        return false;
-      }
+  let from: string = successAction ? d.seller?.address : d.from_account.address;
+  from = from.toUpperCase();
 
-      if (sale) {
-        return true;
-      }
+  let to: string = successAction
+    ? d.winner_account.address
+    : d.to_account.address;
+  to = to.toUpperCase();
 
-      if (transfer) {
-        const saleTransfer =
-          d.transaction.to_account &&
-          d.transaction.to_account.user &&
-          d.transaction.to_account.user.username === "OpenSea-Orders";
-        return !saleTransfer;
-      }
-    })
-    .map((d) => {
-      const action: Action = determineAction(d, address);
+  const collectionImgUrl: string =
+    d.asset.collection.featured_image_url ??
+    d.asset.collection.image_url ??
+    d.asset.collection.banner_image_url;
 
-      if (action === "Bought" || action === "Sold") {
-        return {
-          assetName: d.asset.name ?? d.asset.token_id,
-          assetDescription: d.asset.description,
-          assetImgUrl: d.asset.image_url,
-          assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.asset.token_id}`,
-          collectionName: d.asset.collection.name,
-          collectionUrl:
-            d.asset.collection.external_url ??
-            `https://opensea.io/collection/${d.asset.collection.slug}}`,
-          collectionDescription: d.asset.collection.description,
-          collectionImgUrl:
-            d.asset.collection.featured_image_url ??
-            d.asset.collection.image_url ??
-            d.asset.collection.banner_image_url,
-          date: new Date(d.transaction.timestamp).toUTCString(),
-          from: d.seller.address,
-          to: d.winner_account.address,
-          action: action,
-          key: d.transaction.transaction_hash + d.asset.id,
-          transactionHash: d.transaction.transaction_hash,
-          price: Number.parseInt(d.total_price),
-        };
-      } else if (d.event_type === "transfer") {
-        return {
-          assetName: d.asset.name ?? d.asset.token_id,
-          assetDescription: d.asset.description,
-          assetImgUrl: d.asset.image_url,
-          assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.asset.token_id}`,
-          collectionName: d.asset.collection.name,
-          collectionUrl:
-            d.asset.collection.external_url ??
-            `https://opensea.io/collection/${d.asset.collection.slug}}`,
-          collectionDescription: d.asset.collection.description,
-          collectionImgUrl:
-            d.asset.collection.featured_image_url ??
-            d.asset.collection.image_url ??
-            d.asset.collection.banner_image_url,
-          date: new Date(d.transaction.timestamp).toUTCString(),
-          from: d.from_account.address.toUpperCase(),
-          to: d.to_account.address.toUpperCase(),
-          action: action,
-          key: d.transaction.transaction_hash + d.asset.id,
-          transactionHash: d.transaction.transaction_hash,
-        };
-      }
-    });
+  const collectionUrl: string =
+    d.asset.collection.external_url ??
+    `https://opensea.io/collection/${d.asset.collection.slug}}`;
 
-  return events;
+  const event: NFTEvent = {
+    assetName: d.asset.name ?? d.asset.token_id,
+    assetDescription: d.asset.description,
+    assetImgUrl: d.asset.image_url,
+    assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.asset.token_id}`,
+    collectionName: d.asset.collection.name,
+    collectionUrl: collectionUrl,
+    collectionDescription: d.asset.collection.description,
+    collectionImgUrl: collectionImgUrl,
+    date: new Date(d.transaction.timestamp).toUTCString(),
+    from: from,
+    to: to,
+    action: action,
+    key: d.transaction.transaction_hash + d.asset.id,
+    transactionHash: d.transaction.transaction_hash,
+  };
+
+  if (successAction) {
+    event.price = Number.parseInt(d.total_price);
+  }
+
+  return event;
+};
+
+const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
+  const filter = (d) => {
+    const transfer = d.event_type === "transfer";
+    const sale = d.event_type === "successful";
+
+    // Just filter out until more is known about these cases
+    if (!d.transaction || !d.asset) {
+      return false;
+    }
+
+    if (sale) {
+      return true;
+    }
+
+    if (transfer) {
+      const saleTransfer =
+        d.transaction.to_account &&
+        d.transaction.to_account.user &&
+        d.transaction.to_account.user.username === "OpenSea-Orders";
+      return !saleTransfer;
+    }
+  };
+
+  return data.filter(filter).map((d) => dataToEvent(d, address));
 };
 
 export const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
@@ -308,10 +302,9 @@ export const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
 export const resolveWallet = async (
   input: string
 ): Promise<[string, string]> => {
-  // const provider = new ethers.providers.EtherscanProvider(1, etherScanAPIKey);
   const provider = new ethers.providers.AlchemyProvider(
     1,
-    "tGyGfxK0E7NHtzkVyqmzRBqRji4jtaBa"
+    "tGyGfxK0E7NHtzkVyqmzRBqRji4jtaBa" // To do vercel env vars w/ new key
   );
 
   let address;
