@@ -1,6 +1,5 @@
 import axios from "axios";
 import { ethers } from "ethers";
-const etherScanAPIKey = "K14P3TW12QCI2VDR3YIDY7XA9Y5XP2D232";
 
 export type Action = "Minted" | "Bought" | "Sold" | "Sent" | "Received";
 
@@ -304,15 +303,14 @@ export const resolveWallet = async (
 ): Promise<[string, string]> => {
   const provider = new ethers.providers.AlchemyProvider(
     1,
-    "tGyGfxK0E7NHtzkVyqmzRBqRji4jtaBa" // To do vercel env vars w/ new key
+    "tGyGfxK0E7NHtzkVyqmzRBqRji4jtaBa"
   );
 
   let address;
   let ens;
 
-  // Todo this is hacky, use a regex or something
-  // If the input is a normal address, otherwise its an ens address
-  if (input.length === 42) {
+  let re = /^0x[a-fA-F0-9]{40}$/;
+  if (re.test(input)) {
     address = input;
     ens = await provider.lookupAddress(address);
   } else {
@@ -325,7 +323,9 @@ export const resolveWallet = async (
   }
 
   if (address === null) {
-    throw new Error("Provided ENS name does not have an associated wallet");
+    throw new Error(
+      "There's either a typo in the address or the provided ENS name does not have an associated wallet."
+    );
   }
 
   return [address, ens];
