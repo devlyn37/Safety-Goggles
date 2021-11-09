@@ -4,10 +4,12 @@ import { CollectionInfo } from "../utils/data";
 import dynamic from "next/dynamic";
 import ContentLoader from "react-content-loader";
 
+const loading = () => <CollectionPlaceholder />;
+
 const CollectionSearch = dynamic(
   () => import("./collectionSearch").then((mod) => mod.CollectionSearch),
   {
-    loading: () => <CollectionPlaceholder />,
+    loading: loading,
     ssr: false,
   }
 );

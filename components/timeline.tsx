@@ -75,7 +75,7 @@ const Timeline: FC<{
         );
 
         if (search.page > 1) {
-          setData([...data, ...events]);
+          setData((data) => [...data, ...events]);
         } else {
           setData(events);
         }

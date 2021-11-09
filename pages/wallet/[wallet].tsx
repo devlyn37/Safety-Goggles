@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import {
   CollectionInfo,
@@ -70,106 +70,116 @@ export default function Home() {
     setShowFilters(!showFilters);
   };
 
-  const handleSearch = async (
-    input: string,
-    setUrl: boolean = true,
-    startDate?: string,
-    endDate?: string,
-    filter?: Filter,
-    contractAddress?: string
-  ) => {
-    let address, ens;
+  const updateUrl = useCallback(
+    (s: SearchCriteria) => {
+      const query: Params = {};
 
-    setCollection(null);
-    setLoadingCollections(false);
-    setLoadingWallet(true);
-    setLoadingCollections(true);
-    setWalletErrorMsg("");
-
-    try {
-      [address, ens] = await resolveWallet(input);
-
-      const s: SearchCriteria = {
-        address: address,
-        ens: ens,
-        startDate: startDate ?? "",
-        endDate: endDate ?? "",
-        filter: filter ?? "",
-        page: 1,
-        contractAddress: contractAddress ?? "",
-      };
-      setSearch(s);
-
-      if (setUrl) {
-        updateUrl(s);
+      if (s.ens || s.address) {
+        query.wallet = s.ens ?? s.address;
       }
-    } catch (e) {
-      // To-do handle different cases more extensivly
-      setWalletErrorMsg(e.message);
+
+      if (s.startDate) {
+        query.startDate = s.startDate;
+      }
+
+      if (s.endDate) {
+        query.endDate = s.endDate;
+      }
+
+      if (s.contractAddress) {
+        query.contractAddress = s.contractAddress;
+      }
+
+      if (s.filter) {
+        query.filter = s.filter;
+      }
+
+      router.push({ pathname: "/wallet/[wallet]", query: query }, undefined, {
+        shallow: true,
+      });
+    },
+    [router]
+  );
+
+  const handleSearch = useCallback(
+    async (
+      input: string,
+      setUrl: boolean = true,
+      startDate?: string,
+      endDate?: string,
+      filter?: Filter,
+      contractAddress?: string
+    ) => {
+      let address, ens;
+
+      setCollection(null);
+      setLoadingCollections(false);
+      setLoadingWallet(true);
+      setLoadingCollections(true);
+      setWalletErrorMsg("");
+
+      console.log("Running handle Search");
+
+      try {
+        [address, ens] = await resolveWallet(input);
+
+        const s: SearchCriteria = {
+          address: address,
+          ens: ens,
+          startDate: startDate ?? "",
+          endDate: endDate ?? "",
+          filter: filter ?? "",
+          page: 1,
+          contractAddress: contractAddress ?? "",
+        };
+        setSearch(s);
+
+        if (setUrl) {
+          updateUrl(s);
+        }
+      } catch (e) {
+        // To-do handle different cases more extensivly
+        setWalletErrorMsg(e.message);
+        setLoadingWallet(false);
+        return;
+      }
+
       setLoadingWallet(false);
-      return;
-    }
 
-    setLoadingWallet(false);
+      try {
+        const usersCollections = await getCollections(address);
+        setCollections(usersCollections);
+        console.log(usersCollections);
 
-    try {
-      const usersCollections = await getCollections(address);
-      setCollections(usersCollections);
+        // User arriving from shared link or refreshing etc
+        if (contractAddress) {
+          setLoadingCollection(true);
 
-      // User arriving from shared link or refreshing etc
-      if (contractAddress) {
-        setLoadingCollection(true);
+          // Search for collection based on asset contract
+          let collection = usersCollections.find(
+            (c: CollectionInfo) =>
+              c.contractAddress.toUpperCase() === contractAddress.toUpperCase()
+          );
 
-        // Search for collection based on asset contract
-        let collection = usersCollections.find(
-          (c: CollectionInfo) =>
-            c.contractAddress.toUpperCase() === contractAddress.toUpperCase()
-        );
+          // If not found fetch data
+          if (!collection) {
+            collection = await getCollection(contractAddress);
+          }
 
-        // If not found fetch data
-        if (!collection) {
-          collection = await getCollection(contractAddress);
+          console.log("Setting Collection");
+          setCollection(collection);
         }
 
-        setCollection(collection);
+        setCollectionErrorMsg("");
+      } catch (e) {
+        setCollectionErrorMsg(e.message);
       }
 
-      setCollectionErrorMsg("");
-    } catch (e) {
-      setCollectionErrorMsg(e.message);
-    }
-
-    setLoadingCollection(false);
-    setLoadingCollections(false);
-  };
-
-  const updateUrl = (s: SearchCriteria) => {
-    const query: Params = {};
-
-    if (s.ens || s.address) {
-      query.wallet = s.ens ?? s.address;
-    }
-
-    if (s.startDate) {
-      query.startDate = s.startDate;
-    }
-
-    if (s.endDate) {
-      query.endDate = s.endDate;
-    }
-
-    if (s.contractAddress) {
-      query.contractAddress = s.contractAddress;
-    }
-
-    if (s.filter) {
-      query.filter = s.filter;
-    }
-
-    router.push({ pathname: "/wallet/[wallet]", query: query }, undefined, {
-      shallow: true,
-    });
-  };
+      setLoadingCollection(false);
+      setLoadingCollections(false);
+    },
+    [updateUrl]
+  );
 
   const handleStartDateChange = (startDate: string) => {
     const s = { ...search, startDate: startDate, page: 1 };
@@ -193,8 +203,9 @@ export default function Home() {
       page: 1,
     };
     setCollection(collection);
+    console.log(collection);
 
-    if (collection && !collection.floor) {
+    if (collection && collection.floor === undefined) {
       const loadData = async () => {
         setLoadingCollection(true);
         const c = await getCollection(collection.contractAddress);
@@ -316,7 +327,7 @@ export default function Home() {
     };
 
     handleParams();
-  }, [router.query]);
+  }, [router.query, handleSearch]);
 
   return (
     <div
