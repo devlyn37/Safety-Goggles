@@ -207,13 +207,13 @@ const dataToEvent = (d: any, address: string): NFTEvent => {
   const action: Action = determineAction(d, address);
   const successAction: Boolean = action === "Bought" || action === "Sold";
 
-  let from: string = successAction ? d.seller?.address : d.from_account.address;
-  from = from.toUpperCase();
+  const from: string = successAction
+    ? d.seller?.address.toUpperCase()
+    : d.from_account?.address.toUpperCase();
 
-  let to: string = successAction
-    ? d.winner_account.address
-    : d.to_account.address;
-  to = to.toUpperCase();
+  const to: string = successAction
+    ? d.winner_account.address.toUpperCase()
+    : d.to_account.address.toUpperCase();
 
   const collectionImgUrl: string =
     d.asset.collection.featured_image_url ??
