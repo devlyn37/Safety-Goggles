@@ -2,6 +2,8 @@ import { FC, useState } from "react";
 import ContentLoader from "react-content-loader";
 import { NFTEvent } from "../utils/data";
 import styles from "../styles/event.module.css";
+import { format } from "date-fns";
+import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
 const weiToEth = (wei: number): number => {
   return wei / Math.pow(10, 18);
@@ -21,45 +23,54 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
 
   return (
     <>
-      <EventCard
-        key={event.key}
-        imgUrl={event.collectionImgUrl}
-        alt={`Collection Image for ${event.collectionName}`}
-      >
-        <div className={styles.titleContainer}>
-          <h3 className={styles.title}>
-            {event.action} {grouping.length} NFTs{" "}
-          </h3>
+      <div className={styles.eventCard} key={event.key}>
+        <img
+          className={styles.eventImg}
+          src={event.collectionImgUrl}
+          loading="lazy"
+          alt={`Collection Image for ${event.collectionName}`}
+        ></img>
+        <div className={styles.imgOverlay}>
           <h4 className={styles.subTitle}>
-            <a href={event.collectionUrl} target="_blank" rel="noreferrer">
-              {event.collectionName}{" "}
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={event.collectionUrl}
+              style={{
+                display: "block",
+                color: "white",
+                fontWeight: 500,
+              }}
+            >
+              {event.collectionName}
             </a>
           </h4>
         </div>
+        <div className={styles.titleContainer}>
+          <h3 className={styles.title}>
+            {event.action} {grouping.length} NFTs{" "}
+            {sum && "For " + weiToEth(sum) + " ETH"}
+          </h3>
+        </div>
         <div className={styles.detailContainer}>
           <div>
-            <div className={styles.detail}>
-              {sum ? (
-                "Total: " + weiToEth(sum) + " ETH"
+            <div className={styles.subDetail}>
+              {format(new Date(event.date), "Pp")}
+            </div>
+          </div>
+          <div>
+            <div className={styles.groupButton} onClick={handleClick}>
+              {" "}
+              {expanded ? "Hide " : "Show "}
+              {expanded ? (
+                <FaAngleUp style={{ marginLeft: "4px" }} />
               ) : (
-                <a
-                  className={styles.link}
-                  target="_blank"
-                  rel="noreferrer"
-                  href={"https://etherscan.io/tx/" + event.transactionHash}
-                >
-                  View on Etherscan
-                </a>
+                <FaAngleDown style={{ marginLeft: "4px", marginTop: "2px" }} />
               )}
             </div>
-            <div className={styles.subDetail}>{event.date}</div>
-          </div>
-          <div className={styles.groupButton} onClick={handleClick}>
-            {" "}
-            {expanded ? "Hide" : "Show"}
           </div>
         </div>
-      </EventCard>
+      </div>
       {expanded ? <EventList grouping={grouping}></EventList> : null}
     </>
   );
@@ -74,59 +85,85 @@ export const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
 );
 
 export const Event: FC<{ event: NFTEvent }> = ({ event }) => (
-  <EventCard imgUrl={event.assetImgUrl} alt={`image for ${event.assetName}`}>
-    <div className={styles.titleContainer}>
-      <h3 className={styles.title}>
-        {event.action}{" "}
+  <div className={styles.eventCard} key={event.key}>
+    <img
+      className={styles.eventImg}
+      src={event.assetImgUrl}
+      loading="lazy"
+      alt={`image for ${event.assetName}`}
+    ></img>
+    <div className={styles.imgOverlay}>
+      <h4 className={styles.subTitle}>
         <a
-          className={styles.link}
           target="_blank"
           rel="noreferrer"
           href={event.assetUrl}
+          style={{
+            display: "block",
+            color: "white",
+            fontWeight: 500,
+          }}
         >
           {event.assetName}
         </a>
-      </h3>
-      <h4 className={styles.subTitle}>
-        <a target="_blank" rel="noreferrer" href={event.collectionUrl}>
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href={event.collectionUrl}
+          style={{ fontWeight: 300, fontSize: "12px", color: "lightgray" }}
+        >
           {event.collectionName}{" "}
         </a>
       </h4>
     </div>
+
+    <div className={styles.titleContainer}>
+      <h3 className={styles.title}>
+        {event.action}{" "}
+        {event.action === "Bought" || event.action === "Sold"
+          ? ` for ${weiToEth(event.price)} ETH`
+          : null}
+      </h3>
+    </div>
     <div className={styles.detailContainer}>
       <div>
-        <div className={styles.detail}>
-          {event.action === "Bought" || event.action === "Sold" ? (
-            weiToEth(event.price) + " ETH"
-          ) : (
-            <a
-              className={styles.link}
-              target="_blank"
-              rel="noreferrer"
-              href={"https://etherscan.io/tx/" + event.transactionHash}
-            >
-              View on Etherscan
-            </a>
-          )}
+        <div className={styles.subDetail}>
+          {format(new Date(event.date), "Pp")}
         </div>
-        <div className={styles.subDetail}>{event.date}</div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-start",
+        }}
+      >
+        <a
+          href={"https://etherscan.io/tx/" + event.transactionHash}
+          target="_blank"
+          rel="noreferrer"
+          style={{ marginRight: "7px", display: "flex", alignItems: "center" }}
+        >
+          <img
+            src={"/etherscan-logo-circle.svg"}
+            className={styles.linkIcon}
+            alt="Etherscan Logo"
+          ></img>
+        </a>
+        <a
+          href={event.assetUrl}
+          target="_blank"
+          rel="noreferrer"
+          style={{ display: "flex", alignItems: "center" }}
+        >
+          <img
+            src={"/OpenSea-Logo-Blue.svg"}
+            className={styles.linkIcon}
+            alt="OpenSea Logo"
+          ></img>
+        </a>
       </div>
     </div>
-  </EventCard>
-);
-
-const EventCard: FC<{
-  imgUrl: string;
-  alt: string;
-}> = ({ children, imgUrl, alt }) => (
-  <div className={styles.eventCard}>
-    <img
-      className={styles.eventImg}
-      src={imgUrl}
-      loading="lazy"
-      alt={alt}
-    ></img>
-    <div className={styles.eventDetails}>{children}</div>
   </div>
 );
 
@@ -187,7 +224,7 @@ export const LoadingCard: FC = () => {
         />
         <div
           style={{
-            marginTop: "30px",
+            marginTop: "40px",
             width: "65%",
             height: "18px",
             backgroundColor: "#f3f3f3",
@@ -196,7 +233,6 @@ export const LoadingCard: FC = () => {
         />
         <div
           style={{
-            marginBottom: "10px",
             marginTop: "6px",
             width: "93%",
             height: "15px",

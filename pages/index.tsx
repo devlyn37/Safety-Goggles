@@ -36,7 +36,7 @@ export default function Home() {
               rel="noreferrer"
             >
               <img
-                src={"twitter-logo.svg"}
+                src={"/twitter-logo.svg"}
                 className={styles.linkIcon}
                 style={{ marginRight: "20px" }}
                 alt="twitter logo"
@@ -48,7 +48,7 @@ export default function Home() {
               rel="noreferrer"
             >
               <img
-                src={"github-logo.svg"}
+                src={"/github-logo.svg"}
                 className={styles.linkIcon}
                 alt="github logo"
               ></img>

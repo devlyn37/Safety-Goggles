@@ -33,7 +33,6 @@ const groupAndOrganizeTimeline = (
     }
 
     const dateFormat = "MMM d, yyyy";
-
     const rangeString = `${format(subDays(now, (i + 1) * 7), dateFormat)} - ${
       i === 0 ? "Today" : format(subDays(now, i * 7), dateFormat)
     }`;
@@ -85,6 +84,7 @@ const Timeline: FC<{
         setErrorMsg(
           "There was an issue loading OpenSea data, please try again later."
         );
+        throw e;
       }
 
       setLoading(false);
