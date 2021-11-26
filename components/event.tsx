@@ -9,6 +9,10 @@ const weiToEth = (wei: number): number => {
   return wei / Math.pow(10, 18);
 };
 
+const trimAddress = (address: string): string => {
+  return address.slice(0, 6) + "..." + address.slice(-4);
+};
+
 export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
   const [expanded, setExpanded] = useState(false);
   const event = grouping[0];
@@ -31,7 +35,7 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
           alt={`Collection Image for ${event.collectionName}`}
         ></img>
         <div className={styles.imgOverlay}>
-          <h4 className={styles.subTitle}>
+          <h4 className={styles.nameLabel}>
             <a
               target="_blank"
               rel="noreferrer"
@@ -52,11 +56,10 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
             {sum && "For " + weiToEth(sum) + " ETH"}
           </h3>
         </div>
+        <div className={styles.spaceBuffer} />
         <div className={styles.detailContainer}>
-          <div>
-            <div className={styles.subDetail}>
-              {format(new Date(event.date), "Pp")}
-            </div>
+          <div className={styles.subDetail}>
+            {format(new Date(event.date), "Pp")}
           </div>
           <div>
             <div className={styles.groupButton} onClick={handleClick}>
@@ -84,88 +87,112 @@ export const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
   </>
 );
 
-export const Event: FC<{ event: NFTEvent }> = ({ event }) => (
-  <div className={styles.eventCard} key={event.key}>
-    <img
-      className={styles.eventImg}
-      src={event.assetImgUrl}
-      loading="lazy"
-      alt={`image for ${event.assetName}`}
-    ></img>
-    <div className={styles.imgOverlay}>
-      <h4 className={styles.subTitle}>
-        <a
-          target="_blank"
-          rel="noreferrer"
-          href={event.assetUrl}
-          style={{
-            display: "block",
-            color: "white",
-            fontWeight: 500,
-          }}
-        >
-          {event.assetName}
-        </a>
-        <a
-          target="_blank"
-          rel="noreferrer"
-          href={event.collectionUrl}
-          style={{ fontWeight: 300, fontSize: "12px", color: "lightgray" }}
-        >
-          {event.collectionName}{" "}
-        </a>
-      </h4>
-    </div>
+export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
+  const getTitle = (event: NFTEvent): string => {
+    let title = event.action;
 
-    <div className={styles.titleContainer}>
-      <h3 className={styles.title}>
-        {event.action}{" "}
-        {event.action === "Bought" || event.action === "Sold"
-          ? ` for ${weiToEth(event.price)} ETH`
-          : null}
-      </h3>
-    </div>
-    <div className={styles.detailContainer}>
-      <div>
-        <div className={styles.subDetail}>
-          {format(new Date(event.date), "Pp")}
+    if (
+      event.action === "Bought" ||
+      event.action === "Received" ||
+      event.action === "Minted"
+    ) {
+      title += " from ";
+    } else {
+      title += " to ";
+    }
+
+    return title;
+  };
+
+  const formatAddress = (address: string): string => {
+    return address ? trimAddress(address) : "Unknown";
+  };
+
+  const addressContainer = (
+    <span className={styles.addressContainer}>
+      {event.action === "Bought" ||
+      event.action === "Received" ||
+      event.action === "Minted"
+        ? formatAddress(event.from)
+        : formatAddress(event.to)}
+    </span>
+  );
+
+  return (
+    <div className={styles.eventCard} key={event.key}>
+      <img
+        className={styles.eventImg}
+        src={event.assetImgUrl}
+        loading="lazy"
+        alt={`image for ${event.assetName}`}
+      ></img>
+      <div className={styles.imgOverlay}>
+        <h4 className={styles.nameLabel}>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={event.assetUrl}
+            className={styles.nameLabelLink}
+          >
+            {event.assetName}
+          </a>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={event.collectionUrl}
+            className={styles.subLabelLink}
+          >
+            {event.collectionName}{" "}
+          </a>
+        </h4>
+      </div>
+      <div className={styles.eventDetails}>
+        <div className={styles.titleContainer}>
+          <h3 className={styles.title}>{getTitle(event)}</h3>
+          {addressContainer}
+          {(event.action === "Sold" || event.action === "Bought") && (
+            <h3 className={styles.title}>{`for ${weiToEth(
+              event.price
+            )} ETH`}</h3>
+          )}
+        </div>
+        <div className={styles.spaceBuffer} />
+        <div className={styles.detailContainer}>
+          <div className={styles.subDetail}>
+            {format(new Date(event.date), "Pp")}
+          </div>
+          <div className={styles.iconContainer}>
+            <a
+              href={"https://etherscan.io/tx/" + event.transactionHash}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.linkIconContainer}
+              style={{ marginRight: "7px" }}
+            >
+              <img
+                src={"/etherscan-logo-circle.svg"}
+                className={styles.linkIcon}
+                alt="Etherscan Logo"
+              ></img>
+            </a>
+            <a
+              href={event.assetUrl}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.linkIconContainer}
+            >
+              <img
+                src={"/OpenSea-Logo-Blue.svg"}
+                className={styles.linkIcon}
+                alt="OpenSea Logo"
+              ></img>
+            </a>
+          </div>
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-start",
-        }}
-      >
-        <a
-          href={"https://etherscan.io/tx/" + event.transactionHash}
-          target="_blank"
-          rel="noreferrer"
-          style={{ marginRight: "7px", display: "flex", alignItems: "center" }}
-        >
-          <img
-            src={"/etherscan-logo-circle.svg"}
-            className={styles.linkIcon}
-            alt="Etherscan Logo"
-          ></img>
-        </a>
-        <a
-          href={event.assetUrl}
-          target="_blank"
-          rel="noreferrer"
-          style={{ display: "flex", alignItems: "center" }}
-        >
-          <img
-            src={"/OpenSea-Logo-Blue.svg"}
-            className={styles.linkIcon}
-            alt="OpenSea Logo"
-          ></img>
-        </a>
-      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const LoadingCard: FC = () => {
   return (

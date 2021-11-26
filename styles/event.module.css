@@ -34,34 +34,59 @@
 }
 
 .titleContainer {
-  flex: 1;
-  padding: 15px 20px 0px 20px;
+  padding: 15px 20px 15px 20px;
   border-radius: 0px 0px 25px 25px;
   min-width: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: -4px;
 }
 
 .title {
+  margin: 4px;
   font-size: var(--big-font-size);
-  margin: 0px 0px 0px 0px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
-.subTitle {
+.addressContainer {
+  padding: 5px;
+  border: var(--hard-border);
+  font-size: var(--small-font-size);
+  color: var(--font-color-med);
+  border-radius: 10px;
+  margin: 4px;
+}
+
+.nameLabel {
   font-weight: normal;
   font-size: var(--normal-font-size);
   margin: 0;
-  color: var(--font-color-med);
+}
+
+.nameLabelLink {
+  color: white;
+  display: block;
+  font-weight: 500;
+}
+
+.subLabelLink {
+  font-weight: 300;
+  font-size: var(--small-font-size);
+  color: lightgray;
+}
+
+.spaceBuffer {
+  flex: 1;
 }
 
 .detailContainer {
-  flex: 0;
-  padding: 20px 20px 12px 20px;
+  padding: 12px 20px 12px 20px;
+  border-top: var(--soft-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 15px;
+  margin-top: 5px;
 }
 
 .detail {
@@ -76,6 +101,17 @@
 .subDetail {
   color: var(--font-color-med);
   font-size: var(--small-font-size);
+}
+
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.linkIconContainer {
+  display: flex;
+  align-items: center;
 }
 
 .linkIcon {
