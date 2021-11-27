@@ -17,13 +17,25 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
   const [expanded, setExpanded] = useState(false);
   const event = grouping[0];
   const sum =
-    event.action !== "Minted"
+    event.action === "Bought" || event.action === "Sold"
       ? grouping.map((e) => e.price).reduce((prev, curr) => prev + curr)
       : undefined;
 
   const handleClick = () => {
     setExpanded(!expanded);
   };
+
+  const groupButton = (
+    <div className={styles.groupButton} onClick={handleClick}>
+      {" "}
+      {expanded ? "Hide " : "Show "}
+      {expanded ? (
+        <FaAngleUp style={{ marginLeft: "4px" }} />
+      ) : (
+        <FaAngleDown style={{ marginLeft: "4px", marginTop: "2px" }} />
+      )}
+    </div>
+  );
 
   return (
     <>
@@ -61,17 +73,7 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
           <div className={styles.subDetail}>
             {format(new Date(event.date), "Pp")}
           </div>
-          <div>
-            <div className={styles.groupButton} onClick={handleClick}>
-              {" "}
-              {expanded ? "Hide " : "Show "}
-              {expanded ? (
-                <FaAngleUp style={{ marginLeft: "4px" }} />
-              ) : (
-                <FaAngleDown style={{ marginLeft: "4px", marginTop: "2px" }} />
-              )}
-            </div>
-          </div>
+          {groupButton}
         </div>
       </div>
       {expanded ? <EventList grouping={grouping}></EventList> : null}
