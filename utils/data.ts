@@ -1,5 +1,6 @@
 import axios from "axios";
 import { ethers } from "ethers";
+const OSBaseUrl = "/api/opensea-proxy";
 
 export type Action = "Minted" | "Bought" | "Sold" | "Sent" | "Received";
 
@@ -33,10 +34,10 @@ export interface CollectionInfo {
 export const getCollections = async (
   address: string
 ): Promise<CollectionInfo[]> => {
-  const collectionUrl = `https://api.opensea.io/api/v1/collections?${
+  const collectionUrl = `${OSBaseUrl}/collections?${
     "asset_owner=" + address
   }&offset=0&limit=300`;
-  const eventUrl = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=0&limit=300`;
+  const eventUrl = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=0&limit=300`;
 
   const [holding, recent] = await Promise.all([
     axios.get(collectionUrl),
@@ -97,7 +98,7 @@ export const getCollections = async (
 export const getCollection = async (
   contractAddress: string
 ): Promise<CollectionInfo> => {
-  const url = `https://api.opensea.io/api/v1/asset/${contractAddress}/1`;
+  const url = `${OSBaseUrl}/asset/${contractAddress}/1`;
   console.log(url);
   const results = await axios.get(url);
   const asset = results.data;
@@ -123,7 +124,7 @@ export const getEvents = async (
   contractAddress?: string,
   filter?: string
 ): Promise<[NFTEvent[], boolean]> => {
-  let url = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
+  let url = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
 
   // To-do lets use query string here
 
@@ -208,20 +209,22 @@ const dataToEvent = (d: any, address: string): NFTEvent => {
   const successAction: Boolean = action === "Bought" || action === "Sold";
 
   const from: string = successAction
-    ? d.seller?.address.toUpperCase()
-    : d.from_account?.address.toUpperCase();
+    ? d.seller?.address
+    : action === "Minted"
+    ? d.contract_address
+    : d.from_account?.address;
 
   const to: string = successAction
-    ? d.winner_account.address.toUpperCase()
-    : d.to_account.address.toUpperCase();
+    ? d.winner_account?.address
+    : d.to_account?.address;
 
   const collectionImgUrl: string =
-    d.asset.collection.featured_image_url ??
-    d.asset.collection.image_url ??
-    d.asset.collection.banner_image_url;
+    d.asset.collection?.featured_image_url ??
+    d.asset.collection?.image_url ??
+    d.asset.collection?.banner_image_url;
 
   const collectionUrl: string =
-    d.asset.collection.external_url ??
+    d.asset.collection?.external_url ??
     `https://opensea.io/collection/${d.asset.collection.slug}}`;
 
   const event: NFTEvent = {
@@ -229,9 +232,9 @@ const dataToEvent = (d: any, address: string): NFTEvent => {
     assetDescription: d.asset.description,
     assetImgUrl: d.asset.image_url,
     assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.asset.token_id}`,
-    collectionName: d.asset.collection.name,
+    collectionName: d.asset.collection?.name,
     collectionUrl: collectionUrl,
-    collectionDescription: d.asset.collection.description,
+    collectionDescription: d.asset.collection?.description,
     collectionImgUrl: collectionImgUrl,
     date: new Date(d.transaction.timestamp).toUTCString(),
     from: from,
