@@ -13,6 +13,10 @@ const trimAddress = (address: string): string => {
   return address.slice(0, 6) + "..." + address.slice(-4);
 };
 
+const addDefaultSrc = (ev) => {
+  ev.target.src = "/no-image.jpeg";
+};
+
 export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
   const [expanded, setExpanded] = useState(false);
   const event = grouping[0];
@@ -42,6 +46,7 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
       <div className={styles.eventCard} key={event.key}>
         <img
           className={styles.eventImg}
+          onError={addDefaultSrc}
           src={event.collectionImgUrl}
           loading="lazy"
           alt={`Collection Image for ${event.collectionName}`}
@@ -125,6 +130,7 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
       <img
         className={styles.eventImg}
         src={event.assetImgUrl}
+        onError={addDefaultSrc}
         loading="lazy"
         alt={`image for ${event.assetName}`}
       ></img>
@@ -195,6 +201,8 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
     </div>
   );
 };
+
+// To-do no inline styles here
 
 export const LoadingCard: FC = () => {
   return (

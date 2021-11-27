@@ -28,6 +28,10 @@ export const CollectionSearch: FC<{
       ? "lightgray"
       : "white";
 
+    const addDefaultSrc = (ev) => {
+      ev.target.src = "/no-image.jpeg";
+    };
+
     return !isDisabled ? (
       <div
         {...innerProps}
@@ -49,8 +53,9 @@ export const CollectionSearch: FC<{
             objectFit: "cover",
             marginRight: "10px",
           }}
-          src={imgUrl}
+          src={imgUrl ?? "/no-image.jpeg"}
           alt={`Collection Image for ${name}`}
+          onError={addDefaultSrc}
         />
         <div>{name}</div>
       </div>

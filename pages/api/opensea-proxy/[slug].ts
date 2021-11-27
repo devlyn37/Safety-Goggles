@@ -6,21 +6,19 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { query } = req;
-  let url = `https://api.opensea.io/api/v1/${query.slug}?`;
-  const keys = Object.keys(query);
-  keys.forEach((key: string, i: number) => {
-    if (key === "slug") return;
-    url += `${key}=${query[key]}&`;
-  });
+  let baseUrl = `https://api.opensea.io/api/v1/`;
 
-  url = url.slice(0, -1);
+  if (!req.url) {
+    return res.status(400).end();
+  }
+
+  const route = "/api/opensea-proxy/";
+  const url = baseUrl + req.url.slice(route.length);
 
   try {
     const response = await axios.get(url, config);
     res.status(response.status).json(response.data);
   } catch (e) {
-    console.log(e);
     const status = e.response.status ?? 500;
     res.status(status).end();
   }

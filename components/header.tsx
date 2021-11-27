@@ -22,6 +22,9 @@ export const Header: FC<{
 }) => {
   const preHydrate = ens === "" && address === "";
   const errorContent = <div className={styles.errorContainer}>{errorMsg}</div>;
+  const addDefaultSrc = (ev) => {
+    ev.target.src = "/no-image.jpeg";
+  };
 
   const regularContent = (
     <>
@@ -43,7 +46,8 @@ export const Header: FC<{
             <>
               {" "}
               <img
-                src={collection.imgUrl}
+                src={collection.imgUrl ?? "/no-image.jpeg"}
+                onError={addDefaultSrc}
                 className={styles.collectionImg}
                 alt={`Collection Image for ${collection.name}`}
               />
