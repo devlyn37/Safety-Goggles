@@ -1,5 +1,5 @@
 import React from "react";
-import { Search } from "../components/search";
+import { Search } from "../components/Search";
 import styles from "../styles/home.module.css";
 import { useRouter } from "next/dist/client/router";
 

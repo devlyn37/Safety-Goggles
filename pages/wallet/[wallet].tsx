@@ -6,14 +6,14 @@ import {
   getCollections,
   getCollection,
 } from "../../utils/data";
-import Timeline from "../../components/timeline";
-import { Search } from "../../components/search";
+import Timeline from "../../components/Timeline";
+import { Search } from "../../components/Search";
 import { useRouter } from "next/dist/client/router";
-import { Filter } from "../../components/filter";
-import { Header } from "../../components/header";
+import { Filter } from "../../components/Filter";
+import { Header } from "../../components/Header";
 import { ParsedUrlQueryInput } from "querystring";
 import styles from "../../styles/wallet.module.css";
-import { Control } from "../../components/control";
+import { Control } from "../../components/Control";
 
 export type Filter = "successful" | "transfer" | "";
 

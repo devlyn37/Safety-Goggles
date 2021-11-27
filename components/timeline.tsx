@@ -3,9 +3,9 @@ import { NFTEvent, getEvents, groupEvents } from "../utils/data";
 import styles from "../styles/timeline.module.css";
 import { SearchCriteria } from "../pages/wallet/[wallet]";
 import { subDays, differenceInDays, format } from "date-fns";
-import { VerticalTimeline, Interval } from "./verticalTimeline";
+import { VerticalTimeline, Interval } from "./VerticalTimeline";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { EventGrouping, EventList, LoadingCard } from "./event";
+import { EventGrouping, EventList, LoadingCard } from "./Event";
 
 const groupAndOrganizeTimeline = (
   events: NFTEvent[]

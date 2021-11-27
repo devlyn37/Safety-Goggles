@@ -7,7 +7,7 @@ import ContentLoader from "react-content-loader";
 const loading = () => <CollectionPlaceholder />;
 
 const CollectionSearch = dynamic(
-  () => import("./collectionSearch").then((mod) => mod.CollectionSearch),
+  () => import("./CollectionSearch").then((mod) => mod.CollectionSearch),
   {
     loading: loading,
     ssr: false,
