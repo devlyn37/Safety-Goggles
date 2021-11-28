@@ -216,67 +216,83 @@ export const LoadingCard: FC = () => {
           border: "2px solid #f2f2f2",
         }}
         speed={2}
-        viewBox="0 0 400 402"
+        viewBox="0 0 400 400"
         backgroundColor="#f3f3f3"
         foregroundColor="#ecebeb"
       >
-        <rect x="0" y="0" rx="0" ry="0" width="400" height="402" />
+        <rect x="0" y="0" rx="0" ry="0" width="400" height="400" />
       </ContentLoader>
-
-      {/* Buffer */}
-      <div
-        style={{
-          flex: "1",
-          borderRight: "2px solid #f2f2f2",
-          borderLeft: "2px solid #f2f2f2",
-        }}
-      ></div>
 
       {/* Should have static height */}
       <div
         style={{
-          padding: "20px 20px",
+          padding: "15px 20px",
           borderRight: "2px solid #f2f2f2",
           borderLeft: "2px solid #f2f2f2",
-          borderBottom: "2px solid #f2f2f2",
-          borderRadius: "0px 0px 25px 25px",
+          flex: 1,
         }}
       >
         <div
           style={{
             width: "95%",
-            height: "28px",
+            height: "22px",
             backgroundColor: "#f3f3f3",
-            borderRadius: "10px",
+            borderRadius: "8px",
           }}
         />
         <div
           style={{
-            marginTop: "6px",
-            width: "80%",
-            height: "18px",
+            marginTop: "8px",
+            width: "75%",
+            height: "22px",
             backgroundColor: "#f3f3f3",
-            borderRadius: "6px",
+            borderRadius: "8px",
           }}
         />
+      </div>
+      <div
+        style={{
+          padding: "12px 20px",
+          border: "2px solid #f2f2f2",
+          borderRadius: "0px 0px 25px 25px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
         <div
           style={{
-            marginTop: "40px",
-            width: "65%",
-            height: "18px",
-            backgroundColor: "#f3f3f3",
-            borderRadius: "6px",
-          }}
-        />
-        <div
-          style={{
-            marginTop: "6px",
-            width: "93%",
+            width: "55%",
             height: "15px",
             backgroundColor: "#f3f3f3",
             borderRadius: "6px",
           }}
         />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-start",
+          }}
+        >
+          <div
+            style={{
+              height: "24px",
+              width: "24px",
+              borderRadius: "50%",
+              backgroundColor: "#f3f3f3",
+              marginRight: "7px",
+            }}
+          />
+          <div
+            style={{
+              height: "24px",
+              width: "24px",
+              borderRadius: "50%",
+              backgroundColor: "#f3f3f3",
+            }}
+          />
+        </div>
       </div>
     </div>
   );

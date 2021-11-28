@@ -41,21 +41,21 @@
   justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
-  margin: -4px;
+  margin: -2px -4px;
 }
 
 .title {
-  margin: 4px;
+  margin: 2px 4px;
   font-size: var(--big-font-size);
 }
 
 .addressContainer {
-  padding: 5px;
+  margin: 2px 4px;
+  padding: 3px 7px;
   border: var(--hard-border);
   font-size: var(--small-font-size);
   color: var(--font-color-med);
-  border-radius: 10px;
-  margin: 4px;
+  border-radius: 8px;
 }
 
 .nameLabel {
@@ -86,7 +86,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 5px;
 }
 
 .detail {
