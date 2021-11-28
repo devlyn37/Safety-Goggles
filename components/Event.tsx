@@ -5,8 +5,9 @@ import styles from "../styles/event.module.css";
 import { format } from "date-fns";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 
-const weiToEth = (wei: number): number => {
-  return wei / Math.pow(10, 18);
+const formatEthFromWei = (wei: number): string => {
+  const num = wei / Math.pow(10, 18);
+  return num.toFixed(5);
 };
 
 const trimAddress = (address: string): string => {
@@ -70,7 +71,7 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
         <div className={styles.titleContainer}>
           <h3 className={styles.title}>
             {event.action} {grouping.length} NFTs{" "}
-            {sum && "For " + weiToEth(sum) + " ETH"}
+            {sum && "For " + formatEthFromWei(sum) + " ETH"}
           </h3>
         </div>
         <div className={styles.spaceBuffer} />
@@ -159,7 +160,7 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
           <h3 className={styles.title}>{getTitle(event)}</h3>
           {addressContainer}
           {(event.action === "Sold" || event.action === "Bought") && (
-            <h3 className={styles.title}>{`for ${weiToEth(
+            <h3 className={styles.title}>{`for ${formatEthFromWei(
               event.price
             )} ETH`}</h3>
           )}
