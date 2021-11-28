@@ -2,6 +2,7 @@ import { FC } from "react";
 import ContentLoader from "react-content-loader";
 import { CollectionInfo } from "../utils/data";
 import styles from "../styles/header.module.css";
+import { addDefaultSrc } from "../utils/misc";
 
 export const Header: FC<{
   ens: string;
@@ -22,9 +23,6 @@ export const Header: FC<{
 }) => {
   const preHydrate = ens === "" && address === "";
   const errorContent = <div className={styles.errorContainer}>{errorMsg}</div>;
-  const addDefaultSrc = (ev) => {
-    ev.target.src = "/no-image.jpeg";
-  };
 
   const regularContent = (
     <>

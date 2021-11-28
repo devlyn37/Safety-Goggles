@@ -4,19 +4,12 @@ import { NFTEvent } from "../utils/data";
 import styles from "../styles/event.module.css";
 import { format } from "date-fns";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
-
-const formatEthFromWei = (wei: number): string => {
-  const num = wei / Math.pow(10, 18);
-  return num.toFixed(5);
-};
-
-const trimAddress = (address: string): string => {
-  return address.slice(0, 6) + "..." + address.slice(-4);
-};
-
-const addDefaultSrc = (ev) => {
-  ev.target.src = "/no-image.jpeg";
-};
+import {
+  formatEthFromWei,
+  addDefaultSrc,
+  trimAddress,
+  trunicate,
+} from "../utils/misc";
 
 export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
   const [expanded, setExpanded] = useState(false);
@@ -143,7 +136,7 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
             href={event.assetUrl}
             className={styles.nameLabelLink}
           >
-            {event.assetName}
+            {trunicate(event.assetName, 80)}
           </a>
           <a
             target="_blank"
@@ -151,7 +144,7 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
             href={event.collectionUrl}
             className={styles.subLabelLink}
           >
-            {event.collectionName}{" "}
+            {trunicate(event.collectionName, 50)}{" "}
           </a>
         </h4>
       </div>

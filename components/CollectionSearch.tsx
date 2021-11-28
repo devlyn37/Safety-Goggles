@@ -1,6 +1,7 @@
 import { FC } from "react";
 import Select from "react-select";
 import { CollectionInfo } from "../utils/data";
+import { addDefaultSrc } from "../utils/misc";
 
 export const CollectionSearch: FC<{
   collections: CollectionInfo[];
@@ -27,10 +28,6 @@ export const CollectionSearch: FC<{
       : isFocused
       ? "lightgray"
       : "white";
-
-    const addDefaultSrc = (ev) => {
-      ev.target.src = "/no-image.jpeg";
-    };
 
     return !isDisabled ? (
       <div

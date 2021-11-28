@@ -122,7 +122,7 @@
   padding: 10px;
   position: absolute;
   top: 15px;
-  right: 15px;
+  left: 15px;
   max-width: 70%;
   background: rgba(0, 0, 0, 0.4);
   backdrop-filter: blur(10px);
