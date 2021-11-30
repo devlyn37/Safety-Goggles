@@ -44,8 +44,11 @@
   margin: -2px -4px;
 }
 
-.title {
+.titleItem {
   margin: 2px 4px;
+}
+
+.title {
   font-size: var(--big-font-size);
 }
 
@@ -81,7 +84,6 @@
 
 .detail {
   font-weight: bold;
-  font-size: var(--small-font-size);
   margin-bottom: 5px;
   display: flex;
   align-items: center;

@@ -3,6 +3,7 @@ import ContentLoader from "react-content-loader";
 import { CollectionInfo } from "../utils/data";
 import styles from "../styles/header.module.css";
 import { addDefaultSrc } from "../utils/misc";
+import { AddressContainer } from "./AddressContainer";
 
 export const Header: FC<{
   ens: string;
@@ -32,7 +33,7 @@ export const Header: FC<{
         ) : (
           <>
             {ens && <h1 className={styles.ens}>{ens}</h1>}
-            <div className={styles.address}>{address}</div>
+            <AddressContainer address={address} large />
           </>
         )}
       </div>
