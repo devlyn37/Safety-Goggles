@@ -59,7 +59,7 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
           </h4>
         </div>
         <div className={styles.titleContainer}>
-          <h3 className={styles.title}>
+          <h3 className={`${styles.title} ${styles.titleItem}`}>
             {event.action} {grouping.length} NFTs{" "}
             {sum && "For " + formatEthFromWei(sum) + " ETH"}
           </h3>
@@ -144,15 +144,19 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
       </div>
       <div className={styles.eventDetails}>
         <div className={styles.titleContainer}>
-          <h3 className={styles.title}>{getTitle(event)}</h3>
-          <AddressContainer
-            address={otherAddress}
-            shouldResolveENS={isVisible}
-          />
+          <h3 className={`${styles.title} ${styles.titleItem}`}>
+            {getTitle(event)}
+          </h3>
+          <div className={styles.titleItem}>
+            <AddressContainer
+              address={otherAddress}
+              shouldResolveENS={isVisible}
+            />
+          </div>
           {(event.action === "Sold" || event.action === "Bought") && (
-            <h3 className={styles.title}>{`for ${formatEthFromWei(
-              event.price
-            )} ETH`}</h3>
+            <h3
+              className={`${styles.title} ${styles.titleItem}`}
+            >{`for ${formatEthFromWei(event.price)} ETH`}</h3>
           )}
         </div>
         <div className={styles.spaceBuffer} />

@@ -19,6 +19,8 @@
   --font-color-med: rgba(0, 0, 0, 0.6);
   --font-color-low: rgba(0, 0, 0, 0.38);
   --font-color-err: darkred;
+
+  --border-radius-regular: 0.6em;
 }
 
 html,

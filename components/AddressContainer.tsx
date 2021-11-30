@@ -11,7 +11,8 @@ const formatAddress = (address: string): string => {
 export const AddressContainer: FC<{
   address: string;
   shouldResolveENS?: boolean;
-}> = ({ address, shouldResolveENS = true }) => {
+  large?: boolean;
+}> = ({ address, shouldResolveENS = false, large = false }) => {
   const [ens, setEns] = useState<null | string>(null);
   const [hasLoadedEns, setHasLoadedEns] = useState<boolean>(false);
   const [showCheck, setShowCheck] = useState<boolean>(false);
@@ -57,8 +58,11 @@ export const AddressContainer: FC<{
   const display = ens ? trunicate(ens, 50) : formatAddress(address);
 
   return (
-    <span className={styles.addressContainer} onClick={handleClick}>
+    <div
+      className={`${large ? styles.large : styles.small} ${styles.container}`}
+      onClick={handleClick}
+    >
       {display} {icon}
-    </span>
+    </div>
   );
 };

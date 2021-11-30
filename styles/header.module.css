@@ -15,22 +15,10 @@
 }
 
 .ens {
-  margin: 0;
+  margin: 0px 0px 10px 0px;
   font-size: var(--heading-font-size);
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.address {
-  max-width: 420px;
-  margin-top: 10px;
-  padding: 5px 10px;
-  border: var(--hard-border);
-  border-radius: 10px;
-  color: var(--font-color-med);
-  overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
 }
 
@@ -78,7 +66,7 @@
   padding: 10px;
   background-color: var(--err-background);
   color: var(--font-color-err);
-  border-radius: 10px;
+  border-radius: var(--border-radius-regular);
 }
 
 @media (max-width: 700px) {

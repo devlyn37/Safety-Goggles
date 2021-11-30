@@ -52,11 +52,11 @@
 .date {
   color: var(--font-color-med);
   background-color: white;
-  border-radius: 10px;
+  border-radius: var(--border-radius-regular);
   border: var(--hard-border);
   display: inline-block;
   margin-bottom: 1.2em;
-  padding: 0.25em 1em 0.2em 1em;
+  padding: 0.25em 0.6em 0.2em 0.6em;
 }
 
 @media (min-width: 0px) {

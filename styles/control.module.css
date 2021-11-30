@@ -14,6 +14,6 @@
   background-color: var(--foreground-1);
   border: "none";
   font-size: var(--normal-font-size);
-  border-radius: 15px;
+  border-radius: var(--border-radius-regular);
   border: none;
 }

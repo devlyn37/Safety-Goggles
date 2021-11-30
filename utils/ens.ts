@@ -22,6 +22,34 @@ export const AddressToENS = async (address: string): Promise<string | null> => {
   return ens;
 };
 
+// Not used enough to care about caching for now
 export const ENSToAddress = async (ens: string): Promise<string | null> => {
   return await provider.resolveName(ens);
+};
+
+export const resolveWallet = async (
+  input: string
+): Promise<[string, string]> => {
+  let address;
+  let ens;
+
+  let re = /^0x[a-fA-F0-9]{40}$/;
+  if (re.test(input)) {
+    address = input;
+    ens = await AddressToENS(address);
+  } else {
+    ens = input;
+    if (ens.slice(-4) !== ".eth") {
+      ens += ".eth";
+    }
+    address = await ENSToAddress(ens);
+  }
+
+  if (address === null) {
+    throw new Error(
+      "There's either a typo in the address or the provided ENS name does not have an associated wallet."
+    );
+  }
+
+  return [address, ens];
 };

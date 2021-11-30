@@ -2,10 +2,10 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import {
   CollectionInfo,
-  resolveWallet,
   getCollections,
   getCollection,
 } from "../../utils/data";
+import { resolveWallet } from "../../utils/ens";
 import Timeline from "../../components/Timeline";
 import { Search } from "../../components/Search";
 import { useRouter } from "next/dist/client/router";
