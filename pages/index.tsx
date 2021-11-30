@@ -1,5 +1,5 @@
 import React from "react";
-import { Search } from "../components/search";
+import { Search } from "../components/Search";
 import styles from "../styles/home.module.css";
 import { useRouter } from "next/dist/client/router";
 
@@ -36,7 +36,7 @@ export default function Home() {
               rel="noreferrer"
             >
               <img
-                src={"twitter-logo.svg"}
+                src={"/twitter-logo.svg"}
                 className={styles.linkIcon}
                 style={{ marginRight: "20px" }}
                 alt="twitter logo"
@@ -48,7 +48,7 @@ export default function Home() {
               rel="noreferrer"
             >
               <img
-                src={"github-logo.svg"}
+                src={"/github-logo.svg"}
                 className={styles.linkIcon}
                 alt="github logo"
               ></img>

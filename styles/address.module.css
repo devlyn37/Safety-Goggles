@@ -1,0 +1,16 @@
+.addressContainer {
+  margin: 2px 4px;
+  padding: 3px 7px;
+  border: var(--hard-border);
+  font-size: var(--small-font-size);
+  color: var(--font-color-med);
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.icon {
+  font-size: 12px;
+  margin-left: 2px;
+  position: relative;
+  top: 1px;
+}

@@ -1,12 +1,13 @@
 .eventCard {
+  position: relative; /* for overlay purposes */
   height: 100%;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   border-radius: 25px;
-  box-shadow: 0px 7.5px 10px rgba(0, 0, 0, 0.025),
-    0px 60px 80px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 7.5px 10px rgba(0, 0, 0, 0.035),
+    0px 60px 80px rgba(0, 0, 0, 0.07);
 }
 
 .eventImg {
@@ -33,40 +34,58 @@
 }
 
 .titleContainer {
-  flex: 1;
-  padding: 20px 20px 0px 20px;
+  padding: 15px 20px 15px 20px;
   border-radius: 0px 0px 25px 25px;
   min-width: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: -2px -4px;
 }
 
 .title {
-  font-size: var(--large-font-size);
-  margin: 0px 0px 5px 0px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin: 2px 4px;
+  font-size: var(--big-font-size);
 }
 
-.subTitle {
+.nameLabel {
   font-weight: normal;
   font-size: var(--normal-font-size);
   margin: 0;
-  color: var(--font-color-med);
+}
+
+.nameLabelLink {
+  color: white;
+  display: block;
+  font-weight: 500;
+}
+
+.subLabelLink {
+  font-weight: 300;
+  font-size: var(--small-font-size);
+  color: lightgray;
+}
+
+.spaceBuffer {
+  flex: 1;
 }
 
 .detailContainer {
-  flex: 0;
-  padding: 20px 20px 30px 20px;
+  padding: 12px 20px 12px 20px;
+  border-top: var(--soft-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 10px;
 }
 
 .detail {
   font-weight: bold;
-  font-size: var(--normal-font-size);
+  font-size: var(--small-font-size);
   margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .subDetail {
@@ -74,14 +93,44 @@
   font-size: var(--small-font-size);
 }
 
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.linkIconContainer {
+  display: flex;
+  align-items: center;
+}
+
+.linkIcon {
+  width: 24px;
+  height: 24px;
+}
+
+.imgOverlay {
+  padding: 10px;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  max-width: 70%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  color: white;
+  box-shadow: none;
+}
+
 .groupButton {
   margin-left: 10px;
-  padding: 10px;
+  padding: 0px 10px;
+  height: 27px;
   background-color: black;
   color: white;
   border-radius: 10px;
-}
-
-.link {
-  text-decoration: underline;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }

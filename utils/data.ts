@@ -1,5 +1,6 @@
 import axios from "axios";
-import { ethers } from "ethers";
+import { ENSToAddress, AddressToENS } from "./ens";
+const OSBaseUrl = "/api/opensea-proxy";
 
 export type Action = "Minted" | "Bought" | "Sold" | "Sent" | "Received";
 
@@ -33,10 +34,10 @@ export interface CollectionInfo {
 export const getCollections = async (
   address: string
 ): Promise<CollectionInfo[]> => {
-  const collectionUrl = `https://api.opensea.io/api/v1/collections?${
+  const collectionUrl = `${OSBaseUrl}/collections?${
     "asset_owner=" + address
   }&offset=0&limit=300`;
-  const eventUrl = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=0&limit=300`;
+  const eventUrl = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=0&limit=300`;
 
   const [holding, recent] = await Promise.all([
     axios.get(collectionUrl),
@@ -88,8 +89,6 @@ export const getCollections = async (
     }
   });
 
-  console.log(fromHeld);
-
   return [...fromHeld, ...fromEvents];
 };
 
@@ -97,12 +96,9 @@ export const getCollections = async (
 export const getCollection = async (
   contractAddress: string
 ): Promise<CollectionInfo> => {
-  const url = `https://api.opensea.io/api/v1/asset/${contractAddress}/1`;
-  console.log(url);
+  const url = `${OSBaseUrl}/asset/${contractAddress}/1`;
   const results = await axios.get(url);
   const asset = results.data;
-
-  console.log(asset);
 
   return {
     name: asset.collection.name,
@@ -123,7 +119,7 @@ export const getEvents = async (
   contractAddress?: string,
   filter?: string
 ): Promise<[NFTEvent[], boolean]> => {
-  let url = `https://api.opensea.io/api/v1/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
+  let url = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
 
   // To-do lets use query string here
 
@@ -143,7 +139,6 @@ export const getEvents = async (
     url += "&event_type=" + filter;
   }
 
-  //console.log(url);
   const results = await axios.get(url);
   const data = results.data.asset_events;
   const moreData = data.length === limit;
@@ -207,21 +202,23 @@ const dataToEvent = (d: any, address: string): NFTEvent => {
   const action: Action = determineAction(d, address);
   const successAction: Boolean = action === "Bought" || action === "Sold";
 
-  let from: string = successAction ? d.seller?.address : d.from_account.address;
-  from = from.toUpperCase();
+  const from: string = successAction
+    ? d.seller?.address
+    : action === "Minted"
+    ? d.contract_address
+    : d.from_account?.address;
 
-  let to: string = successAction
-    ? d.winner_account.address
-    : d.to_account.address;
-  to = to.toUpperCase();
+  const to: string = successAction
+    ? d.winner_account?.address
+    : d.to_account?.address;
 
   const collectionImgUrl: string =
-    d.asset.collection.featured_image_url ??
-    d.asset.collection.image_url ??
-    d.asset.collection.banner_image_url;
+    d.asset.collection?.featured_image_url ??
+    d.asset.collection?.image_url ??
+    d.asset.collection?.banner_image_url;
 
   const collectionUrl: string =
-    d.asset.collection.external_url ??
+    d.asset.collection?.external_url ??
     `https://opensea.io/collection/${d.asset.collection.slug}}`;
 
   const event: NFTEvent = {
@@ -229,9 +226,9 @@ const dataToEvent = (d: any, address: string): NFTEvent => {
     assetDescription: d.asset.description,
     assetImgUrl: d.asset.image_url,
     assetUrl: `https://opensea.io/assets/${d.asset.asset_contract.address}/${d.asset.token_id}`,
-    collectionName: d.asset.collection.name,
+    collectionName: d.asset.collection?.name,
     collectionUrl: collectionUrl,
-    collectionDescription: d.asset.collection.description,
+    collectionDescription: d.asset.collection?.description,
     collectionImgUrl: collectionImgUrl,
     date: new Date(d.transaction.timestamp).toUTCString(),
     from: from,
@@ -301,25 +298,19 @@ export const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
 export const resolveWallet = async (
   input: string
 ): Promise<[string, string]> => {
-  const provider = new ethers.providers.AlchemyProvider(
-    1,
-    "tGyGfxK0E7NHtzkVyqmzRBqRji4jtaBa"
-  );
-
   let address;
   let ens;
 
   let re = /^0x[a-fA-F0-9]{40}$/;
   if (re.test(input)) {
     address = input;
-    ens = await provider.lookupAddress(address);
+    ens = await AddressToENS(address);
   } else {
     ens = input;
     if (ens.slice(-4) !== ".eth") {
       ens += ".eth";
     }
-
-    address = await provider.resolveName(ens);
+    address = await ENSToAddress(ens);
   }
 
   if (address === null) {

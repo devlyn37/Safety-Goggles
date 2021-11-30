@@ -3,9 +3,9 @@ import { NFTEvent, getEvents, groupEvents } from "../utils/data";
 import styles from "../styles/timeline.module.css";
 import { SearchCriteria } from "../pages/wallet/[wallet]";
 import { subDays, differenceInDays, format } from "date-fns";
-import { VerticalTimeline, Interval } from "./verticalTimeline";
+import { VerticalTimeline, Interval } from "./VerticalTimeline";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { EventGrouping, EventList, LoadingCard } from "./event";
+import { EventGrouping, EventList, LoadingCard } from "./Event";
 
 const groupAndOrganizeTimeline = (
   events: NFTEvent[]
@@ -33,7 +33,6 @@ const groupAndOrganizeTimeline = (
     }
 
     const dateFormat = "MMM d, yyyy";
-
     const rangeString = `${format(subDays(now, (i + 1) * 7), dateFormat)} - ${
       i === 0 ? "Today" : format(subDays(now, i * 7), dateFormat)
     }`;
@@ -85,6 +84,7 @@ const Timeline: FC<{
         setErrorMsg(
           "There was an issue loading OpenSea data, please try again later."
         );
+        throw e;
       }
 
       setLoading(false);

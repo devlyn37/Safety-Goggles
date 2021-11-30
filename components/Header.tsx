@@ -2,6 +2,7 @@ import { FC } from "react";
 import ContentLoader from "react-content-loader";
 import { CollectionInfo } from "../utils/data";
 import styles from "../styles/header.module.css";
+import { addDefaultSrc } from "../utils/misc";
 
 export const Header: FC<{
   ens: string;
@@ -43,7 +44,8 @@ export const Header: FC<{
             <>
               {" "}
               <img
-                src={collection.imgUrl}
+                src={collection.imgUrl ?? "/no-image.jpeg"}
+                onError={addDefaultSrc}
                 className={styles.collectionImg}
                 alt={`Collection Image for ${collection.name}`}
               />

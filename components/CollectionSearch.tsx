@@ -1,6 +1,7 @@
 import { FC } from "react";
 import Select from "react-select";
 import { CollectionInfo } from "../utils/data";
+import { addDefaultSrc } from "../utils/misc";
 
 export const CollectionSearch: FC<{
   collections: CollectionInfo[];
@@ -49,8 +50,9 @@ export const CollectionSearch: FC<{
             objectFit: "cover",
             marginRight: "10px",
           }}
-          src={imgUrl}
+          src={imgUrl ?? "/no-image.jpeg"}
           alt={`Collection Image for ${name}`}
+          onError={addDefaultSrc}
         />
         <div>{name}</div>
       </div>
