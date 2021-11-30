@@ -4,12 +4,8 @@ import { NFTEvent } from "../utils/data";
 import styles from "../styles/event.module.css";
 import { format } from "date-fns";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
-import {
-  formatEthFromWei,
-  addDefaultSrc,
-  trimAddress,
-  trunicate,
-} from "../utils/misc";
+import { AddressContainer } from "./AddressContainer";
+import { formatEthFromWei, addDefaultSrc, trunicate } from "../utils/misc";
 
 export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
   const [expanded, setExpanded] = useState(false);
@@ -105,19 +101,12 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
     return title;
   };
 
-  const formatAddress = (address: string): string => {
-    return address ? trimAddress(address) : "Unknown";
-  };
-
-  const addressContainer = (
-    <span className={styles.addressContainer}>
-      {event.action === "Bought" ||
-      event.action === "Received" ||
-      event.action === "Minted"
-        ? formatAddress(event.from)
-        : formatAddress(event.to)}
-    </span>
-  );
+  const otherAddress =
+    event.action === "Bought" ||
+    event.action === "Received" ||
+    event.action === "Minted"
+      ? event.from
+      : event.to;
 
   return (
     <div className={styles.eventCard} key={event.key}>
@@ -151,7 +140,7 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
       <div className={styles.eventDetails}>
         <div className={styles.titleContainer}>
           <h3 className={styles.title}>{getTitle(event)}</h3>
-          {addressContainer}
+          <AddressContainer address={otherAddress} />
           {(event.action === "Sold" || event.action === "Bought") && (
             <h3 className={styles.title}>{`for ${formatEthFromWei(
               event.price
@@ -195,8 +184,6 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
     </div>
   );
 };
-
-// To-do no inline styles here
 
 export const LoadingCard: FC = () => {
   return (

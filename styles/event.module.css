@@ -49,15 +49,6 @@
   font-size: var(--big-font-size);
 }
 
-.addressContainer {
-  margin: 2px 4px;
-  padding: 3px 7px;
-  border: var(--hard-border);
-  font-size: var(--small-font-size);
-  color: var(--font-color-med);
-  border-radius: 8px;
-}
-
 .nameLabel {
   font-weight: normal;
   font-size: var(--normal-font-size);

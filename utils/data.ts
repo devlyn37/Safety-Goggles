@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ethers } from "ethers";
+import { ENSToAddress, AddressToENS } from "./ens";
 const OSBaseUrl = "/api/opensea-proxy";
 
 export type Action = "Minted" | "Bought" | "Sold" | "Sent" | "Received";
@@ -304,25 +304,19 @@ export const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
 export const resolveWallet = async (
   input: string
 ): Promise<[string, string]> => {
-  const provider = new ethers.providers.AlchemyProvider(
-    1,
-    "tGyGfxK0E7NHtzkVyqmzRBqRji4jtaBa"
-  );
-
   let address;
   let ens;
 
   let re = /^0x[a-fA-F0-9]{40}$/;
   if (re.test(input)) {
     address = input;
-    ens = await provider.lookupAddress(address);
+    ens = await AddressToENS(address);
   } else {
     ens = input;
     if (ens.slice(-4) !== ".eth") {
       ens += ".eth";
     }
-
-    address = await provider.resolveName(ens);
+    address = await ENSToAddress(ens);
   }
 
   if (address === null) {
