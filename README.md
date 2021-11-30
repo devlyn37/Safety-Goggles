@@ -12,7 +12,8 @@ When scanning around discords for NFT alpha something I saw a lot was "Hey (inse
 
 This website distinguishes between these fake mints and real ones, labeling them accordingly.
 
-<img width="910" alt="Screen Shot 2021-11-08 at 9 41 38 PM" src="https://user-images.githubusercontent.com/17352012/140869041-e145bb1c-5dc5-4d3c-bec6-e9127f69c864.png">
+![Screen Shot 2021-11-30 at 2 58 41 PM](https://user-images.githubusercontent.com/17352012/144141661-6c069a51-cd77-4a70-995c-1dde716656db.png)
+
 
 with this, in combination with filtering, the goal of the site is to be a tool to help discover and share alpha and hopefully prevent some people from being tricked into fomo buying something.
 
