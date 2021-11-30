@@ -11,9 +11,9 @@
   "dependencies": {
     "@agney/react-loading": "^0.1.2",
     "axios": "^0.21.4",
-    "date-fns": "^2.25.0",
+    "date-fns": "^2.27.0",
     "ethers": "^5.5.1",
-    "next": "^12.0.3",
+    "next": "^12.0.4",
     "querystring": "^0.2.1",
     "react": "17.0.2",
     "react-content-loader": "^6.0.3",
@@ -23,11 +23,11 @@
     "react-select": "^5.2.1"
   },
   "devDependencies": {
-    "@types/node": "^16.11.7",
-    "@types/react": "^17.0.34",
+    "@types/node": "^16.11.11",
+    "@types/react": "^17.0.37",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
-    "typescript": "^4.4.4",
+    "typescript": "^4.5.2",
     "vercel": "^23.1.2"
   }
 }
