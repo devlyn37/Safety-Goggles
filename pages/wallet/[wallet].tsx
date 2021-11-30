@@ -118,8 +118,6 @@ export default function Home() {
       setLoadingCollections(true);
       setWalletErrorMsg("");
 
-      console.log("Running handle Search");
-
       try {
         [address, ens] = await resolveWallet(input);
 
@@ -149,7 +147,6 @@ export default function Home() {
       try {
         const usersCollections = await getCollections(address);
         setCollections(usersCollections);
-        console.log(usersCollections);
 
         // User arriving from shared link or refreshing etc
         if (contractAddress) {
@@ -166,7 +163,6 @@ export default function Home() {
             collection = await getCollection(contractAddress);
           }
 
-          console.log("Setting Collection");
           setCollection(collection);
         }
 
@@ -203,7 +199,6 @@ export default function Home() {
       page: 1,
     };
     setCollection(collection);
-    console.log(collection);
 
     if (collection && collection.floor === undefined) {
       const loadData = async () => {

@@ -11,14 +11,13 @@ const cache: Record<string, string> = {};
 export const AddressToENS = async (address: string): Promise<string | null> => {
   const mappedVal = cache[address];
 
-  if (mappedVal) {
+  if (mappedVal !== undefined) {
+    console.log("Cached used successfully");
     return mappedVal;
   }
 
   const ens = await provider.lookupAddress(address);
-  if (ens) {
-    cache[address] = ens;
-  }
+  cache[address] = ens;
 
   return ens;
 };

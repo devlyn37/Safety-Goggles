@@ -89,8 +89,6 @@ export const getCollections = async (
     }
   });
 
-  console.log(fromHeld);
-
   return [...fromHeld, ...fromEvents];
 };
 
@@ -99,11 +97,8 @@ export const getCollection = async (
   contractAddress: string
 ): Promise<CollectionInfo> => {
   const url = `${OSBaseUrl}/asset/${contractAddress}/1`;
-  console.log(url);
   const results = await axios.get(url);
   const asset = results.data;
-
-  console.log(asset);
 
   return {
     name: asset.collection.name,
@@ -144,7 +139,6 @@ export const getEvents = async (
     url += "&event_type=" + filter;
   }
 
-  //console.log(url);
   const results = await axios.get(url);
   const data = results.data.asset_events;
   const moreData = data.length === limit;

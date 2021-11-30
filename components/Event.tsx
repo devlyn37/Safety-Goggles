@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useState, useRef } from "react";
 import ContentLoader from "react-content-loader";
 import { NFTEvent } from "../utils/data";
 import styles from "../styles/event.module.css";
@@ -6,6 +6,7 @@ import { format } from "date-fns";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { AddressContainer } from "./AddressContainer";
 import { formatEthFromWei, addDefaultSrc, trunicate } from "../utils/misc";
+import useOnScreen from "../hooks/useOnScreen";
 
 export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
   const [expanded, setExpanded] = useState(false);
@@ -85,6 +86,10 @@ export const EventList: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => (
 );
 
 export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
+  // Keep track of when this compononent on the screen to resolve ens
+  const ref = useRef();
+  const isVisible = useOnScreen(ref);
+
   const getTitle = (event: NFTEvent): string => {
     let title = event.action;
 
@@ -109,7 +114,7 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
       : event.to;
 
   return (
-    <div className={styles.eventCard} key={event.key}>
+    <div ref={ref} className={styles.eventCard} key={event.key}>
       <img
         className={styles.eventImg}
         src={event.assetImgUrl}
@@ -140,7 +145,10 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
       <div className={styles.eventDetails}>
         <div className={styles.titleContainer}>
           <h3 className={styles.title}>{getTitle(event)}</h3>
-          <AddressContainer address={otherAddress} />
+          <AddressContainer
+            address={otherAddress}
+            shouldResolveENS={isVisible}
+          />
           {(event.action === "Sold" || event.action === "Bought") && (
             <h3 className={styles.title}>{`for ${formatEthFromWei(
               event.price
