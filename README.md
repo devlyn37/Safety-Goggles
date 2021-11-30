@@ -1,6 +1,6 @@
 # A Transparent Wallet NFT Activity Timeline
 
-This is a website that displays NFT related activity with a few key focuses.
+This is a website that displays NFT related activity with a few key focuses. It's deployed [here](https://eth-wallet-timeline.vercel.app/).
 
 1. Transparency: Distinguishing between 'real' mints and devs minting to influencers.
 2. Shareability: Easily filter data to create simple consumable chunks of alpha.
@@ -22,8 +22,6 @@ with this, in combination with filtering, the goal of the site is to be a tool t
 I think the idea of a timeline is novel, visually appealing, and makes good use of the screen real estate as web3 folks are typically on desktop (the site is mobile friendly). Organizing the data this way may provide some insight in how successful traders act under different market conditions. Finally, showing a timeline of moves in a specific collection could be a fun way to gloat/cry on twitter about major wins/losses.
 
 ## Note
-
-The website is deployed [here](https://eth-wallet-timeline.vercel.app/).
 
 This is still a work in progress, I haven't even thought of a name yet. Expect some issues here and there, especially with labeling less common event types. Event labelling surrounding the core goals of the project (buy, sell, mints vs dev mints mentioned above) is solid right now though.
 ## Setup
