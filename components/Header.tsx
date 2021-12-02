@@ -93,16 +93,16 @@ const CollectionPlaceholder: FC = (props) => {
     <div className={styles.collection}>
       <ContentLoader
         uniqueKey="header-col"
-        style={{ width: "200px", height: "45px" }}
+        style={{ width: "220px", height: "45px" }}
         speed={2}
-        viewBox="0 0 205 45"
+        viewBox="0 0 220 45"
         backgroundColor="#f3f3f3"
         foregroundColor="#ecebeb"
         {...props}
       >
         <circle cx="22.5" cy="22.5" r="22.5" />
-        <rect x="60" y="0" rx="6" ry="6" width="145" height="20" />
-        <rect x="60" y="25" rx="6" ry="6" width="125" height="20" />
+        <rect x="60" y="0" rx="6" ry="6" width="160" height="20" />
+        <rect x="60" y="25" rx="6" ry="6" width="145" height="20" />
       </ContentLoader>
     </div>
   );

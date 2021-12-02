@@ -98,7 +98,7 @@
 
 @media (max-width: 700px) {
   .headingContainer {
-    margin: 12px;
+    margin: -12px;
   }
 
   .nameContainer {
