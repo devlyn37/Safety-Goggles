@@ -39,7 +39,7 @@
 .collectionImg {
   height: 45px;
   width: 45px;
-  margin-right: 10px;
+  margin-right: 15px;
   border-radius: 50%;
   object-fit: cover;
 }

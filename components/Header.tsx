@@ -91,14 +91,14 @@ const CollectionPlaceholder: FC = (props) => {
         uniqueKey="header-col"
         style={{ width: "200px", height: "45px" }}
         speed={2}
-        viewBox="0 0 200 45"
+        viewBox="0 0 205 45"
         backgroundColor="#f3f3f3"
         foregroundColor="#ecebeb"
         {...props}
       >
         <circle cx="22.5" cy="22.5" r="22.5" />
-        <rect x="55" y="0" rx="6" ry="6" width="145" height="20" />
-        <rect x="55" y="25" rx="6" ry="6" width="125" height="20" />
+        <rect x="60" y="0" rx="6" ry="6" width="145" height="20" />
+        <rect x="60" y="25" rx="6" ry="6" width="125" height="20" />
       </ContentLoader>
     </div>
   );
