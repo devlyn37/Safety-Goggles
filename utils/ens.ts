@@ -12,7 +12,6 @@ export const AddressToENS = async (address: string): Promise<string | null> => {
   const mappedVal = cache[address];
 
   if (mappedVal !== undefined) {
-    console.log("Cached used successfully");
     return mappedVal;
   }
 

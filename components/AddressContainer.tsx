@@ -32,7 +32,6 @@ export const AddressContainer: FC<{
     // and getting rate limited.
     if (shouldResolveENS && !hasLoadedEns) {
       checkENS();
-      console.log("hello from " + address);
     }
   }, [address, shouldResolveENS, ens, hasLoadedEns]);
 
