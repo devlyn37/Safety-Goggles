@@ -125,11 +125,8 @@
 }
 
 .groupButton {
-  margin-left: 10px;
-  padding: 0px 10px;
-  height: 27px;
-  background-color: black;
-  color: white;
+  height: 24px;
+  color: var(--font-color-high);
   border-radius: var(--border-radius-regular);
   display: flex;
   align-items: center;
