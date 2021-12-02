@@ -113,6 +113,7 @@ export default function Home() {
     ) => {
       let address, ens;
 
+      setCollection(null);
       setLoadingWallet(true);
       setLoadingCollections(true);
       setWalletErrorMsg("");
