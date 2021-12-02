@@ -4,12 +4,13 @@
   justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
-  margin-bottom: 35px;
+  padding-bottom: 35px;
+  padding-top: 20px;
+  margin: -16px;
 }
 
 .nameContainer {
-  padding-top: 20px;
-  margin-right: 20px;
+  margin: 16px;
   min-width: 0;
   max-width: 700px;
 }
@@ -23,20 +24,24 @@
 }
 
 .collection {
+  margin: 16px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding-top: 20px;
+  padding: 15px 25px;
   min-width: 0;
   max-width: 700px;
+  border-radius: 30px;
+  box-shadow: 0px 0.7px 4.6px rgba(0, 0, 0, 0.031),
+    0px 1.7px 11.6px rgba(0, 0, 0, 0.044), 0px 3.5px 25px rgba(0, 0, 0, 0.056);
 }
 
 .collectionImg {
-  height: 70px;
-  width: 70px;
+  height: 45px;
+  width: 45px;
+  margin-right: 10px;
   border-radius: 50%;
   object-fit: cover;
-  margin-right: 15px;
 }
 
 .collectionTextContainer {
@@ -52,14 +57,35 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: var(--large-font-size);
 }
 
-.collectionSubText {
-  color: var(--font-color-med);
+.collectionStats {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: var(--normal-font-size);
+}
+
+.label {
+  color: var(--font-color-low);
+  margin-right: 4px;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.ethIcon {
+  height: 12px;
+}
+
+.stat {
+  color: var(--font-color-high);
 }
 
 .errorContainer {
@@ -70,13 +96,15 @@
 }
 
 @media (max-width: 700px) {
-  .collectionImg {
-    height: 45px;
-    width: 45px;
-    margin-right: 10px;
+  .headingContainer {
+    margin: 12px;
   }
 
-  .collectionName {
-    font-size: var(--normal-font-size);
+  .nameContainer {
+    margin: 12px;
+  }
+
+  .collection {
+    margin: 12px;
   }
 }

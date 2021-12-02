@@ -23,10 +23,17 @@ export const Header: FC<{
   errorMsg,
 }) => {
   const preHydrate = ens === "" && address === "";
-  const errorContent = <div className={styles.errorContainer}>{errorMsg}</div>;
 
-  const regularContent = (
-    <>
+  if (errorMsg) {
+    return (
+      <div className={styles.headingContainer}>
+        <div className={styles.errorContainer}>{errorMsg}</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.headingContainer}>
       <div className={styles.nameContainer}>
         {loadingWallet || preHydrate ? (
           <Placeholder />
@@ -37,56 +44,63 @@ export const Header: FC<{
           </>
         )}
       </div>
-      {collection ? (
-        <div className={styles.collection}>
-          {loadingCollection ? (
-            <CollectionPlaceholder />
-          ) : (
-            <>
-              {" "}
-              <img
-                src={collection.imgUrl ?? "/no-image.jpeg"}
-                onError={addDefaultSrc}
-                className={styles.collectionImg}
-                alt={`Collection Image for ${collection.name}`}
-              />
-              <div className={styles.collectionTextContainer}>
-                <h3 className={styles.collectionName}>{collection.name}</h3>
-                <div className={styles.collectionSubText}>
-                  {`Floor: ${collection.floor} ETH, Holding: ${collection.holding}`}
-                </div>
-              </div>
-            </>
-          )}
-        </div>
-      ) : null}
-    </>
-  );
-
-  return (
-    <div className={styles.headingContainer}>
-      {errorMsg ? errorContent : regularContent}
+      {collection && (
+        <CollectionDisplay
+          collection={collection}
+          loading={loadingCollection}
+        />
+      )}
     </div>
   );
 };
 
-// To-do upon final styling update: make these close to actual
+const CollectionDisplay: FC<{ collection: CollectionInfo; loading: boolean }> =
+  ({ collection, loading }) => {
+    if (loading) {
+      return <CollectionPlaceholder />;
+    }
+
+    return (
+      <div className={styles.collection}>
+        <img
+          src={collection.imgUrl ?? "/no-image.jpeg"}
+          onError={addDefaultSrc}
+          className={styles.collectionImg}
+          alt={`Collection Image for ${collection.name}`}
+        />
+        <div className={styles.collectionTextContainer}>
+          <h3 className={styles.collectionName}>{collection.name}</h3>
+          <div className={styles.collectionStats}>
+            <div className={styles.label}>{"Floor:"}</div>
+            <div className={`${styles.priceContainer} ${styles.stat}`}>
+              <img src="/ethereum_icon.svg" className={styles.ethIcon} />
+              {collection.floor}
+            </div>
+            <div className={styles.label}>{`Holds: `}</div>
+            <div className={styles.stat}>{collection.holding}</div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
 const CollectionPlaceholder: FC = (props) => {
   return (
-    <ContentLoader
-      uniqueKey="header-col"
-      style={{ width: "396px", height: "70px" }}
-      speed={2}
-      viewBox="0 0 396 70"
-      backgroundColor="#f3f3f3"
-      foregroundColor="#ecebeb"
-      {...props}
-    >
-      <circle cx="35" cy="35" r="35" />
-      <rect x="80" y="10" rx="15" ry="15" width="170" height="30" />
-      <rect x="80" y="45" rx="4" ry="4" width="250" height="15" />
-    </ContentLoader>
+    <div className={styles.collection}>
+      <ContentLoader
+        uniqueKey="header-col"
+        style={{ width: "200px", height: "45px" }}
+        speed={2}
+        viewBox="0 0 200 45"
+        backgroundColor="#f3f3f3"
+        foregroundColor="#ecebeb"
+        {...props}
+      >
+        <circle cx="22.5" cy="22.5" r="22.5" />
+        <rect x="55" y="0" rx="6" ry="6" width="145" height="20" />
+        <rect x="55" y="25" rx="6" ry="6" width="125" height="20" />
+      </ContentLoader>
+    </div>
   );
 };
 
@@ -94,15 +108,15 @@ const Placeholder: FC = (props) => {
   return (
     <ContentLoader
       uniqueKey="header"
-      style={{ width: "407px", height: "93px" }}
+      style={{ width: "208px", height: "93px" }}
       speed={2}
-      viewBox="0 0 407 93"
+      viewBox="0 0 208 93"
       backgroundColor="#f3f3f3"
       foregroundColor="#ecebeb"
       {...props}
     >
-      <rect x="0" y="10" rx="15" ry="15" width="250" height="36" />
-      <rect x="0" y="63" rx="10" ry="10" width="407" height="30" />
+      <rect x="0" y="10" rx="15" ry="15" width="208" height="36" />
+      <rect x="0" y="63" rx="10" ry="10" width="150" height="30" />
     </ContentLoader>
   );
 };
