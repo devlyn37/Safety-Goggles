@@ -34,6 +34,7 @@
   border-radius: 30px;
   box-shadow: 0px 0.7px 4.6px rgba(0, 0, 0, 0.031),
     0px 1.7px 11.6px rgba(0, 0, 0, 0.044), 0px 3.5px 25px rgba(0, 0, 0, 0.056);
+  overflow: hidden;
 }
 
 .collectionImg {
@@ -53,7 +54,7 @@
 }
 
 .collectionName {
-  margin: 0px 0px 5px 0px;
+  margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -61,17 +62,16 @@
 
 .collectionStats {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex-wrap: wrap;
   font-size: var(--normal-font-size);
 }
 
 .label {
+  margin-top: 5px;
   color: var(--font-color-low);
-  margin-right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .priceContainer {
@@ -85,6 +85,7 @@
 }
 
 .stat {
+  margin-left: 4px;
   color: var(--font-color-high);
 }
 

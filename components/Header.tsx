@@ -71,13 +71,17 @@ const CollectionDisplay: FC<{ collection: CollectionInfo; loading: boolean }> =
         <div className={styles.collectionTextContainer}>
           <h3 className={styles.collectionName}>{collection.name}</h3>
           <div className={styles.collectionStats}>
-            <div className={styles.label}>{"Floor:"}</div>
-            <div className={`${styles.priceContainer} ${styles.stat}`}>
-              <img src="/ethereum_icon.svg" className={styles.ethIcon} />
-              {collection.floor}
+            <div className={styles.label}>
+              {"Floor"}
+              <div className={`${styles.priceContainer} ${styles.stat}`}>
+                <img src="/ethereum_icon.svg" className={styles.ethIcon} />
+                {collection.floor}
+              </div>
             </div>
-            <div className={styles.label}>{`Holds: `}</div>
-            <div className={styles.stat}>{collection.holding}</div>
+            <div className={styles.label}>
+              {"Holds"}
+              <div className={styles.stat}>{collection.holding}</div>
+            </div>
           </div>
         </div>
       </div>
