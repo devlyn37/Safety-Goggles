@@ -18,8 +18,8 @@ export const Header: FC<{
   ens,
   address,
   collection,
-  loadingWallet,
   loadingCollection,
+  loadingWallet,
   errorMsg,
 }) => {
   const preHydrate = ens === "" && address === "";
@@ -44,7 +44,7 @@ export const Header: FC<{
           </>
         )}
       </div>
-      {collection && (
+      {(loadingCollection || collection) && (
         <CollectionDisplay
           collection={collection}
           loading={loadingCollection}

@@ -12,6 +12,8 @@ export default async function handler(
     return res.status(400).end();
   }
 
+  console.log(req.url);
+
   const route = "/api/opensea-proxy/";
   const url = baseUrl + req.url.slice(route.length);
 
@@ -19,6 +21,7 @@ export default async function handler(
     const response = await axios.get(url, config);
     res.status(response.status).json(response.data);
   } catch (e) {
+    console.log(e.response.status);
     const status = e.response.status ?? 500;
     res.status(status).end();
   }

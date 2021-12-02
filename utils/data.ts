@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ENSToAddress, AddressToENS } from "./ens";
 const OSBaseUrl = "/api/opensea-proxy";
 
 export type Action = "Minted" | "Bought" | "Sold" | "Sent" | "Received";
@@ -26,7 +25,6 @@ export interface CollectionInfo {
   name: string;
   slug: string;
   imgUrl: string;
-  contractAddress: string;
   holding: string;
   floor?: string;
 }
@@ -39,6 +37,7 @@ export const getCollections = async (
   }&offset=0&limit=300`;
   const eventUrl = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=0&limit=300`;
 
+  // Neither endpoint provides the correct floor of a collection :(
   const [holding, recent] = await Promise.all([
     axios.get(collectionUrl),
     axios.get(eventUrl),
@@ -52,7 +51,6 @@ export const getCollections = async (
       name: asset.collection.name,
       slug: asset.collection.slug,
       imgUrl: asset.collection.image_url,
-      contractAddress: asset.asset_contract.address,
       holding: "0",
     };
   };
@@ -61,11 +59,7 @@ export const getCollections = async (
     name: c.name,
     slug: c.slug,
     imgUrl: c.image_url,
-    contractAddress: c.primary_asset_contracts.length
-      ? c.primary_asset_contracts[0].address
-      : "",
     holding: c.owned_asset_count,
-    floor: c.stats.floor_price,
   });
 
   const fromHeld: CollectionInfo[] = holding.data.map(
@@ -76,10 +70,11 @@ export const getCollections = async (
   );
 
   // Filter duplicate data from events for held collections
-  let hash = {};
+  let hash: Record<string, boolean> = {};
   fromHeld.forEach((c) => {
     hash[c.slug] = true;
   });
+
   fromEvents = fromEvents.filter((c) => {
     if (hash[c.slug]) {
       return false;
@@ -92,22 +87,29 @@ export const getCollections = async (
   return [...fromHeld, ...fromEvents];
 };
 
-// Note: OpenSea API is saying the floor of collections is 0
+//accurate floor prices
 export const getCollection = async (
-  contractAddress: string
+  collectionSlug: string
 ): Promise<CollectionInfo> => {
-  const url = `${OSBaseUrl}/asset/${contractAddress}/1`;
+  const url = `${OSBaseUrl}/collection/${collectionSlug}`;
   const results = await axios.get(url);
-  const asset = results.data;
+  const collection = results.data.collection;
 
   return {
-    name: asset.collection.name,
-    slug: asset.collection.slug,
-    imgUrl: asset.collection.image_url,
-    contractAddress: asset.asset_contract.address,
+    name: collection.name,
+    slug: collection.slug,
+    imgUrl: collection.image_url,
     holding: "0",
-    floor: asset.collection.stats.floor_price,
+    floor: collection.stats.floor_price,
   };
+};
+
+export const getCollectionFloor = async (
+  collectionSlug: string
+): Promise<string> => {
+  const url = `${OSBaseUrl}/collection/${collectionSlug}/stats`;
+  const results = await axios.get(url);
+  return results.data.stats.floor_price;
 };
 
 export const getEvents = async (
@@ -116,7 +118,7 @@ export const getEvents = async (
   offset: number,
   startDate?: string,
   endDate?: string,
-  contractAddress?: string,
+  collectionSlug?: string,
   filter?: string
 ): Promise<[NFTEvent[], boolean]> => {
   let url = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
@@ -131,8 +133,8 @@ export const getEvents = async (
     url += "&occurred_before=" + endDate + "T00:00:00";
   }
 
-  if (contractAddress) {
-    url += "&asset_contract_address=" + contractAddress;
+  if (collectionSlug) {
+    url += "&collection_slug=" + collectionSlug;
   }
 
   if (filter) {
@@ -219,7 +221,7 @@ const dataToEvent = (d: any, address: string): NFTEvent => {
 
   const collectionUrl: string =
     d.asset.collection?.external_url ??
-    `https://opensea.io/collection/${d.asset.collection.slug}}`;
+    `https://opensea.io/collection/${d.asset.collection.slug}`;
 
   const event: NFTEvent = {
     assetName: d.asset.name ?? d.asset.token_id,

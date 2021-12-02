@@ -69,7 +69,7 @@ const Timeline: FC<{
           PAGE_LENGTH * (search.page - 1),
           search.startDate,
           search.endDate,
-          search.contractAddress,
+          search.collectionSlug,
           search.filter
         );
 

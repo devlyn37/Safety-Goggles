@@ -4,6 +4,7 @@ import {
   CollectionInfo,
   getCollections,
   getCollection,
+  getCollectionFloor,
 } from "../../utils/data";
 import { resolveWallet } from "../../utils/ens";
 import Timeline from "../../components/Timeline";
@@ -24,14 +25,14 @@ export interface SearchCriteria {
   endDate: string;
   filter: Filter;
   page: number;
-  contractAddress: string;
+  collectionSlug: string;
 }
 
 interface Params extends ParsedUrlQueryInput {
   wallet?: string;
   startDate?: string;
   endDate?: string;
-  contractAddress?: string;
+  collectionSlug?: string;
   filter?: Filter;
 }
 
@@ -45,7 +46,7 @@ export default function Home() {
     startDate: "",
     endDate: "",
     filter: "",
-    contractAddress: "",
+    collectionSlug: "",
     page: 1,
   });
 
@@ -86,8 +87,8 @@ export default function Home() {
         query.endDate = s.endDate;
       }
 
-      if (s.contractAddress) {
-        query.contractAddress = s.contractAddress;
+      if (s.collectionSlug) {
+        query.collectionSlug = s.collectionSlug;
       }
 
       if (s.filter) {
@@ -108,15 +109,17 @@ export default function Home() {
       startDate?: string,
       endDate?: string,
       filter?: Filter,
-      contractAddress?: string
+      collectionSlug?: string
     ) => {
       let address, ens;
 
-      setCollection(null);
-      setLoadingCollections(false);
       setLoadingWallet(true);
       setLoadingCollections(true);
       setWalletErrorMsg("");
+
+      if (collectionSlug) {
+        setLoadingCollection(true);
+      }
 
       try {
         [address, ens] = await resolveWallet(input);
@@ -128,7 +131,7 @@ export default function Home() {
           endDate: endDate ?? "",
           filter: filter ?? "",
           page: 1,
-          contractAddress: contractAddress ?? "",
+          collectionSlug: collectionSlug ?? "",
         };
         setSearch(s);
 
@@ -149,18 +152,16 @@ export default function Home() {
         setCollections(usersCollections);
 
         // User arriving from shared link or refreshing etc
-        if (contractAddress) {
-          setLoadingCollection(true);
-
-          // Search for collection based on asset contract
+        if (collectionSlug) {
           let collection = usersCollections.find(
-            (c: CollectionInfo) =>
-              c.contractAddress.toUpperCase() === contractAddress.toUpperCase()
+            (c: CollectionInfo) => c.slug === collectionSlug
           );
 
-          // If not found fetch data
           if (!collection) {
-            collection = await getCollection(contractAddress);
+            collection = await getCollection(collectionSlug);
+          } else {
+            const floor = await getCollectionFloor(collectionSlug);
+            collection.floor = floor;
           }
 
           setCollection(collection);
@@ -171,8 +172,8 @@ export default function Home() {
         setCollectionErrorMsg(e.message);
       }
 
-      setLoadingCollection(false);
       setLoadingCollections(false);
+      setLoadingCollection(false);
     },
     [updateUrl]
   );
@@ -195,21 +196,22 @@ export default function Home() {
 
     const s = {
       ...search,
-      contractAddress: collection ? collection.contractAddress : "",
+      collectionSlug: collection ? collection.slug : "",
       page: 1,
     };
-    setCollection(collection);
 
-    if (collection && collection.floor === undefined) {
+    if (collection) {
       const loadData = async () => {
         setLoadingCollection(true);
-        const c = await getCollection(collection.contractAddress);
-        setCollection(c);
+        const floor = await getCollectionFloor(collection.slug);
+        collection.floor = floor;
         setLoadingCollection(false);
       };
 
       loadData();
     }
+
+    setCollection(collection);
 
     setSearch(s);
     updateUrl(s);
@@ -228,7 +230,7 @@ export default function Home() {
         "wallet",
         "startDate",
         "endDate",
-        "contractAddress",
+        "collectionSlug",
         "filter",
       ];
 
@@ -266,8 +268,8 @@ export default function Home() {
       const filterMatch =
         search.filter === query.filter || (!query.filter && !search.filter);
       const collectionMatch =
-        (!search.contractAddress && !query.contractAddress) ||
-        query.contractAddress === search.contractAddress;
+        (!search.collectionSlug && !query.collectionSlug) ||
+        query.collectionSlug === search.collectionSlug;
 
       const walletMatch =
         (!search.address && !query.wallet) ||
@@ -287,7 +289,7 @@ export default function Home() {
         return;
       }
 
-      const { wallet, startDate, endDate, contractAddress, filter } =
+      const { wallet, startDate, endDate, collectionSlug, filter } =
         router.query as Params;
 
       // If the state matches the url already, that means that this change in query params
@@ -305,7 +307,7 @@ export default function Home() {
           endDate: "",
           filter: "",
           page: 1,
-          contractAddress: "",
+          collectionSlug: "",
         });
         return;
       }
@@ -317,7 +319,7 @@ export default function Home() {
         startDate ?? "",
         endDate ?? "",
         filter,
-        contractAddress
+        collectionSlug
       );
     };
 
