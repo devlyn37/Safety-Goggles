@@ -8,13 +8,13 @@ import {
 } from "../../utils/data";
 import { resolveWallet } from "../../utils/ens";
 import Timeline from "../../components/Timeline";
-import { Search } from "../../components/Search";
 import { useRouter } from "next/dist/client/router";
 import { Filter } from "../../components/Filter";
 import { Header } from "../../components/Header";
 import { ParsedUrlQueryInput } from "querystring";
-import styles from "../../styles/wallet.module.css";
 import { Control } from "../../components/Control";
+import { Nav } from "../../components/Nav";
+import styles from "../../styles/wallet.module.css";
 
 export type Filter = "successful" | "transfer" | "";
 
@@ -334,9 +334,7 @@ export default function Home() {
       }`}
     >
       <div className={styles.nav}>
-        <div className={styles.search}>
-          <Search handleSearch={handleSearch} />
-        </div>
+        <Nav handleSearch={handleSearch} />
       </div>
       <div className={styles.header}>
         <Header

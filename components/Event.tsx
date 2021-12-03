@@ -214,7 +214,7 @@ export const LoadingCard: FC = () => {
         style={{
           borderRadius: "25px 25px 0px 0px",
           maxWidth: "100%",
-          border: "2px solid #f2f2f2",
+          borderBottom: "var(--soft-border)",
         }}
         speed={2}
         viewBox="0 0 400 400"
@@ -228,8 +228,6 @@ export const LoadingCard: FC = () => {
       <div
         style={{
           padding: "15px 20px",
-          borderRight: "2px solid #f2f2f2",
-          borderLeft: "2px solid #f2f2f2",
           flex: 1,
         }}
       >
@@ -254,7 +252,7 @@ export const LoadingCard: FC = () => {
       <div
         style={{
           padding: "12px 20px",
-          border: "2px solid #f2f2f2",
+          borderTop: "var(--soft-border)",
           borderRadius: "0px 0px 25px 25px",
           display: "flex",
           justifyContent: "space-between",

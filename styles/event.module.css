@@ -15,6 +15,7 @@
   border-radius: 25px 25px 0px 0px;
   aspect-ratio: 1 / 1;
   object-fit: cover;
+  border-bottom: var(--soft-border);
 }
 
 .eventDetails {
@@ -64,7 +65,7 @@
 .priceContainer {
   display: flex;
   align-items: center;
-  margin-left: 2px;
+  margin-left: 4.3px;
 }
 
 .ethIcon {

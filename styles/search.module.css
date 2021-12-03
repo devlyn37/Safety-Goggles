@@ -14,14 +14,15 @@
   background-color: var(--foreground-1);
   border-radius: 15px 0px 0px 15px;
   font-size: var(--big-font-size);
+  border-right: 2px solid var(--hard-gray);
   margin: 0;
 }
 
 .searchBarButton {
   height: 52px;
   padding: 20px;
-  background-color: var(--font-color-high);
-  color: white;
+  background-color: var(--soft-gray);
+  color: var(--font-color-med);
   border: none;
   border-radius: 0px 15px 15px 0px;
   font-size: 25px;

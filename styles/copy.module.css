@@ -1,0 +1,15 @@
+.btn {
+  background-color: var(--soft-gray);
+  color: var(--font-color-med);
+  font-size: var(--normal-font-size);
+  padding: 15px;
+  border-radius: 15px;
+  cursor: pointer;
+  border: none;
+}
+
+.icon {
+  position: relative;
+  margin-left: 3px;
+  top: 2px;
+}
