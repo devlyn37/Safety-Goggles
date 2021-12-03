@@ -23,9 +23,9 @@ export default function Home() {
             <GiProtectionGlasses className={styles.icon} />
           </div>
           <h2 className={styles.subTitle}>
-            See a history of a wallet's NFT activity through an analytical lens.
-            See through tricks and shady activity, look for alpha with Safety
-            Glasses. Search an address or ENS name to get started.
+            See a history of a wallet&#39;s NFT activity through an analytical
+            lens. See through tricks and shady activity, look for alpha with
+            Safety Glasses. Search an address or ENS name to get started.
           </h2>
         </div>
         <Search handleSearch={handleSearch} />
