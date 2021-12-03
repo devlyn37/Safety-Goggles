@@ -48,20 +48,24 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
               target="_blank"
               rel="noreferrer"
               href={event.collectionUrl}
-              style={{
-                display: "block",
-                color: "white",
-                fontWeight: 500,
-              }}
+              className={styles.nameLabelLink}
             >
               {event.collectionName}
             </a>
           </h4>
         </div>
         <div className={styles.titleContainer}>
-          <h3 className={`${styles.title} ${styles.titleItem}`}>
+          <h3 className={`${styles.priceDesc} ${styles.titleItem}`}>
             {event.action} {grouping.length} NFTs{" "}
-            {sum && "For " + formatEthFromWei(sum) + " ETH"}
+            {sum && (
+              <>
+                {"for"}
+                <div className={styles.priceContainer}>
+                  <img src="/ethereum_icon.svg" className={styles.ethIcon} />
+                  {`${formatEthFromWei(sum)}`}
+                </div>
+              </>
+            )}
           </h3>
         </div>
         <div className={styles.spaceBuffer} />
@@ -154,9 +158,13 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
             />
           </div>
           {(event.action === "Sold" || event.action === "Bought") && (
-            <h3
-              className={`${styles.title} ${styles.titleItem}`}
-            >{`for ${formatEthFromWei(event.price)} ETH`}</h3>
+            <h3 className={`${styles.priceDesc} ${styles.titleItem}`}>
+              {"for"}
+              <div className={styles.priceContainer}>
+                <img src="/ethereum_icon.svg" className={styles.ethIcon} />
+                {`${formatEthFromWei(event.price)}`}
+              </div>
+            </h3>
           )}
         </div>
         <div className={styles.spaceBuffer} />

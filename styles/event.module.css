@@ -52,10 +52,28 @@
   font-size: var(--big-font-size);
 }
 
+.priceDesc {
+  font-size: var(--big-font-size);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .nameLabel {
   font-weight: normal;
   font-size: var(--normal-font-size);
   margin: 0;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  margin-left: 2px;
+}
+
+.ethIcon {
+  margin-top: 1px;
+  height: 16px;
 }
 
 .nameLabelLink {
