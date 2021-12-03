@@ -55,22 +55,22 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
           </h4>
         </div>
         <div className={styles.titleContainer}>
-          <h3 className={`${styles.priceDesc} ${styles.titleItem}`}>
+          <h3 className={`${styles.titleItem}`}>
             {event.action} {grouping.length} NFTs{" "}
-            {sum && (
-              <>
-                {"for"}
-                <div className={styles.priceContainer}>
-                  <img
-                    src="/ethereum_icon.svg"
-                    className={styles.ethIcon}
-                    alt="Ethereum Icon"
-                  />
-                  {`${formatEthFromWei(sum)}`}
-                </div>
-              </>
-            )}
           </h3>
+          {sum && (
+            <h3 className={`${styles.priceDesc} ${styles.titleItem}`}>
+              {"for"}
+              <div className={styles.priceContainer}>
+                <img
+                  src="/ethereum_icon.svg"
+                  className={styles.ethIcon}
+                  alt="Ethereum Icon"
+                />
+                {`${formatEthFromWei(sum)}`}
+              </div>
+            </h3>
+          )}
         </div>
         <div className={styles.spaceBuffer} />
         <div className={styles.detailContainer}>
