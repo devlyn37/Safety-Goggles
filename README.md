@@ -1,4 +1,4 @@
-# A Transparent Wallet NFT Activity Timeline
+# Safety Goggles: A Transparent Wallet NFT Activity Timeline
 
 This is a website that displays NFT related activity with a few key focuses. It's deployed [here](https://eth-wallet-timeline.vercel.app/).
 
@@ -23,7 +23,8 @@ I think the idea of a timeline is novel, visually appealing, and makes good use 
 
 ## Note
 
-This is still a work in progress, I haven't even thought of a name yet. Expect some issues here and there, especially with labeling less common event types. Event labelling surrounding the core goals of the project (buy, sell, mints vs dev mints mentioned above) is solid right now though.
+This is still a work in progress, expect some issues here and there, especially with labeling less common event types. Event labelling surrounding the core goals of the project (buy, sell, mints vs dev mints mentioned above) is solid right now though.
+
 ## Setup
 
 First install dependencies
