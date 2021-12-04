@@ -1,6 +1,6 @@
 import { FC } from "react";
 import ContentLoader from "react-content-loader";
-import { CollectionInfo } from "../utils/data";
+import { CollectionInfo } from "../types";
 import styles from "../styles/header.module.css";
 import { addDefaultSrc } from "../utils/misc";
 import { AddressContainer } from "./AddressContainer";

@@ -1,32 +1,21 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
 import {
-  CollectionInfo,
   getCollections,
   getCollection,
   getCollectionFloor,
 } from "../../utils/data";
+import { CollectionInfo, Filter, SearchCriteria } from "../../types";
 import { resolveWallet } from "../../utils/ens";
 import Timeline from "../../components/Timeline";
 import { useRouter } from "next/dist/client/router";
-import { Filter } from "../../components/Filter";
+import { Filter as FilterComp } from "../../components/Filter";
 import { Header } from "../../components/Header";
 import { ParsedUrlQueryInput } from "querystring";
 import { Control } from "../../components/Control";
 import { Nav } from "../../components/Nav";
+import Head from "next/head";
 import styles from "../../styles/wallet.module.css";
-
-export type Filter = "successful" | "transfer" | "";
-
-export interface SearchCriteria {
-  address: string;
-  ens: string;
-  startDate: string;
-  endDate: string;
-  filter: Filter;
-  page: number;
-  collectionSlug: string;
-}
 
 interface Params extends ParsedUrlQueryInput {
   wallet?: string;
@@ -328,65 +317,73 @@ export default function Home() {
   }, [router.query, handleSearch]);
 
   return (
-    <div
-      className={`${styles.pageContainer} ${
-        showFilters ? "" : styles.collapsedContainer
-      }`}
-    >
-      <div className={styles.nav}>
-        <Nav handleSearch={handleSearch} />
-      </div>
-      <div className={styles.header}>
-        <Header
-          address={search.address}
-          ens={search.ens}
-          endDate={search.endDate}
-          startDate={search.startDate}
-          collection={collection}
-          loadingCollection={loadingCollection}
-          loadingWallet={loadingWallet}
-          errorMsg={walletErrorMsg}
-        />
-      </div>
-      <div className={styles.control}>
-        <Control
-          showFilters={showFilters}
-          handleShowFilters={handleShowFilters}
-        ></Control>
-      </div>
+    <>
+      <Head>
+        <title>{router.query.wallet}</title>
+      </Head>
+
       <div
-        className={`${styles.side} ${showFilters ? "" : styles.collapsedSide}`}
+        className={`${styles.pageContainer} ${
+          showFilters ? "" : styles.collapsedContainer
+        }`}
       >
-        <div className={styles.sidestick}>
-          <Filter
-            disabled={!!walletErrorMsg}
-            collections={collections}
-            startDate={search.startDate}
+        <div className={styles.nav}>
+          <Nav handleSearch={handleSearch} />
+        </div>
+        <div className={styles.header}>
+          <Header
+            address={search.address}
+            ens={search.ens}
             endDate={search.endDate}
+            startDate={search.startDate}
             collection={collection}
-            filter={search.filter}
+            loadingCollection={loadingCollection}
             loadingWallet={loadingWallet}
-            loadingCollections={loadingCollections}
-            handleCollectionChange={handleCollectionChange}
-            handleEndDateChange={handleEndDateChange}
-            handleStartDateChange={handleStartDateChange}
-            handleFilterChange={handleFilterChange}
-            collectionErrorMsg={collectionErrorMsg}
+            errorMsg={walletErrorMsg}
+          />
+        </div>
+        <div className={styles.control}>
+          <Control
+            showFilters={showFilters}
+            handleShowFilters={handleShowFilters}
+          ></Control>
+        </div>
+        <div
+          className={`${styles.side} ${
+            showFilters ? "" : styles.collapsedSide
+          }`}
+        >
+          <div className={styles.sidestick}>
+            <FilterComp
+              disabled={!!walletErrorMsg}
+              collections={collections}
+              startDate={search.startDate}
+              endDate={search.endDate}
+              collection={collection}
+              filter={search.filter}
+              loadingWallet={loadingWallet}
+              loadingCollections={loadingCollections}
+              handleCollectionChange={handleCollectionChange}
+              handleEndDateChange={handleEndDateChange}
+              handleStartDateChange={handleStartDateChange}
+              handleFilterChange={handleFilterChange}
+              collectionErrorMsg={collectionErrorMsg}
+            />
+          </div>
+        </div>
+        <div
+          className={`${styles.main} ${styles.column} ${
+            showFilters ? styles.collapsedMain : styles.onlyMain
+          }`}
+        >
+          <Timeline
+            search={search}
+            loadMore={loadMore}
+            loadingWallet={loadingWallet}
+            externalErrorMsg={walletErrorMsg}
           />
         </div>
       </div>
-      <div
-        className={`${styles.main} ${styles.column} ${
-          showFilters ? styles.collapsedMain : styles.onlyMain
-        }`}
-      >
-        <Timeline
-          search={search}
-          loadMore={loadMore}
-          loadingWallet={loadingWallet}
-          externalErrorMsg={walletErrorMsg}
-        />
-      </div>
-    </div>
+    </>
   );
 }

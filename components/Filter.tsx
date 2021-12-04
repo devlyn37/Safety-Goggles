@@ -1,6 +1,6 @@
 import { FC } from "react";
 import styles from "../styles/filter.module.css";
-import { CollectionInfo } from "../utils/data";
+import { CollectionInfo } from "../types";
 import dynamic from "next/dynamic";
 import ContentLoader from "react-content-loader";
 
