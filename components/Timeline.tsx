@@ -1,12 +1,13 @@
 import React, { FC, useState, useEffect } from "react";
 import { NFTEvent, getEvents, groupEvents } from "../utils/data";
 import styles from "../styles/timeline.module.css";
-import { SearchCriteria } from "../pages/wallet/[wallet]";
+import { SearchCriteria } from "../types";
 import { subDays, differenceInDays, format } from "date-fns";
 import { VerticalTimeline, Interval } from "./VerticalTimeline";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { EventGrouping, EventList, LoadingCard } from "./Event";
 
+/* Organize event data into buckets based on when events took place to display in timeline */
 const groupAndOrganizeTimeline = (
   events: NFTEvent[]
 ): Map<string, NFTEvent[][]> => {

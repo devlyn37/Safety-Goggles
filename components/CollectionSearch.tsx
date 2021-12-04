@@ -1,6 +1,6 @@
 import { FC } from "react";
 import Select from "react-select";
-import { CollectionInfo } from "../utils/data";
+import { CollectionInfo } from "../types";
 import { addDefaultSrc } from "../utils/misc";
 
 export const CollectionSearch: FC<{

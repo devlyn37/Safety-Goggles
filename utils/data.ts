@@ -1,7 +1,6 @@
 import axios from "axios";
+import { Action, CollectionInfo } from "../types";
 const OSBaseUrl = "/api/opensea-proxy";
-
-export type Action = "Minted" | "Bought" | "Sold" | "Sent" | "Received";
 
 export interface NFTEvent {
   assetName: string;
@@ -21,14 +20,11 @@ export interface NFTEvent {
   price?: number;
 }
 
-export interface CollectionInfo {
-  name: string;
-  slug: string;
-  imgUrl: string;
-  holding: string;
-  floor?: string;
-}
-
+/*
+ * This function grabs collections from two sources, a wallet's most recent events, and a wallets held nfts.
+ * collection stats (floor price + others) are only included with held collections but as of right now (late 2021)
+ * are inaccurate. When needed, this data is supplemented with the real time stats endpoint (GetCollectionFloor).
+ */
 export const getCollections = async (
   address: string
 ): Promise<CollectionInfo[]> => {
@@ -37,7 +33,6 @@ export const getCollections = async (
   }&offset=0&limit=300`;
   const eventUrl = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=0&limit=300`;
 
-  // Neither endpoint provides the correct floor of a collection :(
   const [holding, recent] = await Promise.all([
     axios.get(collectionUrl),
     axios.get(eventUrl),
@@ -87,7 +82,6 @@ export const getCollections = async (
   return [...fromHeld, ...fromEvents];
 };
 
-//accurate floor prices
 export const getCollection = async (
   collectionSlug: string
 ): Promise<CollectionInfo> => {
@@ -95,6 +89,7 @@ export const getCollection = async (
   const results = await axios.get(url);
   const collection = results.data.collection;
 
+  // Set holding to zero by default, collections the user holds will be loaded already.
   return {
     name: collection.name,
     slug: collection.slug,
@@ -170,9 +165,11 @@ const determineAction = (openseaData: any, address: string): Action => {
   const reciever = openseaData.to_account;
   const sender = openseaData.from_account;
 
-  // This needs to be improved as I understand the data and different cases better
-  // For example a case that is currently broken is nfts being purchased from other marketplaces
-  // http://localhost:3000/?wallet=0x1eb59fb4c8b6675ba2a8f4153f99bdef6ca24696&contract_address=rarible&filter=transfer
+  /*
+   * This needs to be improved as I understand the data and different cases better
+   * For example a case that is currently broken is nfts being purchased from other marketplaces
+   * http://localhost:3000/?wallet=0x1eb59fb4c8b6675ba2a8f4153f99bdef6ca24696&contract_address=rarible&filter=transfer
+   */
   if (
     transactionParticipant &&
     transactionStarter.address.toUpperCase() ===
@@ -191,7 +188,7 @@ const determineAction = (openseaData: any, address: string): Action => {
 
 const dataToEvent = (d: any, address: string): NFTEvent => {
   /* Data Mapping
-		*	Related events are linked by transaction hashes, a standard sale of an NFT
+	 	*	Related events are linked by transaction hashes, a standard sale of an NFT
 		* will have a "successful" event and a "transfer" event each with the same
 		* transaction hash.
 
@@ -247,6 +244,12 @@ const dataToEvent = (d: any, address: string): NFTEvent => {
   return event;
 };
 
+/*
+ * for each purchase or sale, OpenSea event data contains 2 events:
+ * one for the sale, one for the transfer. This function filters out
+ * the transfer events for sales so that we know any transfer events
+ * in the data are independant of sales.
+ */
 const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
   const filter = (d) => {
     const transfer = d.event_type === "transfer";
@@ -273,6 +276,10 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
   return data.filter(filter).map((d) => dataToEvent(d, address));
 };
 
+/*
+ * This function groups similar events together, ex. a wallet bought 10 nfts
+ * from the same collection in a row.
+ */
 export const groupEvents = (events: NFTEvent[]): NFTEvent[][] => {
   let prevCollection: string;
   let prevAction: string;

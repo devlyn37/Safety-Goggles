@@ -16,53 +16,54 @@ export default function Home() {
   };
 
   return (
-    <div className={styles.layout}>
+    <>
       <Head>
         <title>Safety Goggles</title>
       </Head>
-
-      <div className={styles.container}>
-        <div className={styles.desc}>
-          <div className={styles.titleContainer}>
-            <h1 className={styles.title}>Safety Goggles</h1>
-            <GiProtectionGlasses className={styles.icon} />
+      <div className={styles.layout}>
+        <div className={styles.container}>
+          <div className={styles.desc}>
+            <div className={styles.titleContainer}>
+              <h1 className={styles.title}>Safety Goggles</h1>
+              <GiProtectionGlasses className={styles.icon} />
+            </div>
+            <h2 className={styles.subTitle}>
+              See a history of a wallet&#39;s NFT activity through an analytical
+              lens. See through tricks and shady activity, look for alpha with
+              Safety Goggles. Search an address or ENS name to get started.
+            </h2>
           </div>
-          <h2 className={styles.subTitle}>
-            See a history of a wallet&#39;s NFT activity through an analytical
-            lens. See through tricks and shady activity, look for alpha with
-            Safety Goggles. Search an address or ENS name to get started.
-          </h2>
-        </div>
-        <Search handleSearch={handleSearch} />
-        <div className={styles.creditContainer}>
-          <p className={styles.creditLabel}>Made by Devlyn</p>
-          <div className={styles.linkContainer}>
-            <a
-              href="https://twitter.com/Devlyn_3"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img
-                src={"/twitter-logo.svg"}
-                className={styles.linkIcon}
-                style={{ marginRight: "20px" }}
-                alt="twitter logo"
-              ></img>
-            </a>
-            <a
-              href="https://github.com/devlyn37"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <img
-                src={"/github-logo.svg"}
-                className={styles.linkIcon}
-                alt="github logo"
-              ></img>
-            </a>
+          <Search handleSearch={handleSearch} />
+          <div className={styles.creditContainer}>
+            <p className={styles.creditLabel}>Made by Devlyn</p>
+            <div className={styles.linkContainer}>
+              <a
+                href="https://twitter.com/Devlyn_3"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src={"/twitter-logo.svg"}
+                  className={styles.linkIcon}
+                  style={{ marginRight: "20px" }}
+                  alt="twitter logo"
+                ></img>
+              </a>
+              <a
+                href="https://github.com/devlyn37"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src={"/github-logo.svg"}
+                  className={styles.linkIcon}
+                  alt="github logo"
+                ></img>
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
