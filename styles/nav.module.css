@@ -1,0 +1,33 @@
+.navItems {
+  flex: 1;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 25px;
+  max-width: 1000px;
+  justify-items: start;
+}
+
+.search {
+  width: 100%;
+  min-width: 30px;
+}
+
+@media (max-width: 700px) {
+  .navItems {
+    grid-template-columns: auto 1fr;
+  }
+
+  .copy {
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  .navItems {
+    grid-template-columns: 1fr;
+  }
+
+  .home {
+    display: none;
+  }
+}

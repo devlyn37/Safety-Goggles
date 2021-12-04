@@ -48,21 +48,29 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
               target="_blank"
               rel="noreferrer"
               href={event.collectionUrl}
-              style={{
-                display: "block",
-                color: "white",
-                fontWeight: 500,
-              }}
+              className={styles.nameLabelLink}
             >
               {event.collectionName}
             </a>
           </h4>
         </div>
         <div className={styles.titleContainer}>
-          <h3 className={`${styles.title} ${styles.titleItem}`}>
+          <h3 className={`${styles.titleItem}`}>
             {event.action} {grouping.length} NFTs{" "}
-            {sum && "For " + formatEthFromWei(sum) + " ETH"}
           </h3>
+          {sum && (
+            <h3 className={`${styles.priceDesc} ${styles.titleItem}`}>
+              {"for"}
+              <div className={styles.priceContainer}>
+                <img
+                  src="/ethereum_icon.svg"
+                  className={styles.ethIcon}
+                  alt="Ethereum Icon"
+                />
+                {`${formatEthFromWei(sum)}`}
+              </div>
+            </h3>
+          )}
         </div>
         <div className={styles.spaceBuffer} />
         <div className={styles.detailContainer}>
@@ -154,9 +162,17 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
             />
           </div>
           {(event.action === "Sold" || event.action === "Bought") && (
-            <h3
-              className={`${styles.title} ${styles.titleItem}`}
-            >{`for ${formatEthFromWei(event.price)} ETH`}</h3>
+            <h3 className={`${styles.priceDesc} ${styles.titleItem}`}>
+              {"for"}
+              <div className={styles.priceContainer}>
+                <img
+                  src="/ethereum_icon.svg"
+                  className={styles.ethIcon}
+                  alt="Ethereum Icon"
+                />
+                {`${formatEthFromWei(event.price)}`}
+              </div>
+            </h3>
           )}
         </div>
         <div className={styles.spaceBuffer} />
@@ -206,7 +222,7 @@ export const LoadingCard: FC = () => {
         style={{
           borderRadius: "25px 25px 0px 0px",
           maxWidth: "100%",
-          border: "2px solid #f2f2f2",
+          borderBottom: "var(--soft-border)",
         }}
         speed={2}
         viewBox="0 0 400 400"
@@ -220,8 +236,6 @@ export const LoadingCard: FC = () => {
       <div
         style={{
           padding: "15px 20px",
-          borderRight: "2px solid #f2f2f2",
-          borderLeft: "2px solid #f2f2f2",
           flex: 1,
         }}
       >
@@ -246,7 +260,7 @@ export const LoadingCard: FC = () => {
       <div
         style={{
           padding: "12px 20px",
-          border: "2px solid #f2f2f2",
+          borderTop: "var(--soft-border)",
           borderRadius: "0px 0px 25px 25px",
           display: "flex",
           justifyContent: "space-between",

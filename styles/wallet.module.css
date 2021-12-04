@@ -46,17 +46,11 @@
 
 .nav {
   grid-area: nav;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   margin: 0px 20px;
   padding: 20px 0px;
   border-bottom: var(--soft-border);
-}
-
-.search {
-  width: 100%;
-  max-width: 800px;
+  display: flex;
+  justify-content: center;
 }
 
 .side {

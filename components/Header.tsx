@@ -74,7 +74,11 @@ const CollectionDisplay: FC<{ collection: CollectionInfo; loading: boolean }> =
             <div className={styles.label}>
               {"Floor"}
               <div className={`${styles.priceContainer} ${styles.stat}`}>
-                <img src="/ethereum_icon.svg" className={styles.ethIcon} />
+                <img
+                  src="/ethereum_icon.svg"
+                  className={styles.ethIcon}
+                  alt="Ethereum Icon"
+                />
                 {collection.floor}
               </div>
             </div>

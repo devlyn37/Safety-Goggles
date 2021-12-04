@@ -6,16 +6,16 @@
   flex-direction: column;
   align-items: stretch;
   border-radius: 25px;
-  box-shadow: 0px 7.5px 10px rgba(0, 0, 0, 0.035),
-    0px 60px 80px rgba(0, 0, 0, 0.07);
+  box-shadow: 0px 0.7px 4.6px rgba(0, 0, 0, 0.031),
+    0px 1.7px 11.6px rgba(0, 0, 0, 0.044), 0px 3.5px 25px rgba(0, 0, 0, 0.056);
 }
 
 .eventImg {
   width: 100%;
   border-radius: 25px 25px 0px 0px;
-  border: var(--soft-border);
   aspect-ratio: 1 / 1;
   object-fit: cover;
+  border-bottom: var(--soft-border);
 }
 
 .eventDetails {
@@ -28,9 +28,6 @@
   background-color: var(--background);
   color: var(--font-color-high);
   border-radius: 0px 0px 25px 25px;
-  border-bottom: var(--soft-border);
-  border-left: var(--soft-border);
-  border-right: var(--soft-border);
 }
 
 .titleContainer {
@@ -52,10 +49,28 @@
   font-size: var(--big-font-size);
 }
 
+.priceDesc {
+  font-size: var(--big-font-size);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
 .nameLabel {
   font-weight: normal;
   font-size: var(--normal-font-size);
   margin: 0;
+}
+
+.priceContainer {
+  display: flex;
+  align-items: center;
+  margin-left: 4.3px;
+}
+
+.ethIcon {
+  margin-top: 1px;
+  height: 16px;
 }
 
 .nameLabelLink {

@@ -2,6 +2,7 @@ import React from "react";
 import { Search } from "../components/Search";
 import styles from "../styles/home.module.css";
 import { useRouter } from "next/dist/client/router";
+import { GiProtectionGlasses } from "react-icons/gi";
 
 export default function Home() {
   const router = useRouter();
@@ -16,19 +17,20 @@ export default function Home() {
   return (
     <div className={styles.layout}>
       <div className={styles.container}>
-        <div style={{ marginBottom: "50px" }}>
-          <h1 className={styles.title}>
-            A Transparent Wallet NFT Activity Timeline 🏙
-          </h1>
+        <div className={styles.desc}>
+          <div className={styles.titleContainer}>
+            <h1 className={styles.title}>Safety</h1>
+            <GiProtectionGlasses className={styles.icon} />
+          </div>
           <h2 className={styles.subTitle}>
-            See a visual timeline of NFT activity. Find and share activity
-            within collections and/or different time periods. Distinguish
-            between real mints and influencers being sent tokens.
+            See a history of a wallet&#39;s NFT activity through an analytical
+            lens. See through tricks and shady activity, look for alpha with
+            Safety Goggles. Search an address or ENS name to get started.
           </h2>
         </div>
         <Search handleSearch={handleSearch} />
         <div className={styles.creditContainer}>
-          <p style={{ textAlign: "center" }}>Made by Devlyn</p>
+          <p className={styles.creditLabel}>Made by Devlyn</p>
           <div className={styles.linkContainer}>
             <a
               href="https://twitter.com/Devlyn_3"
