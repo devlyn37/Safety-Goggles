@@ -3,6 +3,7 @@ import { Search } from "../components/Search";
 import styles from "../styles/home.module.css";
 import { useRouter } from "next/dist/client/router";
 import { GiProtectionGlasses } from "react-icons/gi";
+import Head from "next/head";
 
 export default function Home() {
   const router = useRouter();
@@ -16,10 +17,14 @@ export default function Home() {
 
   return (
     <div className={styles.layout}>
+      <Head>
+        <title>Safety Goggles</title>
+      </Head>
+
       <div className={styles.container}>
         <div className={styles.desc}>
           <div className={styles.titleContainer}>
-            <h1 className={styles.title}>Safety</h1>
+            <h1 className={styles.title}>Safety Goggles</h1>
             <GiProtectionGlasses className={styles.icon} />
           </div>
           <h2 className={styles.subTitle}>

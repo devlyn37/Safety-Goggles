@@ -15,6 +15,7 @@ import { ParsedUrlQueryInput } from "querystring";
 import { Control } from "../../components/Control";
 import { Nav } from "../../components/Nav";
 import styles from "../../styles/wallet.module.css";
+import Head from "next/head";
 
 export type Filter = "successful" | "transfer" | "";
 
@@ -333,6 +334,10 @@ export default function Home() {
         showFilters ? "" : styles.collapsedContainer
       }`}
     >
+      <Head>
+        <title>{router.query.wallet}</title>
+      </Head>
+
       <div className={styles.nav}>
         <Nav handleSearch={handleSearch} />
       </div>
