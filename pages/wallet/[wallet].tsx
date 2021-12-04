@@ -321,6 +321,7 @@ export default function Home() {
       <Head>
         <title>{router.query.wallet}</title>
       </Head>
+
       <div
         className={`${styles.pageContainer} ${
           showFilters ? "" : styles.collapsedContainer
