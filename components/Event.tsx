@@ -35,13 +35,15 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
   return (
     <>
       <div className={styles.eventCard} key={event.key}>
-        <img
-          className={styles.eventImg}
-          onError={addDefaultSrc}
-          src={event.collectionImgUrl}
-          loading="lazy"
-          alt={`Collection Image for ${event.collectionName}`}
-        ></img>
+        <div className={styles.imgContainer}>
+          <img
+            className={styles.eventImg}
+            onError={addDefaultSrc}
+            src={event.collectionImgUrl}
+            loading="lazy"
+            alt={`Collection Image for ${event.collectionName}`}
+          ></img>
+        </div>
         <div className={styles.imgOverlay}>
           <h4 className={styles.nameLabel}>
             <a
@@ -123,13 +125,15 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
 
   return (
     <div ref={ref} className={styles.eventCard} key={event.key}>
-      <img
-        className={styles.eventImg}
-        src={event.assetImgUrl}
-        onError={addDefaultSrc}
-        loading="lazy"
-        alt={`image for ${event.assetName}`}
-      ></img>
+      <div className={styles.imgContainer}>
+        <img
+          className={styles.eventImg}
+          src={event.assetImgUrl}
+          onError={addDefaultSrc}
+          loading="lazy"
+          alt={`image for ${event.assetName}`}
+        ></img>
+      </div>
       <div className={styles.imgOverlay}>
         <h4 className={styles.nameLabel}>
           <a
