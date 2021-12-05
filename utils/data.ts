@@ -33,35 +33,32 @@ export const getCollections = async (
   }&offset=0&limit=300`;
   const eventUrl = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=0&limit=300`;
 
-  const [holding, recent] = await Promise.all([
-    axios.get(collectionUrl),
-    axios.get(eventUrl),
+  const [heldCollections, recentEvents] = await Promise.all([
+    axios.get(collectionUrl).then((res) => res.data),
+    axios.get(eventUrl).then((res) => filterEvents(res.data.asset_events)),
   ]);
 
-  const eventToCollectionInfo = (d: any): CollectionInfo => {
-    // Account for bundle sales To-do expand this
-    const asset = d.asset ?? d.asset_bundle.assets[0];
-
-    return {
-      name: asset.collection.name,
-      slug: asset.collection.slug,
-      imgUrl: asset.collection.image_url,
-      holding: "0",
-    };
-  };
-
-  const collectionToCollectionInfo = (c: any): CollectionInfo => ({
-    name: c.name,
-    slug: c.slug,
-    imgUrl: c.image_url,
-    holding: c.owned_asset_count,
-  });
-
-  const fromHeld: CollectionInfo[] = holding.data.map(
-    collectionToCollectionInfo
+  const fromHeld: CollectionInfo[] = heldCollections.map(
+    (c: any): CollectionInfo => ({
+      name: c.name,
+      slug: c.slug,
+      imgUrl: c.image_url,
+      holding: c.owned_asset_count,
+    })
   );
-  let fromEvents: CollectionInfo[] = recent.data.asset_events.map(
-    eventToCollectionInfo
+
+  let fromEvents: CollectionInfo[] = recentEvents.map(
+    (d: any): CollectionInfo => {
+      // Account for bundle sales To-do expand this
+      const asset = d.asset ?? d.asset_bundle.assets[0];
+
+      return {
+        name: asset.collection.name,
+        slug: asset.collection.slug,
+        imgUrl: asset.collection.image_url,
+        holding: "0",
+      };
+    }
   );
 
   // Filter duplicate data from events for held collections
@@ -140,7 +137,11 @@ export const getEvents = async (
   const data = results.data.asset_events;
   const moreData = data.length === limit;
 
-  return [openseaDataToEvents(data, address), moreData];
+  const events: NFTEvent[] = filterEvents(data).map((d) =>
+    dataToEvent(d, address)
+  );
+
+  return [events, moreData];
 };
 
 const determineAction = (openseaData: any, address: string): Action => {
@@ -248,9 +249,9 @@ const dataToEvent = (d: any, address: string): NFTEvent => {
  * for each purchase or sale, OpenSea event data contains 2 events:
  * one for the sale, one for the transfer. This function filters out
  * the transfer events for sales so that we know any transfer events
- * in the data are independant of sales.
+ * in the data are independent.
  */
-const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
+const filterEvents = (data: any[]): any[] => {
   const filter = (d) => {
     const transfer = d.event_type === "transfer";
     const sale = d.event_type === "successful";
@@ -273,7 +274,7 @@ const openseaDataToEvents = (data: any[], address: string): NFTEvent[] => {
     }
   };
 
-  return data.filter(filter).map((d) => dataToEvent(d, address));
+  return data.filter(filter);
 };
 
 /*

@@ -10,10 +10,18 @@
     0px 1.7px 11.6px rgba(0, 0, 0, 0.044), 0px 3.5px 25px rgba(0, 0, 0, 0.056);
 }
 
+.imgContainer {
+  padding-top: 100%;
+  position: relative;
+}
+
 .eventImg {
-  width: 100%;
   border-radius: 25px 25px 0px 0px;
-  aspect-ratio: 1 / 1;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   border-bottom: var(--soft-border);
 }
@@ -56,12 +64,6 @@
   align-items: center;
 }
 
-.nameLabel {
-  font-weight: normal;
-  font-size: var(--normal-font-size);
-  margin: 0;
-}
-
 .priceContainer {
   display: flex;
   align-items: center;
@@ -71,18 +73,6 @@
 .ethIcon {
   margin-top: 1px;
   height: 16px;
-}
-
-.nameLabelLink {
-  color: white;
-  display: block;
-  font-weight: 500;
-}
-
-.subLabelLink {
-  font-weight: 300;
-  font-size: var(--small-font-size);
-  color: lightgray;
 }
 
 .spaceBuffer {
@@ -137,6 +127,26 @@
   border-radius: 15px;
   color: white;
   box-shadow: none;
+}
+
+.nameLabel {
+  font-weight: normal;
+  font-size: var(--normal-font-size);
+  margin: 0;
+}
+
+.nameLabelLink {
+  color: white;
+  display: block;
+  font-weight: 500;
+  word-break: break-all;
+}
+
+.subLabelLink {
+  font-weight: 300;
+  font-size: var(--small-font-size);
+  color: lightgray;
+  word-break: break-all;
 }
 
 .groupButton {

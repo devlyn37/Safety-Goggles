@@ -40,9 +40,8 @@
   margin-top: 4px;
   height: 38px;
   border-radius: var(--border-radius-regular);
-  padding-left: 8px;
+  padding: 0px 8px;
   font-size: var(--normal-font-size);
-  padding-right: 4px;
   color: var(--font-color-med);
   border: none;
   background-color: var(--foreground-1);
