@@ -181,9 +181,6 @@ export default function Home() {
   };
 
   const handleCollectionChange = (collection: CollectionInfo) => {
-    // Seems like its possible to have an asset without a contract address
-    // look into this ecumenopolis-by-joshua-bagley
-
     const s = {
       ...search,
       collectionSlug: collection ? collection.slug : "",

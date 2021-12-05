@@ -91,16 +91,16 @@ export const Filter: FC<{
   const dates = (
     <div className={`${styles.item} ${styles.dateContainer}`}>
       <div className={styles.label}>Date Range</div>
-      <label>
+      <label
+        style={{
+          marginBottom: "20px",
+        }}
+      >
         <span className={styles.dateLabel}>From</span>
         <input
-          style={{
-            marginBottom: "20px",
-          }}
           className={styles.dateButton}
           disabled={disabled}
           type="date"
-          placeholder="from"
           value={startDate}
           onChange={onStartDateChange}
         />
@@ -111,7 +111,6 @@ export const Filter: FC<{
           className={styles.dateButton}
           disabled={disabled}
           type="date"
-          placeholder="from"
           value={endDate}
           onChange={onEndDateChange}
         />
