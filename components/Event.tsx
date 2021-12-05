@@ -52,7 +52,7 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
               href={event.collectionUrl}
               className={styles.nameLabelLink}
             >
-              {event.collectionName}
+              {trunicate(event.collectionName, 50)}{" "}
             </a>
           </h4>
         </div>
