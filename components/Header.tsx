@@ -79,7 +79,7 @@ const CollectionDisplay: FC<{ collection: CollectionInfo; loading: boolean }> =
                   className={styles.ethIcon}
                   alt="Ethereum Icon"
                 />
-                {collection.floor}
+                {collection.floor ?? "0"}
               </div>
             </div>
             <div className={styles.label}>
