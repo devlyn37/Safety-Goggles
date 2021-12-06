@@ -25,13 +25,16 @@ export interface NFTEvent {
  * collection stats (floor price + others) are only included with held collections but as of right now (late 2021)
  * are inaccurate. When needed, this data is supplemented with the real time stats endpoint (GetCollectionFloor).
  */
+const COL_EVENT_LIMIT = 100;
+const HELD_COL_LIMIT = 150;
+
 export const getCollections = async (
   address: string
 ): Promise<CollectionInfo[]> => {
   const collectionUrl = `${OSBaseUrl}/collections?${
     "asset_owner=" + address
-  }&offset=0&limit=300`;
-  const eventUrl = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=0&limit=300`;
+  }&offset=0&limit=${HELD_COL_LIMIT}`;
+  const eventUrl = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=0&limit=${COL_EVENT_LIMIT}`;
 
   const [heldCollections, recentEvents] = await Promise.all([
     axios.get(collectionUrl).then((res) => res.data),
