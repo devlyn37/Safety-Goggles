@@ -47,7 +47,10 @@ function MyApp({ Component, pageProps }) {
           property="twitter:description"
           content="Look for alpha with Safety Goggles."
         />
-        <meta property="twitter:image" content="/preview.png" />
+        <meta
+          property="twitter:image"
+          content="https://i.postimg.cc/zfsBbVfw/preview.png"
+        />
       </Head>
       <Component {...pageProps} />
     </>
