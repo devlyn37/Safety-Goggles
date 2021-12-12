@@ -32,7 +32,7 @@ function MyApp({ Component, pageProps }) {
         {/* Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.safetygoggles.xyz/" />
-        <meta property="og:title" content="Safety Goggles" />
+        <meta property="og:title" content="Safety Goggles" title="fb-title" />
         <meta
           property="og:description"
           content="View a history of any wallet's NFT activity, see through shady behaviour, look for alpha with Safety Goggles."
@@ -42,7 +42,11 @@ function MyApp({ Component, pageProps }) {
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://www.safetygoggles.xyz/" />
-        <meta property="twitter:title" content="Safety Goggles" />
+        <meta
+          property="twitter:title"
+          content="Safety Goggles"
+          key="twitter-title"
+        />
         <meta
           property="twitter:description"
           content="Look for alpha with Safety Goggles."

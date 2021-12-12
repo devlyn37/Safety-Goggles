@@ -317,6 +317,16 @@ export default function Home() {
     <>
       <Head>
         <title>{router.query.wallet}</title>
+        <meta
+          property="og:title"
+          content="View a wallet with Safety Goggles"
+          title="fb-title"
+        />
+        <meta
+          property="twitter:title"
+          content="View a wallet with Safety Goggles"
+          key="twitter-title"
+        />
       </Head>
 
       <div
