@@ -1,6 +1,6 @@
 import { FC, useState, useRef } from "react";
 import ContentLoader from "react-content-loader";
-import { NFTEvent } from "../utils/data";
+import { NFTEvent } from "../types";
 import styles from "../styles/event.module.css";
 import { format } from "date-fns";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";

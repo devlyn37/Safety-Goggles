@@ -1,31 +1,13 @@
 import axios from "axios";
-import { Action, CollectionInfo } from "../types";
+import { Action, CollectionInfo, NFTEvent } from "../types";
 const OSBaseUrl = "/api/opensea-proxy";
-
-export interface NFTEvent {
-  assetName: string;
-  assetDescription: string;
-  assetImgUrl: string;
-  assetUrl: string;
-  collectionName: string;
-  collectionImgUrl: string;
-  collectionUrl: string;
-  collectionDescription: string;
-  date: string;
-  from: string;
-  to: string;
-  action: Action;
-  key: string;
-  transactionHash: string; // event's from opensea can have the same transaction hash, can't just store this in key (ex. mintpass transaction)
-  price?: number;
-}
 
 /*
  * This function grabs collections from two sources, a wallet's most recent events, and a wallets held nfts.
  * collection stats (floor price + others) are only included with held collections but as of right now (late 2021)
  * are inaccurate. When needed, this data is supplemented with the real time stats endpoint (GetCollectionFloor).
  */
-const COL_EVENT_LIMIT = 100;
+const COL_EVENT_LIMIT = 120;
 const HELD_COL_LIMIT = 150;
 
 export const getCollections = async (
@@ -116,25 +98,18 @@ export const getEvents = async (
   collectionSlug?: string,
   filter?: string
 ): Promise<[NFTEvent[], boolean]> => {
-  let url = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=${offset}&limit=${limit}`;
+  let url = `${OSBaseUrl}/events?`;
+  const params = new URLSearchParams();
+  params.set("account_address", address);
+  params.set("only_opensea", "false");
+  params.set("offset", "" + offset);
+  params.set("limit", "" + limit);
+  startDate && params.set("occurred_after", startDate + "T00:00:00");
+  endDate && params.set("occured_before", endDate + "T00:00:00");
+  collectionSlug && params.set("collection_slug", collectionSlug);
+  filter && params.set("event_type", filter);
 
-  // To-do lets use query string here
-
-  if (startDate) {
-    url += "&occurred_after=" + startDate + "T00:00:00";
-  }
-
-  if (endDate) {
-    url += "&occurred_before=" + endDate + "T00:00:00";
-  }
-
-  if (collectionSlug) {
-    url += "&collection_slug=" + collectionSlug;
-  }
-
-  if (filter) {
-    url += "&event_type=" + filter;
-  }
+  url += params.toString();
 
   const results = await axios.get(url);
   const data = results.data.asset_events;

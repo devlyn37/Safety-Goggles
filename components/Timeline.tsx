@@ -1,5 +1,6 @@
 import React, { FC, useState, useEffect } from "react";
-import { NFTEvent, getEvents, groupEvents } from "../utils/data";
+import { getEvents, groupEvents } from "../utils/data";
+import { NFTEvent } from "../types";
 import styles from "../styles/timeline.module.css";
 import { SearchCriteria } from "../types";
 import { subDays, differenceInDays, format } from "date-fns";

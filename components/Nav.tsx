@@ -18,10 +18,7 @@ export const Nav: FC<{ handleSearch: (input: string) => Promise<void> }> = ({
   return (
     <div className={styles.navItems}>
       <div className={styles.home}>
-        <GiProtectionGlasses
-          style={{ fontSize: "50px", cursor: "pointer" }}
-          onClick={goHome}
-        />
+        <GiProtectionGlasses className={styles.icon} onClick={goHome} />
       </div>
       <div className={styles.search}>
         <Search handleSearch={handleSearch} />
