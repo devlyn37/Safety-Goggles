@@ -14,7 +14,6 @@ This website distinguishes between these fake mints and real ones, labeling them
 
 ![Screen Shot 2021-11-30 at 2 58 41 PM](https://user-images.githubusercontent.com/17352012/144141661-6c069a51-cd77-4a70-995c-1dde716656db.png)
 
-
 with this, in combination with filtering, the goal of the site is to be a tool to help discover and share alpha and hopefully prevent some people from being tricked into fomo buying something.
 
 ## A Timeline View
@@ -24,6 +23,14 @@ I think the idea of a timeline is novel, visually appealing, and makes good use 
 ## Note
 
 This is still a work in progress, expect some issues here and there, especially with labeling less common event types. Event labelling surrounding the core goals of the project (buy, sell, mints vs dev mints mentioned above) is solid right now though.
+
+## Tech
+
+Safety Goggles is built with Next.js and TypeScript. We use CSS modules for styling, and host the site using Vercel.
+
+## Contributing
+
+Take a look [here](CONTRIBUTING.md)
 
 ## Setup
 
