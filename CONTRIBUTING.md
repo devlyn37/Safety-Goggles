@@ -12,7 +12,8 @@ We use something similar to Github Flow, but we also maintain a dev branch. Anyt
 
 1. Fork the repo and create your branch from `dev`.
 2. Make sure your code lints and builds.
-3. Issue your pull request against the `dev`!
+3. run prettier `npm run prettier-format`
+4. Issue your pull request against the `dev`!
 
 Eventually, there will be testing requirements, but not yet.
 

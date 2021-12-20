@@ -3,10 +3,7 @@ const cache: Record<string, string> = {};
 
 export const AddressToENS = async (address: string): Promise<string | null> => {
   const ethers = (await import("ethers")).ethers;
-  const provider = new ethers.providers.AlchemyProvider(
-    1,
-    process.env.NEXT_PUBLIC_ALCHEMY
-  );
+  const provider = new ethers.providers.AlchemyProvider(1, process.env.NEXT_PUBLIC_ALCHEMY);
 
   const mappedVal = cache[address];
 
@@ -23,17 +20,12 @@ export const AddressToENS = async (address: string): Promise<string | null> => {
 // Not used enough to care about caching for now
 export const ENSToAddress = async (ens: string): Promise<string | null> => {
   const ethers = (await import("ethers")).ethers;
-  const provider = new ethers.providers.AlchemyProvider(
-    1,
-    process.env.NEXT_PUBLIC_ALCHEMY
-  );
+  const provider = new ethers.providers.AlchemyProvider(1, process.env.NEXT_PUBLIC_ALCHEMY);
 
   return await provider.resolveName(ens);
 };
 
-export const resolveWallet = async (
-  input: string
-): Promise<[string, string]> => {
+export const resolveWallet = async (input: string): Promise<[string, string]> => {
   let address;
   let ens;
 

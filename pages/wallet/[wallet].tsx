@@ -1,10 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
-import {
-  getCollections,
-  getCollection,
-  getCollectionFloor,
-} from "../../utils/data";
+import { getCollections, getCollection, getCollectionFloor } from "../../utils/data";
 import { CollectionInfo, Filter, SearchCriteria } from "../../types";
 import { resolveWallet } from "../../utils/ens";
 import Timeline from "../../components/Timeline";
@@ -36,7 +32,7 @@ export default function Home() {
     endDate: "",
     filter: "",
     collectionSlug: "",
-    page: 1,
+    page: 1
   });
 
   const [walletErrorMsg, setWalletErrorMsg] = useState<string>("");
@@ -85,7 +81,7 @@ export default function Home() {
       }
 
       router.push({ pathname: "/wallet/[wallet]", query: query }, undefined, {
-        shallow: true,
+        shallow: true
       });
     },
     [router]
@@ -121,7 +117,7 @@ export default function Home() {
           endDate: endDate ?? "",
           filter: filter ?? "",
           page: 1,
-          collectionSlug: collectionSlug ?? "",
+          collectionSlug: collectionSlug ?? ""
         };
         setSearch(s);
 
@@ -143,9 +139,7 @@ export default function Home() {
 
         // User arriving from shared link or refreshing etc
         if (collectionSlug) {
-          let collection = usersCollections.find(
-            (c: CollectionInfo) => c.slug === collectionSlug
-          );
+          let collection = usersCollections.find((c: CollectionInfo) => c.slug === collectionSlug);
 
           if (!collection) {
             collection = await getCollection(collectionSlug);
@@ -184,7 +178,7 @@ export default function Home() {
     const s = {
       ...search,
       collectionSlug: collection ? collection.slug : "",
-      page: 1,
+      page: 1
     };
 
     if (collection) {
@@ -213,13 +207,7 @@ export default function Home() {
   useEffect(() => {
     const validateParams = (query: ParsedUrlQueryInput): string => {
       let err = "";
-      const paramWL = [
-        "wallet",
-        "startDate",
-        "endDate",
-        "collectionSlug",
-        "filter",
-      ];
+      const paramWL = ["wallet", "startDate", "endDate", "collectionSlug", "filter"];
 
       Object.keys(query).forEach((param: string) => {
         const val = query[param];
@@ -230,12 +218,7 @@ export default function Home() {
 
         val as string;
 
-        if (
-          param === "filter" &&
-          val !== "" &&
-          val !== "successful" &&
-          val != "transfer"
-        ) {
+        if (param === "filter" && val !== "" && val !== "successful" && val != "transfer") {
           err += `filter ${val} is not valid`;
         }
       });
@@ -243,20 +226,12 @@ export default function Home() {
       return err;
     };
 
-    const matchingParamAndState = (
-      search: SearchCriteria,
-      query: Params
-    ): boolean => {
-      const startMatch =
-        query.startDate === search.startDate ||
-        (!query.startDate && !search.startDate);
-      const endMatch =
-        query.endDate === search.endDate || (!query.endDate && !search.endDate);
-      const filterMatch =
-        search.filter === query.filter || (!query.filter && !search.filter);
+    const matchingParamAndState = (search: SearchCriteria, query: Params): boolean => {
+      const startMatch = query.startDate === search.startDate || (!query.startDate && !search.startDate);
+      const endMatch = query.endDate === search.endDate || (!query.endDate && !search.endDate);
+      const filterMatch = search.filter === query.filter || (!query.filter && !search.filter);
       const collectionMatch =
-        (!search.collectionSlug && !query.collectionSlug) ||
-        query.collectionSlug === search.collectionSlug;
+        (!search.collectionSlug && !query.collectionSlug) || query.collectionSlug === search.collectionSlug;
 
       const walletMatch =
         (!search.address && !query.wallet) ||
@@ -264,9 +239,7 @@ export default function Home() {
         search.ens === query.wallet ||
         search.ens.slice(0, -4) === query.wallet;
 
-      return (
-        walletMatch && startMatch && endMatch && collectionMatch && filterMatch
-      );
+      return walletMatch && startMatch && endMatch && collectionMatch && filterMatch;
     };
 
     const handleParams = async () => {
@@ -276,8 +249,7 @@ export default function Home() {
         return;
       }
 
-      const { wallet, startDate, endDate, collectionSlug, filter } =
-        router.query as Params;
+      const { wallet, startDate, endDate, collectionSlug, filter } = router.query as Params;
 
       // If the state matches the url already, that means that this change in query params
       // was caused in the client after a user adjusted the search of the filtering
@@ -294,20 +266,13 @@ export default function Home() {
           endDate: "",
           filter: "",
           page: 1,
-          collectionSlug: "",
+          collectionSlug: ""
         });
         return;
       }
 
       // Past this point its actions like url changes and pressing back
-      await handleSearch(
-        wallet,
-        false,
-        startDate ?? "",
-        endDate ?? "",
-        filter,
-        collectionSlug
-      );
+      await handleSearch(wallet, false, startDate ?? "", endDate ?? "", filter, collectionSlug);
     };
 
     handleParams();
@@ -320,23 +285,11 @@ export default function Home() {
     <>
       <Head>
         <title>{isServer ? "View Wallet" : router.query.wallet}</title>
-        <meta
-          property="og:title"
-          content="View a wallet with Safety Goggles"
-          title="fb-title"
-        />
-        <meta
-          property="twitter:title"
-          content="View a wallet with Safety Goggles"
-          key="twitter-title"
-        />
+        <meta property="og:title" content="View a wallet with Safety Goggles" title="fb-title" />
+        <meta property="twitter:title" content="View a wallet with Safety Goggles" key="twitter-title" />
       </Head>
 
-      <div
-        className={`${styles.pageContainer} ${
-          showFilters ? "" : styles.collapsedContainer
-        }`}
-      >
+      <div className={`${styles.pageContainer} ${showFilters ? "" : styles.collapsedContainer}`}>
         <div className={styles.nav}>
           <Nav handleSearch={handleSearch} />
         </div>
@@ -353,16 +306,9 @@ export default function Home() {
           />
         </div>
         <div className={styles.control}>
-          <Control
-            showFilters={showFilters}
-            handleShowFilters={handleShowFilters}
-          ></Control>
+          <Control showFilters={showFilters} handleShowFilters={handleShowFilters}></Control>
         </div>
-        <div
-          className={`${styles.side} ${
-            showFilters ? "" : styles.collapsedSide
-          }`}
-        >
+        <div className={`${styles.side} ${showFilters ? "" : styles.collapsedSide}`}>
           <div className={styles.sidestick}>
             <FilterComp
               disabled={!!walletErrorMsg}
@@ -381,11 +327,7 @@ export default function Home() {
             />
           </div>
         </div>
-        <div
-          className={`${styles.main} ${styles.column} ${
-            showFilters ? styles.collapsedMain : styles.onlyMain
-          }`}
-        >
+        <div className={`${styles.main} ${styles.column} ${showFilters ? styles.collapsedMain : styles.onlyMain}`}>
           <Timeline
             search={search}
             loadMore={loadMore}

@@ -5,13 +5,11 @@ import { Search } from "./Search";
 import styles from "../styles/nav.module.css";
 import { useRouter } from "next/dist/client/router";
 
-export const Nav: FC<{ handleSearch: (input: string) => Promise<void> }> = ({
-  handleSearch,
-}) => {
+export const Nav: FC<{ handleSearch: (input: string) => Promise<void> }> = ({ handleSearch }) => {
   const router = useRouter();
   const goHome = () => {
     router.push({
-      pathname: "/",
+      pathname: "/"
     });
   };
 

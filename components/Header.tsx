@@ -14,14 +14,7 @@ export const Header: FC<{
   loadingCollection: boolean;
   loadingWallet: boolean;
   errorMsg: string;
-}> = ({
-  ens,
-  address,
-  collection,
-  loadingCollection,
-  loadingWallet,
-  errorMsg,
-}) => {
+}> = ({ ens, address, collection, loadingCollection, loadingWallet, errorMsg }) => {
   const preHydrate = ens === "" && address === "";
 
   if (errorMsg) {
@@ -44,53 +37,43 @@ export const Header: FC<{
           </>
         )}
       </div>
-      {(loadingCollection || collection) && (
-        <CollectionDisplay
-          collection={collection}
-          loading={loadingCollection}
-        />
-      )}
+      {(loadingCollection || collection) && <CollectionDisplay collection={collection} loading={loadingCollection} />}
     </div>
   );
 };
 
-const CollectionDisplay: FC<{ collection: CollectionInfo; loading: boolean }> =
-  ({ collection, loading }) => {
-    if (loading) {
-      return <CollectionPlaceholder />;
-    }
+const CollectionDisplay: FC<{ collection: CollectionInfo; loading: boolean }> = ({ collection, loading }) => {
+  if (loading) {
+    return <CollectionPlaceholder />;
+  }
 
-    return (
-      <div className={styles.collection}>
-        <img
-          src={collection.imgUrl ?? "/no-image.jpeg"}
-          onError={addDefaultSrc}
-          className={styles.collectionImg}
-          alt={`Collection Image for ${collection.name}`}
-        />
-        <div className={styles.collectionTextContainer}>
-          <h3 className={styles.collectionName}>{collection.name}</h3>
-          <div className={styles.collectionStats}>
-            <div className={styles.label}>
-              {"Floor"}
-              <div className={`${styles.priceContainer} ${styles.stat}`}>
-                <img
-                  src="/ethereum_icon.svg"
-                  className={styles.ethIcon}
-                  alt="Ethereum Icon"
-                />
-                {collection.floor ?? "0"}
-              </div>
+  return (
+    <div className={styles.collection}>
+      <img
+        src={collection.imgUrl ?? "/no-image.jpeg"}
+        onError={addDefaultSrc}
+        className={styles.collectionImg}
+        alt={`Collection Image for ${collection.name}`}
+      />
+      <div className={styles.collectionTextContainer}>
+        <h3 className={styles.collectionName}>{collection.name}</h3>
+        <div className={styles.collectionStats}>
+          <div className={styles.label}>
+            {"Floor"}
+            <div className={`${styles.priceContainer} ${styles.stat}`}>
+              <img src="/ethereum_icon.svg" className={styles.ethIcon} alt="Ethereum Icon" />
+              {collection.floor ?? "0"}
             </div>
-            <div className={styles.label}>
-              {"Holds"}
-              <div className={styles.stat}>{collection.holding}</div>
-            </div>
+          </div>
+          <div className={styles.label}>
+            {"Holds"}
+            <div className={styles.stat}>{collection.holding}</div>
           </div>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
 const CollectionPlaceholder: FC = (props) => {
   return (
