@@ -14,7 +14,7 @@ This website distinguishes between these fake mints and real ones, labeling them
 
 ![Screen Shot 2021-11-30 at 2 58 41 PM](https://user-images.githubusercontent.com/17352012/144141661-6c069a51-cd77-4a70-995c-1dde716656db.png)
 
-with this, in combination with filtering, the goal of the site is to be a tool to help discover and share alpha and hopefully prevent some people from being tricked into fomo buying something.
+With this, in combination with filtering, the goal of the site is to be a tool to help discover and share alpha and hopefully prevent some people from being tricked.
 
 ## A Timeline View
 
@@ -30,7 +30,7 @@ Safety Goggles is built with Next.js and TypeScript. We use CSS modules for styl
 
 ## Contributing
 
-Take a look [here](CONTRIBUTING.md)
+This project was built to be a public good, If you'd like to help make it better take a look [here](CONTRIBUTING.md).
 
 ## Setup
 
