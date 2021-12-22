@@ -6,10 +6,13 @@ import ContentLoader from "react-content-loader";
 
 const loading = () => <CollectionPlaceholder />;
 
-const CollectionSearch = dynamic(() => import("./CollectionSearch").then((mod) => mod.CollectionSearch), {
-  loading: loading,
-  ssr: false
-});
+const CollectionSearch = dynamic(
+  () => import("./CollectionSearch").then((mod) => mod.CollectionSearch),
+  {
+    loading: loading,
+    ssr: false
+  }
+);
 
 export const Filter: FC<{
   disabled: boolean;
@@ -117,7 +120,9 @@ export const Filter: FC<{
 
   return (
     <div className={styles.container}>
-      {collectionErrorMsg && <div className={styles.errorContainer}>{collectionErrorMsg}</div>}
+      {collectionErrorMsg && (
+        <div className={styles.errorContainer}>{collectionErrorMsg}</div>
+      )}
       <label className={styles.item}>
         <div className={styles.label}>Collection</div>
         <div style={{ marginTop: "5px" }}>

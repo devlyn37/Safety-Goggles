@@ -9,7 +9,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { EventGrouping, EventList, LoadingCard } from "./Event";
 
 /* Organize event data into buckets based on when events took place to display in timeline */
-const groupAndOrganizeTimeline = (events: NFTEvent[]): Map<string, NFTEvent[][]> => {
+const groupAndOrganizeTimeline = (
+  events: NFTEvent[]
+): Map<string, NFTEvent[][]> => {
   // event times are in UTC
   const buckets: NFTEvent[][] = [];
   const now = new Date();
@@ -81,7 +83,9 @@ const Timeline: FC<{
 
         setHasMore(moreData);
       } catch (e) {
-        setErrorMsg("There was an issue loading OpenSea data, please try again later.");
+        setErrorMsg(
+          "There was an issue loading OpenSea data, please try again later."
+        );
         throw e;
       }
 
@@ -99,7 +103,12 @@ const Timeline: FC<{
   const preHyrate = search.ens === "" && search.address === "";
 
   if (externalErrorMsg || errorMsg) {
-    return <UserInfo src="/clumsy.svg" message={externalErrorMsg ? externalErrorMsg : errorMsg} />;
+    return (
+      <UserInfo
+        src="/clumsy.svg"
+        message={externalErrorMsg ? externalErrorMsg : errorMsg}
+      />
+    );
   }
 
   if (preHyrate || loadingWallet || loadingFirstPage) {
@@ -118,7 +127,8 @@ const Timeline: FC<{
     return <UserInfo src="/sitting.svg" message={"No Results Found"} />;
   }
 
-  const timelineData: Map<string, NFTEvent[][]> = groupAndOrganizeTimeline(data);
+  const timelineData: Map<string, NFTEvent[][]> =
+    groupAndOrganizeTimeline(data);
   const keys = Array.from(timelineData.keys());
 
   return (
@@ -144,7 +154,10 @@ const Timeline: FC<{
               <div className={styles.eventGrid}>
                 {groupings.map((grouping, i) => {
                   return grouping.length > GROUPING_MIN ? (
-                    <EventGrouping key={grouping[0].key + i} grouping={grouping} />
+                    <EventGrouping
+                      key={grouping[0].key + i}
+                      grouping={grouping}
+                    />
                   ) : (
                     <EventList key={grouping[0].key + i} grouping={grouping} />
                   );
@@ -174,7 +187,11 @@ const LoadingGroup: FC = () => (
 const UserInfo: FC<{ src: string; message: string }> = ({ src, message }) => (
   <div className={styles.infoContainer}>
     <div className={styles.infoRestrictor}>
-      <img src={src} className={styles.infoImg} alt={"cartoon image to represent the message"} />
+      <img
+        src={src}
+        className={styles.infoImg}
+        alt={"cartoon image to represent the message"}
+      />
       <p className={styles.infoText}>{message}</p>
     </div>
   </div>

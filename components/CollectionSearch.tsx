@@ -23,7 +23,11 @@ export const CollectionSearch: FC<{
     const { name, imgUrl } = data;
 
     const textColor = isSelected ? "white" : "black";
-    const backgroundColor = isSelected ? "black" : isFocused ? "lightgray" : "white";
+    const backgroundColor = isSelected
+      ? "black"
+      : isFocused
+      ? "lightgray"
+      : "white";
 
     return !isDisabled ? (
       <div

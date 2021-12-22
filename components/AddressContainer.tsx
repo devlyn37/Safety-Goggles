@@ -48,12 +48,19 @@ export const AddressContainer: FC<{
     }, 2 * 1000);
   };
 
-  const icon = showCheck ? <FiCheckSquare className={styles.icon} /> : <FiCopy className={styles.icon} />;
+  const icon = showCheck ? (
+    <FiCheckSquare className={styles.icon} />
+  ) : (
+    <FiCopy className={styles.icon} />
+  );
 
   const display = ens ? trunicate(ens, 50) : formatAddress(address);
 
   return (
-    <div className={`${large ? styles.large : styles.small} ${styles.container}`} onClick={handleClick}>
+    <div
+      className={`${large ? styles.large : styles.small} ${styles.container}`}
+      onClick={handleClick}
+    >
       {display} {icon}
     </div>
   );

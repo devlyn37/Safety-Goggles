@@ -2,7 +2,10 @@ import axios from "axios";
 import { NextApiRequest, NextApiResponse } from "next";
 const config = { headers: { "X-API-KEY": process.env.OS_API_KEY } };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   let baseUrl = `https://api.opensea.io/api/v1/`;
 
   if (!req.url) {

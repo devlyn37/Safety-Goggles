@@ -18,7 +18,11 @@ export const CopyLinkBtn: FC<{}> = () => {
     }, 2 * 1000);
   };
 
-  const icon = showCheck ? <FiCheckSquare className={styles.icon} /> : <FiCopy className={styles.icon} />;
+  const icon = showCheck ? (
+    <FiCheckSquare className={styles.icon} />
+  ) : (
+    <FiCopy className={styles.icon} />
+  );
 
   return (
     <button className={styles.btn} onClick={handleClick}>

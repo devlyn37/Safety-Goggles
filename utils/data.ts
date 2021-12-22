@@ -10,8 +10,12 @@ const OSBaseUrl = "/api/opensea-proxy";
 const COL_EVENT_LIMIT = 120;
 const HELD_COL_LIMIT = 150;
 
-export const getCollections = async (address: string): Promise<CollectionInfo[]> => {
-  const collectionUrl = `${OSBaseUrl}/collections?${"asset_owner=" + address}&offset=0&limit=${HELD_COL_LIMIT}`;
+export const getCollections = async (
+  address: string
+): Promise<CollectionInfo[]> => {
+  const collectionUrl = `${OSBaseUrl}/collections?${
+    "asset_owner=" + address
+  }&offset=0&limit=${HELD_COL_LIMIT}`;
   const eventUrl = `${OSBaseUrl}/events?account_address=${address}&only_opensea=false&offset=0&limit=${COL_EVENT_LIMIT}`;
 
   const [heldCollections, recentEvents] = await Promise.all([
@@ -28,17 +32,19 @@ export const getCollections = async (address: string): Promise<CollectionInfo[]>
     })
   );
 
-  let fromEvents: CollectionInfo[] = recentEvents.map((d: any): CollectionInfo => {
-    // Account for bundle sales To-do expand this
-    const asset = d.asset ?? d.asset_bundle.assets[0];
+  let fromEvents: CollectionInfo[] = recentEvents.map(
+    (d: any): CollectionInfo => {
+      // Account for bundle sales To-do expand this
+      const asset = d.asset ?? d.asset_bundle.assets[0];
 
-    return {
-      name: asset.collection.name,
-      slug: asset.collection.slug,
-      imgUrl: asset.collection.image_url,
-      holding: "0"
-    };
-  });
+      return {
+        name: asset.collection.name,
+        slug: asset.collection.slug,
+        imgUrl: asset.collection.image_url,
+        holding: "0"
+      };
+    }
+  );
 
   // Filter duplicate data from events for held collections
   let hash: Record<string, boolean> = {};
@@ -58,7 +64,9 @@ export const getCollections = async (address: string): Promise<CollectionInfo[]>
   return [...fromHeld, ...fromEvents];
 };
 
-export const getCollection = async (collectionSlug: string): Promise<CollectionInfo> => {
+export const getCollection = async (
+  collectionSlug: string
+): Promise<CollectionInfo> => {
   const url = `${OSBaseUrl}/collection/${collectionSlug}`;
   const results = await axios.get(url);
   const collection = results.data.collection;
@@ -73,7 +81,9 @@ export const getCollection = async (collectionSlug: string): Promise<CollectionI
   };
 };
 
-export const getCollectionFloor = async (collectionSlug: string): Promise<string> => {
+export const getCollectionFloor = async (
+  collectionSlug: string
+): Promise<string> => {
   const url = `${OSBaseUrl}/collection/${collectionSlug}/stats`;
   const results = await axios.get(url);
   return results.data.stats.floor_price;
@@ -105,20 +115,28 @@ export const getEvents = async (
   const data = results.data.asset_events;
   const moreData = data.length === limit;
 
-  const events: NFTEvent[] = filterEvents(data).map((d) => dataToEvent(d, address));
+  const events: NFTEvent[] = filterEvents(data).map((d) =>
+    dataToEvent(d, address)
+  );
 
   return [events, moreData];
 };
 
 const determineAction = (openseaData: any, address: string): Action => {
-  if (openseaData.event_type !== "successful" && openseaData.event_type !== "transfer") {
+  if (
+    openseaData.event_type !== "successful" &&
+    openseaData.event_type !== "transfer"
+  ) {
     throw new Error(
       "Opensea events that aren't of the type transfer or successful should be filtered out before determining type"
     );
   }
 
   if (openseaData.event_type === "successful") {
-    return openseaData.winner_account.address.toUpperCase() === address.toUpperCase() ? "Bought" : "Sold";
+    return openseaData.winner_account.address.toUpperCase() ===
+      address.toUpperCase()
+      ? "Bought"
+      : "Sold";
   }
 
   const transactionStarter = openseaData.transaction.from_account;
@@ -133,7 +151,8 @@ const determineAction = (openseaData: any, address: string): Action => {
    */
   if (
     transactionParticipant &&
-    transactionStarter.address.toUpperCase() === reciever.address.toUpperCase() &&
+    transactionStarter.address.toUpperCase() ===
+      reciever.address.toUpperCase() &&
     transactionStarter.address.toUpperCase() === address.toUpperCase() &&
     transactionParticipant.address !== reciever.address &&
     transactionParticipant.address !== sender.address
@@ -167,13 +186,18 @@ const dataToEvent = (d: any, address: string): NFTEvent => {
     ? d.contract_address
     : d.from_account?.address;
 
-  const to: string = successAction ? d.winner_account?.address : d.to_account?.address;
+  const to: string = successAction
+    ? d.winner_account?.address
+    : d.to_account?.address;
 
   const collectionImgUrl: string =
-    d.asset.collection?.featured_image_url ?? d.asset.collection?.image_url ?? d.asset.collection?.banner_image_url;
+    d.asset.collection?.featured_image_url ??
+    d.asset.collection?.image_url ??
+    d.asset.collection?.banner_image_url;
 
   const collectionUrl: string =
-    d.asset.collection?.external_url ?? `https://opensea.io/collection/${d.asset.collection.slug}`;
+    d.asset.collection?.external_url ??
+    `https://opensea.io/collection/${d.asset.collection.slug}`;
 
   const event: NFTEvent = {
     assetName: d.asset.name ?? d.asset.token_id,

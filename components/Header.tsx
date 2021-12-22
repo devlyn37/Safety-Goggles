@@ -14,7 +14,14 @@ export const Header: FC<{
   loadingCollection: boolean;
   loadingWallet: boolean;
   errorMsg: string;
-}> = ({ ens, address, collection, loadingCollection, loadingWallet, errorMsg }) => {
+}> = ({
+  ens,
+  address,
+  collection,
+  loadingCollection,
+  loadingWallet,
+  errorMsg
+}) => {
   const preHydrate = ens === "" && address === "";
 
   if (errorMsg) {
@@ -37,12 +44,20 @@ export const Header: FC<{
           </>
         )}
       </div>
-      {(loadingCollection || collection) && <CollectionDisplay collection={collection} loading={loadingCollection} />}
+      {(loadingCollection || collection) && (
+        <CollectionDisplay
+          collection={collection}
+          loading={loadingCollection}
+        />
+      )}
     </div>
   );
 };
 
-const CollectionDisplay: FC<{ collection: CollectionInfo; loading: boolean }> = ({ collection, loading }) => {
+const CollectionDisplay: FC<{
+  collection: CollectionInfo;
+  loading: boolean;
+}> = ({ collection, loading }) => {
   if (loading) {
     return <CollectionPlaceholder />;
   }
@@ -61,7 +76,11 @@ const CollectionDisplay: FC<{ collection: CollectionInfo; loading: boolean }> = 
           <div className={styles.label}>
             {"Floor"}
             <div className={`${styles.priceContainer} ${styles.stat}`}>
-              <img src="/ethereum_icon.svg" className={styles.ethIcon} alt="Ethereum Icon" />
+              <img
+                src="/ethereum_icon.svg"
+                className={styles.ethIcon}
+                alt="Ethereum Icon"
+              />
               {collection.floor ?? "0"}
             </div>
           </div>

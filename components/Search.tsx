@@ -25,7 +25,11 @@ export const Search: FC<{
         placeholder="Enter address or ENS"
         className={styles.searchBarInput}
       ></input>
-      <button onClick={handleSearchSubmit} className={styles.searchBarButton} disabled={searchInput.length === 0}>
+      <button
+        onClick={handleSearchSubmit}
+        className={styles.searchBarButton}
+        disabled={searchInput.length === 0}
+      >
         <FaSearch />
       </button>
     </form>

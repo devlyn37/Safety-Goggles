@@ -46,7 +46,12 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
         </div>
         <div className={styles.imgOverlay}>
           <h4 className={styles.nameLabel}>
-            <a target="_blank" rel="noreferrer" href={event.collectionUrl} className={styles.nameLabelLink}>
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={event.collectionUrl}
+              className={styles.nameLabelLink}
+            >
               {trunicate(event.collectionName, 50)}{" "}
             </a>
           </h4>
@@ -59,7 +64,11 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
             <h3 className={`${styles.priceDesc} ${styles.titleItem}`}>
               {"for"}
               <div className={styles.priceContainer}>
-                <img src="/ethereum_icon.svg" className={styles.ethIcon} alt="Ethereum Icon" />
+                <img
+                  src="/ethereum_icon.svg"
+                  className={styles.ethIcon}
+                  alt="Ethereum Icon"
+                />
                 {`${formatEthFromWei(sum)}`}
               </div>
             </h3>
@@ -67,7 +76,9 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
         </div>
         <div className={styles.spaceBuffer} />
         <div className={styles.detailContainer}>
-          <div className={styles.subDetail}>{format(new Date(event.date), "Pp")}</div>
+          <div className={styles.subDetail}>
+            {format(new Date(event.date), "Pp")}
+          </div>
           {groupButton}
         </div>
       </div>
@@ -92,7 +103,11 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
   const getTitle = (event: NFTEvent): string => {
     let title = event.action;
 
-    if (event.action === "Bought" || event.action === "Received" || event.action === "Minted") {
+    if (
+      event.action === "Bought" ||
+      event.action === "Received" ||
+      event.action === "Minted"
+    ) {
       title += " from ";
     } else {
       title += " to ";
@@ -102,7 +117,11 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
   };
 
   const otherAddress =
-    event.action === "Bought" || event.action === "Received" || event.action === "Minted" ? event.from : event.to;
+    event.action === "Bought" ||
+    event.action === "Received" ||
+    event.action === "Minted"
+      ? event.from
+      : event.to;
 
   return (
     <div ref={ref} className={styles.eventCard} key={event.key}>
@@ -117,25 +136,44 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
       </div>
       <div className={styles.imgOverlay}>
         <h4 className={styles.nameLabel}>
-          <a target="_blank" rel="noreferrer" href={event.assetUrl} className={styles.nameLabelLink}>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={event.assetUrl}
+            className={styles.nameLabelLink}
+          >
             {trunicate(event.assetName, 80)}
           </a>
-          <a target="_blank" rel="noreferrer" href={event.collectionUrl} className={styles.subLabelLink}>
+          <a
+            target="_blank"
+            rel="noreferrer"
+            href={event.collectionUrl}
+            className={styles.subLabelLink}
+          >
             {trunicate(event.collectionName, 50)}{" "}
           </a>
         </h4>
       </div>
       <div className={styles.eventDetails}>
         <div className={styles.titleContainer}>
-          <h3 className={`${styles.title} ${styles.titleItem}`}>{getTitle(event)}</h3>
+          <h3 className={`${styles.title} ${styles.titleItem}`}>
+            {getTitle(event)}
+          </h3>
           <div className={styles.titleItem}>
-            <AddressContainer address={otherAddress} shouldResolveENS={isVisible} />
+            <AddressContainer
+              address={otherAddress}
+              shouldResolveENS={isVisible}
+            />
           </div>
           {(event.action === "Sold" || event.action === "Bought") && (
             <h3 className={`${styles.priceDesc} ${styles.titleItem}`}>
               {"for"}
               <div className={styles.priceContainer}>
-                <img src="/ethereum_icon.svg" className={styles.ethIcon} alt="Ethereum Icon" />
+                <img
+                  src="/ethereum_icon.svg"
+                  className={styles.ethIcon}
+                  alt="Ethereum Icon"
+                />
                 {`${formatEthFromWei(event.price)}`}
               </div>
             </h3>
@@ -143,7 +181,9 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
         </div>
         <div className={styles.spaceBuffer} />
         <div className={styles.detailContainer}>
-          <div className={styles.subDetail}>{format(new Date(event.date), "Pp")}</div>
+          <div className={styles.subDetail}>
+            {format(new Date(event.date), "Pp")}
+          </div>
           <div className={styles.iconContainer}>
             <a
               href={"https://etherscan.io/tx/" + event.transactionHash}
@@ -152,10 +192,23 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
               className={styles.linkIconContainer}
               style={{ marginRight: "7px" }}
             >
-              <img src={"/etherscan-logo-circle.svg"} className={styles.linkIcon} alt="Etherscan Logo"></img>
+              <img
+                src={"/etherscan-logo-circle.svg"}
+                className={styles.linkIcon}
+                alt="Etherscan Logo"
+              ></img>
             </a>
-            <a href={event.assetUrl} target="_blank" rel="noreferrer" className={styles.linkIconContainer}>
-              <img src={"/OpenSea-Logo-Blue.svg"} className={styles.linkIcon} alt="OpenSea Logo"></img>
+            <a
+              href={event.assetUrl}
+              target="_blank"
+              rel="noreferrer"
+              className={styles.linkIconContainer}
+            >
+              <img
+                src={"/OpenSea-Logo-Blue.svg"}
+                className={styles.linkIcon}
+                alt="OpenSea Logo"
+              ></img>
             </a>
           </div>
         </div>

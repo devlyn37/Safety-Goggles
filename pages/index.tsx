@@ -28,15 +28,20 @@ export default function Home() {
               <GiProtectionGlasses className={styles.icon} />
             </div>
             <h2 className={styles.subTitle}>
-              See a history of a wallet&#39;s NFT activity through an analytical lens. See through tricks and shady
-              activity, look for alpha with Safety Goggles. Search an address or ENS name to get started.
+              See a history of a wallet&#39;s NFT activity through an analytical
+              lens. See through tricks and shady activity, look for alpha with
+              Safety Goggles. Search an address or ENS name to get started.
             </h2>
           </div>
           <Search handleSearch={handleSearch} />
           <div className={styles.creditContainer}>
             <p className={styles.creditLabel}>Made by Devlyn</p>
             <div className={styles.linkContainer}>
-              <a href="https://twitter.com/Devlyn_3" target="_blank" rel="noreferrer">
+              <a
+                href="https://twitter.com/Devlyn_3"
+                target="_blank"
+                rel="noreferrer"
+              >
                 <img
                   src={"/twitter-logo.svg"}
                   className={styles.linkIcon}
@@ -44,8 +49,16 @@ export default function Home() {
                   alt="twitter logo"
                 ></img>
               </a>
-              <a href="https://github.com/devlyn37" target="_blank" rel="noreferrer">
-                <img src={"/github-logo.svg"} className={styles.linkIcon} alt="github logo"></img>
+              <a
+                href="https://github.com/devlyn37"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  src={"/github-logo.svg"}
+                  className={styles.linkIcon}
+                  alt="github logo"
+                ></img>
               </a>
             </div>
           </div>
