@@ -3,7 +3,7 @@ import { useMediaQuery } from "../../hooks/useMediaQuery";
 import {
   getCollections,
   getCollection,
-  getCollectionFloor,
+  getCollectionFloor
 } from "../../utils/data";
 import { CollectionInfo, Filter, SearchCriteria } from "../../types";
 import { resolveWallet } from "../../utils/ens";
@@ -36,7 +36,7 @@ export default function Home() {
     endDate: "",
     filter: "",
     collectionSlug: "",
-    page: 1,
+    page: 1
   });
 
   const [walletErrorMsg, setWalletErrorMsg] = useState<string>("");
@@ -85,7 +85,7 @@ export default function Home() {
       }
 
       router.push({ pathname: "/wallet/[wallet]", query: query }, undefined, {
-        shallow: true,
+        shallow: true
       });
     },
     [router]
@@ -121,7 +121,7 @@ export default function Home() {
           endDate: endDate ?? "",
           filter: filter ?? "",
           page: 1,
-          collectionSlug: collectionSlug ?? "",
+          collectionSlug: collectionSlug ?? ""
         };
         setSearch(s);
 
@@ -184,7 +184,7 @@ export default function Home() {
     const s = {
       ...search,
       collectionSlug: collection ? collection.slug : "",
-      page: 1,
+      page: 1
     };
 
     if (collection) {
@@ -218,7 +218,7 @@ export default function Home() {
         "startDate",
         "endDate",
         "collectionSlug",
-        "filter",
+        "filter"
       ];
 
       Object.keys(query).forEach((param: string) => {
@@ -294,7 +294,7 @@ export default function Home() {
           endDate: "",
           filter: "",
           page: 1,
-          collectionSlug: "",
+          collectionSlug: ""
         });
         return;
       }

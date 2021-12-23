@@ -8,14 +8,13 @@ This is a website that displays NFT related activity with a few key focuses. It'
 
 ## Transparency and Shareability
 
-When scanning around discords for NFT alpha something I saw a lot was "Hey (insert influencer or whale) bought wagmi etc etc.." w/ an accompanying screenshot. Often, after going back and fourth between OpenSea and etherscan I'd discover that it was just the developers of the project minting to said influencer. If you go look at any popular opensea account it's full of random NFT's from devs trying to trick copy traders.
+When scanning around discords for NFT alpha ([definition](https://www.startwithnfts.com/posts/the-ultimate-nft-slang-dictionary)) something I saw a lot was "Hey (insert influencer or whale) bought wagmi etc etc.." w/ an accompanying screenshot. Often, after going back and fourth between OpenSea and etherscan I'd discover that it was just the developers of the project minting to said influencer. If you go look at any popular opensea account it's full of random NFT's from devs trying to trick copy traders.
 
 This website distinguishes between these fake mints and real ones, labeling them accordingly.
 
 ![Screen Shot 2021-11-30 at 2 58 41 PM](https://user-images.githubusercontent.com/17352012/144141661-6c069a51-cd77-4a70-995c-1dde716656db.png)
 
-
-with this, in combination with filtering, the goal of the site is to be a tool to help discover and share alpha and hopefully prevent some people from being tricked into fomo buying something.
+With this, in combination with filtering, the goal of the site is to be a tool to help discover and share alpha and hopefully prevent some people from being tricked.
 
 ## A Timeline View
 
@@ -24,6 +23,18 @@ I think the idea of a timeline is novel, visually appealing, and makes good use 
 ## Note
 
 This is still a work in progress, expect some issues here and there, especially with labeling less common event types. Event labelling surrounding the core goals of the project (buy, sell, mints vs dev mints mentioned above) is solid right now though.
+
+## Tech
+
+Safety Goggles is built with Next.js and TypeScript. We use CSS modules for styling, and host the site using Vercel.
+
+## Roadmap
+
+At a high level Safety Goggles should aim to rely less on OpenSea, Improve coverage for unique cases/transactions, and expand functionality to be more useful for new web3 users. Exactly how this is done should be decided in [discussions](https://github.com/devlyn37/Safety-Goggles/discussions).
+
+## Contributing
+
+This project was built to be a public good, If you'd like to help make it better take a look [here](CONTRIBUTING.md).
 
 ## Setup
 

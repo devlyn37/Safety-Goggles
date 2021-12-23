@@ -10,7 +10,7 @@ const CollectionSearch = dynamic(
   () => import("./CollectionSearch").then((mod) => mod.CollectionSearch),
   {
     loading: loading,
-    ssr: false,
+    ssr: false
   }
 );
 
@@ -41,7 +41,7 @@ export const Filter: FC<{
   handleEndDateChange,
   handleCollectionChange,
   handleFilterChange,
-  collectionErrorMsg,
+  collectionErrorMsg
 }) => {
   const onStartDateChange = (event) => {
     handleStartDateChange(event.target.value);
@@ -93,7 +93,7 @@ export const Filter: FC<{
       <div className={styles.label}>Date Range</div>
       <label
         style={{
-          marginBottom: "20px",
+          marginBottom: "20px"
         }}
       >
         <span className={styles.dateLabel}>From</span>

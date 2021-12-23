@@ -11,7 +11,7 @@ export default function Home() {
   const handleSearch = async (search: string) => {
     router.push({
       pathname: "/wallet/[wallet]",
-      query: { wallet: search },
+      query: { wallet: search }
     });
   };
 

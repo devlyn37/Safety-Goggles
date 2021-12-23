@@ -226,7 +226,7 @@ export const LoadingCard: FC = () => {
         style={{
           borderRadius: "25px 25px 0px 0px",
           maxWidth: "100%",
-          borderBottom: "var(--soft-border)",
+          borderBottom: "var(--soft-border)"
         }}
         speed={2}
         viewBox="0 0 400 400"
@@ -240,7 +240,7 @@ export const LoadingCard: FC = () => {
       <div
         style={{
           padding: "15px 20px",
-          flex: 1,
+          flex: 1
         }}
       >
         <div
@@ -248,7 +248,7 @@ export const LoadingCard: FC = () => {
             width: "95%",
             height: "22px",
             backgroundColor: "#f3f3f3",
-            borderRadius: "8px",
+            borderRadius: "8px"
           }}
         />
         <div
@@ -257,7 +257,7 @@ export const LoadingCard: FC = () => {
             width: "75%",
             height: "22px",
             backgroundColor: "#f3f3f3",
-            borderRadius: "8px",
+            borderRadius: "8px"
           }}
         />
       </div>
@@ -268,7 +268,7 @@ export const LoadingCard: FC = () => {
           borderRadius: "0px 0px 25px 25px",
           display: "flex",
           justifyContent: "space-between",
-          alignItems: "center",
+          alignItems: "center"
         }}
       >
         <div
@@ -276,14 +276,14 @@ export const LoadingCard: FC = () => {
             width: "55%",
             height: "15px",
             backgroundColor: "#f3f3f3",
-            borderRadius: "6px",
+            borderRadius: "6px"
           }}
         />
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "flex-start",
+            justifyContent: "flex-start"
           }}
         >
           <div
@@ -292,7 +292,7 @@ export const LoadingCard: FC = () => {
               width: "24px",
               borderRadius: "50%",
               backgroundColor: "#f3f3f3",
-              marginRight: "7px",
+              marginRight: "7px"
             }}
           />
           <div
@@ -300,7 +300,7 @@ export const LoadingCard: FC = () => {
               height: "24px",
               width: "24px",
               borderRadius: "50%",
-              backgroundColor: "#f3f3f3",
+              backgroundColor: "#f3f3f3"
             }}
           />
         </div>

@@ -4,7 +4,7 @@ export default function useOnScreen(ref) {
   const [isIntersecting, setIntersecting] = useState(false);
 
   let options = {
-    threshold: 0.01,
+    threshold: 0.01
   };
 
   const observer = new IntersectionObserver(

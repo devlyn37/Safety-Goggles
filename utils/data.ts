@@ -20,7 +20,7 @@ export const getCollections = async (
 
   const [heldCollections, recentEvents] = await Promise.all([
     axios.get(collectionUrl).then((res) => res.data),
-    axios.get(eventUrl).then((res) => filterEvents(res.data.asset_events)),
+    axios.get(eventUrl).then((res) => filterEvents(res.data.asset_events))
   ]);
 
   const fromHeld: CollectionInfo[] = heldCollections.map(
@@ -28,7 +28,7 @@ export const getCollections = async (
       name: c.name,
       slug: c.slug,
       imgUrl: c.image_url,
-      holding: c.owned_asset_count,
+      holding: c.owned_asset_count
     })
   );
 
@@ -41,7 +41,7 @@ export const getCollections = async (
         name: asset.collection.name,
         slug: asset.collection.slug,
         imgUrl: asset.collection.image_url,
-        holding: "0",
+        holding: "0"
       };
     }
   );
@@ -77,7 +77,7 @@ export const getCollection = async (
     slug: collection.slug,
     imgUrl: collection.image_url,
     holding: "0",
-    floor: collection.stats.floor_price,
+    floor: collection.stats.floor_price
   };
 };
 
@@ -213,7 +213,7 @@ const dataToEvent = (d: any, address: string): NFTEvent => {
     to: to,
     action: action,
     key: d.transaction.transaction_hash + d.asset.id,
-    transactionHash: d.transaction.transaction_hash,
+    transactionHash: d.transaction.transaction_hash
   };
 
   if (successAction) {

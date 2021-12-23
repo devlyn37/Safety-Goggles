@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+		"prettier-format": "prettier --config .prettierrc './**/*.ts' './**/*.tsx' --write"
   },
   "dependencies": {
     "@agney/react-loading": "^0.1.2",
@@ -27,6 +28,7 @@
     "@types/react": "^17.0.37",
     "eslint": "7.32.0",
     "eslint-config-next": "11.1.2",
+    "prettier": "^2.5.1",
     "typescript": "^4.5.2",
     "vercel": "^23.1.2"
   }

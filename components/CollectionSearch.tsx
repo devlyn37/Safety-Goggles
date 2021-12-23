@@ -14,8 +14,8 @@ export const CollectionSearch: FC<{
     control: (provided) => ({
       ...provided,
       borderRadius: "10px",
-      border: "none",
-    }),
+      border: "none"
+    })
   };
 
   const CustomOption = (props) => {
@@ -39,7 +39,7 @@ export const CollectionSearch: FC<{
           padding: "10px",
           borderBottom: "1px solid lightgray",
           backgroundColor: backgroundColor,
-          color: textColor,
+          color: textColor
         }}
       >
         <img
@@ -48,7 +48,7 @@ export const CollectionSearch: FC<{
             width: "40px",
             borderRadius: "50%",
             objectFit: "cover",
-            marginRight: "10px",
+            marginRight: "10px"
           }}
           src={imgUrl ?? "/no-image.jpeg"}
           alt={`Collection Image for ${name}`}
@@ -79,8 +79,8 @@ export const CollectionSearch: FC<{
           ...theme.colors,
           primary25: "lightgray",
           primary: "#f2f2f2",
-          neutral0: "#f2f2f2",
-        },
+          neutral0: "#f2f2f2"
+        }
       })}
     />
   );
