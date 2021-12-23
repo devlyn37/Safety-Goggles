@@ -6,7 +6,7 @@ Thanks for thinking of contributing!
 
 Github is where we host code, track issues, and manage feature requests. Any additions or fixes to Safety Goggles are managed through pull requests.
 
-## Branching Strategies, deployment, and contributing.
+## Branching strategies, deployment, and contributing.
 
 We use something similar to Github Flow, but we also maintain a dev branch. Anything pushed to main is automatically deployed to production. Currently, there's not a lot of testing, so the dev branch acts as a buffer for new releases. Pull requests are the best way to propose changes:
 
@@ -23,7 +23,7 @@ In short, when you submit code changes, your submissions are understood to be un
 
 ## Bugs and Enhancements are handled with [Github issues](https://docs.github.com/en/issues/tracking-your-work-with-issues/about-issues)
 
-If you'd like to report a bug or request a new feature/improvement [create an issue](https://github.com/devlyn37/Safety-Goggles/issues), labeling each as either a bug or an enhancement respectively.
+If you'd like to report a bug or request a new feature/improvement [create an issue](https://github.com/devlyn37/Safety-Goggles/issues), labeling each as either a bug or an enhancement respectively. This is also a good place to look for things to do!
 
 ## Where can I ask for help
 

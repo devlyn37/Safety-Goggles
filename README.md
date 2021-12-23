@@ -8,7 +8,7 @@ This is a website that displays NFT related activity with a few key focuses. It'
 
 ## Transparency and Shareability
 
-When scanning around discords for NFT alpha something I saw a lot was "Hey (insert influencer or whale) bought wagmi etc etc.." w/ an accompanying screenshot. Often, after going back and fourth between OpenSea and etherscan I'd discover that it was just the developers of the project minting to said influencer. If you go look at any popular opensea account it's full of random NFT's from devs trying to trick copy traders.
+When scanning around discords for NFT alpha ([definition](https://www.startwithnfts.com/posts/the-ultimate-nft-slang-dictionary)) something I saw a lot was "Hey (insert influencer or whale) bought wagmi etc etc.." w/ an accompanying screenshot. Often, after going back and fourth between OpenSea and etherscan I'd discover that it was just the developers of the project minting to said influencer. If you go look at any popular opensea account it's full of random NFT's from devs trying to trick copy traders.
 
 This website distinguishes between these fake mints and real ones, labeling them accordingly.
 
@@ -27,6 +27,10 @@ This is still a work in progress, expect some issues here and there, especially 
 ## Tech
 
 Safety Goggles is built with Next.js and TypeScript. We use CSS modules for styling, and host the site using Vercel.
+
+## Roadmap
+
+At a high level Safety Goggles should aim to rely less on OpenSea, Improve coverage for unique cases/transactions, and expand functionality to be more useful for new web3 users. Exactly how this is done should be decided in [discussions](https://github.com/devlyn37/Safety-Goggles/discussions).
 
 ## Contributing
 
