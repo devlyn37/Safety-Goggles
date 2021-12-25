@@ -3,29 +3,24 @@ import { GiProtectionGlasses } from "react-icons/gi";
 import { CopyLinkBtn } from "./CopyLinkBtn";
 import { Search } from "./Search";
 import styles from "../styles/nav.module.css";
-import { useRouter } from "next/dist/client/router";
+import Link from "next/link";
 
 export const Nav: FC<{ handleSearch: (input: string) => Promise<void> }> = ({
   handleSearch
 }) => {
-  const router = useRouter();
-  const goHome = () => {
-    router.push({
-      pathname: "/"
-    });
-  };
-
   return (
-    <div className={styles.navItems}>
-      <div className={styles.home}>
-        <GiProtectionGlasses className={styles.icon} onClick={goHome} />
-      </div>
-      <div className={styles.search}>
+    <ul className={styles.navItems}>
+      <li className={styles.home}>
+        <Link href="/">
+          <GiProtectionGlasses className={styles.icon} />
+        </Link>
+      </li>
+      <li className={styles.search}>
         <Search handleSearch={handleSearch} />
-      </div>
-      <div className={styles.copy}>
+      </li>
+      <li className={styles.copy}>
         <CopyLinkBtn />
-      </div>
-    </div>
+      </li>
+    </ul>
   );
 };

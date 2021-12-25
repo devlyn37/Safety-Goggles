@@ -337,10 +337,10 @@ export default function Home() {
           showFilters ? "" : styles.collapsedContainer
         }`}
       >
-        <div className={styles.nav}>
+        <nav className={styles.nav}>
           <Nav handleSearch={handleSearch} />
-        </div>
-        <div className={styles.header}>
+        </nav>
+        <header className={styles.header}>
           <Header
             address={search.address}
             ens={search.ens}
@@ -351,7 +351,7 @@ export default function Home() {
             loadingWallet={loadingWallet}
             errorMsg={walletErrorMsg}
           />
-        </div>
+        </header>
         <div className={styles.control}>
           <Control
             showFilters={showFilters}
@@ -381,7 +381,7 @@ export default function Home() {
             />
           </div>
         </div>
-        <div
+        <main
           className={`${styles.main} ${styles.column} ${
             showFilters ? styles.collapsedMain : styles.onlyMain
           }`}
@@ -392,7 +392,7 @@ export default function Home() {
             loadingWallet={loadingWallet}
             externalErrorMsg={walletErrorMsg}
           />
-        </div>
+        </main>
       </div>
     </>
   );

@@ -60,7 +60,7 @@ export const Filter: FC<{
   };
 
   const checks = (
-    <div className={styles.item}>
+    <li className={styles.item}>
       <div className={styles.label}>Activity Type</div>
 
       <div className={styles.checkContainer}>
@@ -85,11 +85,11 @@ export const Filter: FC<{
           Mint and Transfer
         </label>
       </div>
-    </div>
+    </li>
   );
 
   const dates = (
-    <div className={`${styles.item} ${styles.dateContainer}`}>
+    <li className={`${styles.item} ${styles.dateContainer}`}>
       <div className={styles.label}>Date Range</div>
       <label
         style={{
@@ -115,15 +115,12 @@ export const Filter: FC<{
           onChange={onEndDateChange}
         />
       </label>
-    </div>
+    </li>
   );
 
-  return (
-    <div className={styles.container}>
-      {collectionErrorMsg && (
-        <div className={styles.errorContainer}>{collectionErrorMsg}</div>
-      )}
-      <label className={styles.item}>
+  const collectionSelect = (
+    <li className={styles.item}>
+      <label>
         <div className={styles.label}>Collection</div>
         <div style={{ marginTop: "5px" }}>
           <CollectionSearch
@@ -135,9 +132,18 @@ export const Filter: FC<{
           />
         </div>
       </label>
+    </li>
+  );
+
+  return (
+    <menu className={styles.container}>
+      {collectionErrorMsg && (
+        <div className={styles.errorContainer}>{collectionErrorMsg}</div>
+      )}
+      {collectionSelect}
       {dates}
       {checks}
-    </div>
+    </menu>
   );
 };
 

@@ -71,7 +71,7 @@ const CollectionDisplay: FC<{
         alt={`Collection Image for ${collection.name}`}
       />
       <div className={styles.collectionTextContainer}>
-        <h3 className={styles.collectionName}>{collection.name}</h3>
+        <h2 className={styles.collectionName}>{collection.name}</h2>
         <div className={styles.collectionStats}>
           <div className={styles.label}>
             {"Floor"}
