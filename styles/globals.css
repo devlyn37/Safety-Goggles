@@ -44,6 +44,14 @@ img {
   max-width: 100%;
 }
 
+ul,
+menu {
+  list-style-type: none;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
 a {
   color: inherit;
   text-decoration: none;

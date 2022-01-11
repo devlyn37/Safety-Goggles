@@ -21,7 +21,7 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
   };
 
   const groupButton = (
-    <div className={styles.groupButton} onClick={handleClick}>
+    <button className={styles.groupButton} onClick={handleClick}>
       {" "}
       {expanded ? "Hide " : "Show "}
       {expanded ? (
@@ -29,7 +29,7 @@ export const EventGrouping: FC<{ grouping: NFTEvent[] }> = ({ grouping }) => {
       ) : (
         <FaAngleDown style={{ marginLeft: "4px", marginTop: "2px" }} />
       )}
-    </div>
+    </button>
   );
 
   return (
@@ -100,14 +100,15 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
   const ref = useRef();
   const isVisible = useOnScreen(ref);
 
+  const acquiring =
+    event.action === "Bought" ||
+    event.action === "Received" ||
+    event.action === "Minted";
+
   const getTitle = (event: NFTEvent): string => {
     let title = event.action;
 
-    if (
-      event.action === "Bought" ||
-      event.action === "Received" ||
-      event.action === "Minted"
-    ) {
+    if (acquiring) {
       title += " from ";
     } else {
       title += " to ";
@@ -116,12 +117,7 @@ export const Event: FC<{ event: NFTEvent }> = ({ event }) => {
     return title;
   };
 
-  const otherAddress =
-    event.action === "Bought" ||
-    event.action === "Received" ||
-    event.action === "Minted"
-      ? event.from
-      : event.to;
+  const otherAddress = acquiring ? event.from : event.to;
 
   return (
     <div ref={ref} className={styles.eventCard} key={event.key}>
