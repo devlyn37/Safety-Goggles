@@ -1,5 +1,7 @@
 # Safety Goggles: A Transparent Wallet NFT Activity Timeline
 
+https://user-images.githubusercontent.com/17352012/148899952-f1d06796-480f-4c7b-baad-2979c164985a.mp4
+
 This is a website that displays NFT related activity with a few key focuses. It's deployed [here](https://eth-wallet-timeline.vercel.app/).
 
 1. Transparency: Distinguishing between 'real' mints and devs minting to influencers.
